@@ -2,17 +2,22 @@ import os
 import logging
 import firebase_admin
 from firebase_admin import credentials, firestore, db
+from google.cloud import firestore as google_firestore
 
 logger = logging.getLogger(__name__)
 
 cred_path = os.getenv("FIREBASE_CREDENTIALS_PATH")
 if cred_path and os.path.exists(cred_path) and cred_path != "path/to/your/firebase/credentials.json":
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = cred_path
     try:
         cred = credentials.Certificate(cred_path)
         firebase_admin.initialize_app(cred, {
             'databaseURL': 'https://hackathon-trafficguard-default-rtdb.asia-southeast1.firebasedatabase.app'
         })
-        db_client = firestore.client()
+        db_client = google_firestore.Client(
+            project='hackathon-trafficguard',
+            database='default'
+        )
         rtdb_client = db.reference()
         FIREBASE_ENABLED = True
         logger.info("Firebase initialized successfully.")
