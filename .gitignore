@@ -8,3 +8,12 @@ firebase_credentials.json
 *.egg-info/
 dist/
 build/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.env
+firebase_credentials.json
+*.egg-info/
+dist/
+build/
