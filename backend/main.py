@@ -1,3 +1,5 @@
+from dotenv import load_dotenv
+load_dotenv()
 from fastapi import FastAPI
 import json
 import os
@@ -30,18 +32,44 @@ class AgentLogCaptureHandler(logging.Handler):
             "message": msg,
             "data": {}
         }
-        if "Ingestion Agent:" in msg: self.logs["Agent1"].append(step)
-        elif "Trust Detection Agent:" in msg: self.logs["Agent2"].append(step)
-        elif "Situation Planning Agent:" in msg: self.logs["Agent3"].append(step)
-        elif "Execution Agent:" in msg: self.logs["Agent4"].append(step)
+        if "INGESTION_" in msg: self.logs["Agent1"].append(step)
+        elif "TRUST_" in msg or "LLM_CLASSIFICATION" in msg: self.logs["Agent2"].append(step)
+        elif "SITUATION_" in msg or "LLM_PLANNING" in msg: self.logs["Agent3"].append(step)
+        elif "EXECUTION_" in msg: self.logs["Agent4"].append(step)
+
+agent_log_handler = AgentLogCaptureHandler()
+logging.getLogger("agent_events").addHandler(agent_log_handler)
 
 @app.post("/report")
-def receive_report(signal: RawSignal):
+async def receive_report(signal: RawSignal):
+    agent_log_handler.logs = {"Agent1": [], "Agent2": [], "Agent3": [], "Agent4": []}
+    
+    results = await ingestion_agent.run([signal])
+    
+    if not results:
+        return {"report_id": signal.signal_id, "status": "failed", "message": "Ingestion failed"}
+        
+    ingestion_result = results[0]
+    trust_result = await trust_agent.run(results)
+    situation_result = await situation_agent.run(trust_result)
+    
+    ingestion_dict = ingestion_result.model_dump() if hasattr(ingestion_result, 'model_dump') else ingestion_result.dict()
+    execution_result = await execution_agent.run(
+        ingestion_dict,
+        trust_result,
+        situation_result,
+        agent_log_handler.logs
+    )
+    
     return {
         "report_id": f"rep_{int(time.time())}",
-        "status": "received",
-        "message": "Report received and queued for AI verification",
-        "estimated_processing_ms": 1200
+        "status": "processed",
+        "message": "Report received and processed by full pipeline",
+        "estimated_processing_ms": 4500,
+        "ingestion_result": ingestion_dict,
+        "trust_result": trust_result,
+        "situation_result": situation_result,
+        "execution_result": execution_result
     }
 
 @app.get("/crisis/current")

@@ -1,16 +1,7 @@
 import json
-import logging
-import os
 from models.schemas import RawSignal, SignalObject
 from services.llm_service import call_llm
-from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
-
-# Configure logging
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
+from services.logger import log_agent_event
 
 class IngestionAgent:
     def __init__(self):
@@ -26,7 +17,12 @@ class IngestionAgent:
             if isinstance(signal, dict):
                 signal = RawSignal(**signal)
                 
-            logger.info(f"Ingestion Agent: Input received - Signal ID {signal.signal_id} from source '{signal.source}' with text: '{signal.text}'")
+            log_agent_event("INGESTION_STEP", {
+                "step": "Input received",
+                "signal_id": signal.signal_id,
+                "source": signal.source,
+                "text": signal.text
+            })
             
             prompt = f"""
             You are a helpful data processing assistant for an urban crisis intelligence system.
@@ -39,6 +35,8 @@ class IngestionAgent:
             """
             
             try:
+                log_agent_event("INGESTION_STEP", {"step": "Calling LLM for detection and translation", "signal_id": signal.signal_id})
+                
                 # Ask Gemini to return JSON
                 response_text = await call_llm(prompt, model="gemini-2.5-flash", require_json=True)
                 if response_text.startswith("```json"):
@@ -51,9 +49,13 @@ class IngestionAgent:
                 text_normalized = result.get("text_normalized", signal.text)
                 category_hint = result.get("category_hint", "infrastructure")
                 
-                logger.info(f"Ingestion Agent: Language detected: {language_detected}")
-                logger.info(f"Ingestion Agent: Translation/Normalization result: {text_normalized}")
-                logger.info(f"Ingestion Agent: Category assigned: {category_hint}")
+                log_agent_event("INGESTION_STEP", {
+                    "step": "LLM processing complete",
+                    "signal_id": signal.signal_id,
+                    "language_detected": language_detected,
+                    "text_normalized": text_normalized,
+                    "category_hint": category_hint
+                })
                 
                 normalized = SignalObject(
                     signal_id=signal.signal_id or "unknown",
@@ -68,6 +70,9 @@ class IngestionAgent:
                 )
                 normalized_signals.append(normalized)
             except Exception as e:
-                logger.error(f"Ingestion Agent: Error processing signal {signal.signal_id}: {e}")
+                log_agent_event("INGESTION_ERROR", {
+                    "signal_id": signal.signal_id,
+                    "error": str(e)
+                })
                 
         return normalized_signals
