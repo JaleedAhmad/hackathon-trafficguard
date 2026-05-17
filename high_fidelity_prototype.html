@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TrafficGuard AI | Urban Crisis Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg-deep: #0F172A;
+            --bg-card: #1E293B;
+            --bg-card-hover: #334155;
+            --text-primary: #FFFFFF;
+            --text-secondary: #94A3B8;
+            --accent-blue: #3B82F6;
+            --accent-green: #10B981;
+            --accent-orange: #F59E0B;
+            --accent-red: #EF4444;
+            --border-color: #334155;
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #000;
+            color: var(--text-primary);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Mobile Container */
+        .phone-container {
+            width: 320px;
+            height: 640px;
+            background-color: var(--bg-deep);
+            border-radius: 36px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 6px solid #222;
+            box-shadow: 0 0 0 2px #333, 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        /* Top Bar */
+        .top-action-bar {
+            height: 80px;
+            padding: 35px 20px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, var(--bg-deep) 80%, transparent);
+            z-index: 100;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-shield {
+            color: var(--accent-blue);
+            width: 28px;
+            height: 28px;
+        }
+
+        .location-pill {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .notification-bell {
+            color: var(--text-secondary);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-red);
+            border-radius: 50%;
+            border: 2px solid var(--bg-deep);
+        }
+
+        /* Bottom Tab Navigation */
+        .bottom-nav {
+            height: 70px;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 10px 10px;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            width: 20%;
+        }
+
+        .nav-item.active {
+            color: var(--accent-blue);
+        }
+
+        .nav-item span {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* Screen Views Wrapper */
+        .screen-container {
+            flex: 1;
+            position: relative;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+        .screen-container::-webkit-scrollbar { display: none; }
+
+        .view {
+            display: none;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding-bottom: 20px;
+        }
+
+        .view.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* View A: Map View */
+        .map-view {
+            height: 100%;
+            position: relative;
+        }
+
+        .map-area {
+            height: 65%;
+            width: 100%;
+            background-color: #0b0f1a;
+            position: relative;
+            overflow: hidden;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0) 0%, rgba(15, 23, 42, 1) 100%),
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+        }
+
+        .map-marker {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform: translate(-50%, -100%);
+        }
+
+        .pulse-circle {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transform: translate(0, 10px);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.8; }
+            70% { transform: scale(2.5); opacity: 0; }
+            100% { transform: scale(0.8); opacity: 0; }
+        }
+
+        .marker-icon {
+            width: 24px;
+            height: 24px;
+            z-index: 2;
+        }
+
+        .marker-label {
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(4px);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+            margin-top: -32px;
+            border: 1px solid rgba(255,255,255,0.1);
+            text-transform: uppercase;
+        }
+
+        .detour-line {
+            position: absolute;
+            width: 200px;
+            height: 100px;
+            border: 2px dashed var(--accent-green);
+            border-radius: 50%;
+            clip-path: inset(0 0 50% 0);
+            top: 40%;
+            left: 20%;
+            filter: drop-shadow(0 0 5px var(--accent-green));
+        }
+
+        .bottom-sheet {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: var(--bg-card);
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.4);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .blinking-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-red);
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .crisis-data-row {
+            background: rgba(15, 23, 42, 0.4);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            font-size: 13px;
+            line-height: 1.5;
+            border: 1px solid var(--border-color);
+        }
+
+        .crisis-data-row span {
+            color: var(--text-secondary);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            height: 48px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            outline: none;
+        }
+
+        .btn-solid-blue { background: var(--accent-blue); color: white; }
+        .btn-outline-blue { background: transparent; border: 1.5px solid var(--accent-blue); color: var(--accent-blue); }
+        .btn-solid-green { background: var(--accent-green); color: white; }
+        .btn-solid-red { background: var(--accent-red); color: white; }
+
+        .btn:active { transform: scale(0.98); opacity: 0.9; }
+
+        /* View B: Report View */
+        .report-view {
+            padding: 0 24px;
+        }
+
+        .view-header { margin-bottom: 24px; }
+        .view-title { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+        .view-subtitle { font-size: 14px; color: var(--text-secondary); }
+
+        .form-section { margin-bottom: 24px; }
+        .section-label { font-size: 14px; font-weight: 600; color: var(--text-secondary); margin-bottom: 12px; display: block; }
+
+        .grid-pills {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .pill-button {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 16px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .pill-button:hover { background: var(--bg-card-hover); }
+        .pill-button i { width: 20px; height: 20px; }
+        .pill-button.active { border-color: var(--accent-blue); background: rgba(59, 130, 246, 0.1); }
+
+        .input-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px;
+            width: 100%;
+            min-height: 100px;
+            color: white;
+            font-family: inherit;
+            font-size: 14px;
+            resize: none;
+            outline: none;
+        }
+
+        .input-card::placeholder { color: var(--text-secondary); opacity: 0.6; }
+
+        .helper-text { font-size: 12px; color: var(--text-secondary); margin-top: 8px; }
+
+        .location-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 16px;
+        }
+
+        .mini-map {
+            width: 60px;
+            height: 60px;
+            background: #0b0f1a;
+            border-radius: 8px;
+            background-image: radial-gradient(var(--accent-blue) 1px, transparent 1px);
+            background-size: 10px 10px;
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .location-info { flex: 1; }
+        .location-text { font-size: 14px; font-weight: 500; }
+
+        .toggle-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .toggle {
+            width: 44px;
+            height: 24px;
+            background: var(--accent-blue);
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            right: 2px;
+            top: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        /* View C: Crisis Detail */
+        .detail-view {
+            padding: 0 24px;
+        }
+
+        .back-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .badge-active {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--accent-red);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .summary-card {
+            border-left: 4px solid var(--accent-blue);
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 4px 16px 16px 4px;
+            margin-bottom: 20px;
+        }
+
+        .confidence-box {
+            margin-top: 16px;
+        }
+
+        .confidence-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-blue);
+            width: 91%;
+        }
+
+        .metrics-badges {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .metric-badge {
+            background: var(--bg-card);
+            padding: 8px 12px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            white-space: nowrap;
+            border: 1px solid var(--border-color);
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 32px;
+            margin-bottom: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 11px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-color);
+        }
+
+        .timeline-step {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .step-indicator {
+            position: absolute;
+            left: -32px;
+            top: 2px;
+            width: 24px;
+            height: 24px;
+            background: var(--bg-deep);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+
+        .step-indicator.complete { border-color: var(--accent-green); color: var(--accent-green); }
+        .step-indicator.active { border-color: var(--accent-blue); color: var(--accent-blue); }
+
+        .step-content {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .strategy-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .strategy-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-color);
+            padding: 14px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .strategy-tag {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        /* View D: Simulation Dashboard */
+        .simulation-view {
+            padding: 0 24px;
+        }
+
+        .toggle-selector {
+            display: flex;
+            background: var(--bg-card);
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .toggle-pill {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .toggle-pill.active-red { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); border: 1px solid var(--accent-red); }
+        .toggle-pill.inactive { color: var(--text-secondary); }
+
+        .mitigation-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mitigation-card.red-glow { border-color: rgba(239, 68, 68, 0.3); box-shadow: 0 0 15px rgba(239, 68, 68, 0.1); }
+        .mitigation-card.green-glow { border-color: rgba(16, 185, 129, 0.3); box-shadow: 0 0 15px rgba(16, 185, 129, 0.1); }
+
+        .card-row { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; }
+        .card-title { font-size: 14px; font-weight: 600; }
+        .card-stats { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+
+        .mini-visual {
+            width: 80px;
+            height: 60px;
+            border-radius: 8px;
+            background: #0b0f1a;
+            flex-shrink: 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .status-boxes {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .status-box {
+            flex: 1;
+            background: var(--bg-card);
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .status-val { font-size: 16px; font-weight: 700; color: var(--accent-green); display: block; margin-bottom: 4px; }
+        .status-label { font-size: 10px; color: var(--text-secondary); text-transform: uppercase; }
+
+        .checklist-block { margin-bottom: 24px; }
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+
+        /* View E: Agent Logs */
+        .logs-view {
+            padding: 0 24px;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+        }
+
+        .filter-tab {
+            padding: 6px 16px;
+            background: var(--bg-card);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .filter-tab.active { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
+
+        .log-stream {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .log-card {
+            background: #0a0e17;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 11px;
+        }
+
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 4px;
+        }
+
+        .agent-tag { font-weight: 700; text-transform: uppercase; }
+        .timestamp { color: var(--text-secondary); }
+
+        .log-body {
+            color: #cbd5e1;
+            line-height: 1.4;
+        }
+
+        .action-type {
+            font-weight: 600;
+            padding: 1px 4px;
+            border-radius: 3px;
+            margin-right: 4px;
+        }
+
+        .action-tool { color: var(--accent-blue); border: 1px solid rgba(59, 130, 246, 0.3); }
+        .action-out { color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .action-dec { color: var(--accent-orange); border: 1px solid rgba(245, 158, 11, 0.3); }
+
+        .view-details-link {
+            color: var(--accent-blue);
+            text-decoration: underline;
+            margin-left: 8px;
+            cursor: pointer;
+        }
+
+        .sticky-footer {
+            position: absolute;
+            bottom: 85px;
+            left: 0;
+            right: 0;
+            padding: 16px 24px;
+            background: linear-gradient(to top, var(--bg-deep) 80%, transparent);
+        }
+
+        /* Animations */
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .animate-up {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .view.active .animate-up {
+            animation: slideUp 0.4s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+
+    </style>
+</head>
+<body>
+
+    <div class="phone-container">
+        <!-- Top Action Bar -->
+        <header class="top-action-bar">
+            <div class="logo-group">
+                <i data-lucide="shield" class="logo-shield"></i>
+                <div class="location-pill">
+                    <i data-lucide="map-pin" style="width:12px;height:12px"></i>
+                    Karachi
+                </div>
+            </div>
+            <div class="notification-bell">
+                <i data-lucide="bell"></i>
+                <div class="notification-dot"></div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="screen-container">
+            
+            <!-- VIEW A: MAP VIEW -->
+            <section id="map-screen" class="view active map-view">
+                <div class="map-area">
+                    <!-- Flooding Marker -->
+                    <div class="map-marker" style="top: 45%; left: 55%;">
+                        <div class="pulse-circle" style="background: rgba(239, 68, 68, 0.4);"></div>
+                        <i data-lucide="alert-triangle" class="marker-icon" style="color: var(--accent-red);"></i>
+                        <div class="marker-label">FLOODING HIGH</div>
+                    </div>
+                    <!-- Congestion Marker -->
+                    <div class="map-marker" style="top: 35%; left: 30%;">
+                        <i data-lucide="info" class="marker-icon" style="color: var(--accent-orange);"></i>
+                        <div class="marker-label">CONGESTION MEDIUM</div>
+                    </div>
+                    <!-- Detour Path -->
+                    <div class="detour-line"></div>
+                </div>
+                
+                <div class="bottom-sheet animate-up">
+                    <div class="section-header">
+                        <div class="blinking-dot"></div>
+                        <h3 style="font-size: 16px; font-weight: 700;">Active Crisis</h3>
+                    </div>
+                    <div class="crisis-data-row">
+                        <strong>Urban Flooding - Canal Road</strong><br>
+                        <span>Confidence: 91% | Severity: HIGH | Radius: 2.4 km | +21 min ETA impact</span>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-solid-blue" onclick="navigateTo('detail-screen')">View Details</button>
+                        <button class="btn btn-outline-blue" onclick="navigateTo('report-screen')">Report Incident</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW B: REPORT SUBMISSION -->
+            <section id="report-screen" class="view report-view">
+                <div class="view-header animate-up">
+                    <h2 class="view-title">Report Incident</h2>
+                    <p class="view-subtitle">Reports are anonymous. Your identity is never stored.</p>
+                </div>
+
+                <div class="form-section animate-up delay-1">
+                    <label class="section-label">What's happening?</label>
+                    <div class="grid-pills">
+                        <div class="pill-button active">
+                            <i data-lucide="droplets" style="color: var(--accent-blue)"></i>
+                            Flooding
+                        </div>
+                        <div class="pill-button">
+                            <i data-lucide="zap" style="color: var(--accent-red)"></i>
+                            Accident
+                        </div>
+                        <div class="pill-button">
+                            <i data-lucide="octagon" style="color: var(--accent-orange)"></i>
+                            Blockage
+                        </div>
+                        <div class="pill-button">
+                            <i data-lucide="more-horizontal" style="color: var(--text-secondary)"></i>
+                            Other
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section animate-up delay-2">
+                    <textarea class="input-card" placeholder="e.g. Canal Road ke paas pani bhar gaya"></textarea>
+                    <p class="helper-text">Urdu, Roman Urdu, or English - all supported</p>
+                </div>
+
+                <div class="form-section animate-up delay-3">
+                    <div class="location-row">
+                        <div class="mini-map">
+                            <i data-lucide="map-pin" style="color: var(--accent-blue)"></i>
+                        </div>
+                        <div class="location-info">
+                            <div class="location-text">Canal Road, Karachi</div>
+                        </div>
+                    </div>
+                    <div class="toggle-container">
+                        <span style="font-size: 14px; font-weight: 500;">Use current location</span>
+                        <div class="toggle"></div>
+                    </div>
+                </div>
+
+                <div style="margin-top: auto; padding-bottom: 20px;">
+                    <button class="btn btn-solid-blue animate-up">Submit Report</button>
+                    <p style="text-align: center; font-size: 11px; color: var(--text-secondary); margin-top: 12px;">
+                        AI will verify this report before any action is taken.
+                    </p>
+                </div>
+            </section>
+
+            <!-- VIEW C: CRISIS DETAIL & AI REASONING -->
+            <section id="detail-screen" class="view detail-view">
+                <div class="back-nav">
+                    <i data-lucide="arrow-left" onclick="navigateTo('map-screen')" style="cursor:pointer"></i>
+                    <div class="badge-active">
+                        <div class="blinking-dot"></div>
+                        ACTIVE
+                    </div>
+                </div>
+
+                <div class="summary-card animate-up">
+                    <h3 style="font-size: 18px; margin-bottom: 4px;">Urban Flooding</h3>
+                    <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">Canal Road, Karachi | Detected: 9:30 AM | Duration: 23 mins</p>
+                    <div class="confidence-box">
+                        <div class="confidence-header">
+                            <span>Confidence Score</span>
+                            <span style="color: var(--accent-blue)">91%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="metrics-badges animate-up delay-1">
+                    <div class="metric-badge">
+                        <i data-lucide="users" style="color: var(--accent-green); width:14px"></i>
+                        4 Reports
+                    </div>
+                    <div class="metric-badge">
+                        <i data-lucide="cloud-rain" style="color: var(--accent-blue); width:14px"></i>
+                        Heavy Rain
+                    </div>
+                    <div class="metric-badge">
+                        <i data-lucide="car" style="color: var(--accent-orange); width:14px"></i>
+                        Traffic Spike
+                    </div>
+                </div>
+
+                <div class="timeline animate-up delay-2">
+                    <div class="timeline-step">
+                        <div class="step-indicator complete"><i data-lucide="check" style="width:14px"></i></div>
+                        <div class="step-content">4 reports clustered within 300m | credibility +40</div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="step-indicator complete"><i data-lucide="check" style="width:14px"></i></div>
+                        <div class="step-content">Weather API confirms heavy rainfall | credibility +15</div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="step-indicator complete"><i data-lucide="check" style="width:14px"></i></div>
+                        <div class="step-content">Maps API shows 340% congestion spike | credibility +15</div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="step-indicator complete"><i data-lucide="check" style="width:14px"></i></div>
+                        <div class="step-content">Confidence: 91% | Crisis CONFIRMED</div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="step-indicator active"><i data-lucide="arrow-right" style="width:14px"></i></div>
+                        <div class="step-content" style="color: var(--accent-blue)">Generating response plan...</div>
+                    </div>
+                </div>
+
+                <div class="strategy-stack animate-up delay-3">
+                    <div class="strategy-card">
+                        <span class="strategy-tag" style="background: rgba(239, 68, 68, 0.2); color: var(--accent-red)">PRIORITY 1</span>
+                        <span style="font-size: 13px;">Reroute via Shahrah-e-Faisal</span>
+                    </div>
+                    <div class="strategy-card">
+                        <span class="strategy-tag" style="background: rgba(245, 158, 11, 0.2); color: var(--accent-orange)">PRIORITY 2</span>
+                        <span style="font-size: 13px;">Dispatch emergency services</span>
+                    </div>
+                    <div class="strategy-card">
+                        <span class="strategy-tag" style="background: rgba(59, 130, 246, 0.2); color: var(--accent-blue)">PRIORITY 3</span>
+                        <span style="font-size: 13px;">Alert 1,200 nearby users</span>
+                    </div>
+                </div>
+
+                <button class="btn btn-solid-green animate-up" onclick="navigateTo('sim-screen')">Run Simulation</button>
+            </section>
+
+            <!-- VIEW D: SIMULATION RESULTS -->
+            <section id="sim-screen" class="view simulation-view">
+                <div class="view-header animate-up">
+                    <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <h2 class="view-title">Simulation Results</h2>
+                        <div class="badge-active" style="background: rgba(16, 185, 129, 0.1); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3);">
+                            COMPLETE
+                        </div>
+                    </div>
+                </div>
+
+                <div class="toggle-selector animate-up delay-1">
+                    <div class="toggle-pill active-red">BEFORE</div>
+                    <div class="toggle-pill inactive">AFTER</div>
+                </div>
+
+                <div class="mitigation-card red-glow animate-up delay-2">
+                    <div class="card-row">
+                        <div class="mini-visual" style="background-image: radial-gradient(var(--accent-red) 2px, transparent 2px); background-size: 15px 15px;"></div>
+                        <div class="card-info">
+                            <div class="card-title">Canal Road (BLOCKED)</div>
+                            <div class="card-stats">
+                                Congestion: SEVERE<br>
+                                Avg ETA: +21 minutes<br>
+                                Vehicles affected: 2,400
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mitigation-card green-glow animate-up delay-2" style="opacity: 0.6;">
+                    <div class="card-row">
+                        <div class="mini-visual" style="background-image: radial-gradient(var(--accent-green) 2px, transparent 2px); background-size: 15px 15px;"></div>
+                        <div class="card-info">
+                            <div class="card-title">Shahrah-e-Faisal (ACTIVE)</div>
+                            <div class="card-stats">
+                                Congestion: LOW<br>
+                                Avg ETA: +4 minutes<br>
+                                Vehicles rerouted: -1,440 (60%)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="status-boxes animate-up delay-3">
+                    <div class="status-box">
+                        <span class="status-val">81%</span>
+                        <span class="status-label">ETA Impr.</span>
+                    </div>
+                    <div class="status-box">
+                        <span class="status-val">1,440</span>
+                        <span class="status-label">Rerouted</span>
+                    </div>
+                    <div class="status-box">
+                        <span class="status-val">23m</span>
+                        <span class="status-label">Resp. Time</span>
+                    </div>
+                </div>
+
+                <div class="checklist-block animate-up delay-3">
+                    <div class="check-item"><i data-lucide="check-circle-2" style="color: var(--accent-green); width:18px"></i> Traffic rerouted to Shahrah-e-Faisal</div>
+                    <div class="check-item"><i data-lucide="check-circle-2" style="color: var(--accent-green); width:18px"></i> 1,200 users notified via push alerts</div>
+                    <div class="check-item"><i data-lucide="check-circle-2" style="color: var(--accent-green); width:18px"></i> Emergency ticket #TG-2891 opened</div>
+                    <div class="check-item"><i data-lucide="check-circle-2" style="color: var(--accent-green); width:18px"></i> Local traffic authority alerted</div>
+                </div>
+
+                <button class="btn btn-outline-blue animate-up" onclick="navigateTo('logs-screen')">View Agent Logs</button>
+            </section>
+
+            <!-- VIEW E: DEVELOPER AGENT LOGS -->
+            <section id="logs-screen" class="view logs-view">
+                <div class="view-header animate-up">
+                    <h2 class="view-title">Agent Trace</h2>
+                    <p class="view-subtitle">Crisis #c001</p>
+                </div>
+
+                <div class="filter-bar animate-up">
+                    <div class="filter-tab active">All</div>
+                    <div class="filter-tab">Agent 1</div>
+                    <div class="filter-tab">Agent 2</div>
+                    <div class="filter-tab">Agent 3</div>
+                    <div class="filter-tab">Agent 4</div>
+                </div>
+
+                <div class="log-stream animate-up delay-1">
+                    <!-- Log 1 -->
+                    <div class="log-card">
+                        <div class="log-header">
+                            <span class="agent-tag" style="color: #60a5fa">Agent 1</span>
+                            <span class="timestamp">09:30:01</span>
+                        </div>
+                        <div class="log-body">
+                            <span class="action-type action-tool">TOOL_CALL</span>
+                            "Language detection: Roman Urdu detected"
+                            <span class="view-details-link">View Details</span>
+                        </div>
+                    </div>
+                    <!-- Log 2 -->
+                    <div class="log-card">
+                        <div class="log-header">
+                            <span class="agent-tag" style="color: #60a5fa">Agent 1</span>
+                            <span class="timestamp">09:30:02</span>
+                        </div>
+                        <div class="log-body">
+                            <span class="action-type action-out">OUTPUT</span>
+                            "4 signals normalized, 1 translated"
+                        </div>
+                    </div>
+                    <!-- Log 3 -->
+                    <div class="log-card">
+                        <div class="log-header">
+                            <span class="agent-tag" style="color: #f472b6">Agent 2</span>
+                            <span class="timestamp">09:30:03</span>
+                        </div>
+                        <div class="log-body">
+                            <span class="action-type action-dec">DECISION</span>
+                            "Geospatial cluster found: 4 reports within 300m"
+                        </div>
+                    </div>
+                    <!-- Log 4 -->
+                    <div class="log-card">
+                        <div class="log-header">
+                            <span class="agent-tag" style="color: #f472b6">Agent 2</span>
+                            <span class="timestamp">09:30:04</span>
+                        </div>
+                        <div class="log-body">
+                            <span class="action-type action-dec">DECISION</span>
+                            "Contradiction detected: 1 report conflicts. Flagged."
+                        </div>
+                    </div>
+                    <!-- Log 5 -->
+                    <div class="log-card">
+                        <div class="log-header">
+                            <span class="agent-tag" style="color: #f472b6">Agent 2</span>
+                            <span class="timestamp">09:30:05</span>
+                        </div>
+                        <div class="log-body">
+                            <span class="action-type action-out">OUTPUT</span>
+                            "Confidence: 91, Status: ACTIVE"
+                        </div>
+                    </div>
+                    <!-- Log 6 -->
+                    <div class="log-card">
+                        <div class="log-header">
+                            <span class="agent-tag" style="color: #fb923c">Agent 3</span>
+                            <span class="timestamp">09:30:06</span>
+                        </div>
+                        <div class="log-body">
+                            <span class="action-type action-dec">DECISION</span>
+                            "Severity: HIGH, Radius: 2.4km"
+                        </div>
+                    </div>
+                    <!-- Log 7 -->
+                    <div class="log-card">
+                        <div class="log-header">
+                            <span class="agent-tag" style="color: #4ade80">Agent 4</span>
+                            <span class="timestamp">09:30:08</span>
+                        </div>
+                        <div class="log-body">
+                            <span class="action-type action-tool">TOOL_CALL</span>
+                            "Firebase write: simulation_state saved"
+                        </div>
+                    </div>
+                    <!-- Log 8 -->
+                    <div class="log-card">
+                        <div class="log-header">
+                            <span class="agent-tag" style="color: #4ade80">Agent 4</span>
+                            <span class="timestamp">09:30:09</span>
+                        </div>
+                        <div class="log-body">
+                            <span class="action-type action-out">OUTPUT</span>
+                            "Simulation complete. ETA improvement: 81%"
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sticky-footer">
+                    <button class="btn btn-solid-blue">Export Logs</button>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Bottom Tab Navigation -->
+        <nav class="bottom-nav">
+            <div class="nav-item active" onclick="navigateTo('map-screen', this)">
+                <i data-lucide="map"></i>
+                <span>Map</span>
+            </div>
+            <div class="nav-item" onclick="navigateTo('report-screen', this)">
+                <i data-lucide="plus-circle"></i>
+                <span>Report</span>
+            </div>
+            <div class="nav-item" onclick="navigateTo('alerts-screen', this)">
+                <i data-lucide="bell"></i>
+                <span>Alerts</span>
+            </div>
+            <div class="nav-item" onclick="navigateTo('logs-screen', this)">
+                <i data-lucide="cpu"></i>
+                <span>Agent Log</span>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Navigation Logic
+        function navigateTo(screenId, navEl) {
+            // Hide all views
+            document.querySelectorAll('.view').forEach(view => {
+                view.classList.remove('active');
+            });
+
+            // Show target view
+            const targetView = document.getElementById(screenId);
+            if (targetView) {
+                targetView.classList.add('active');
+            } else if (screenId === 'alerts-screen') {
+                alert('Alerts screen under development for this prototype.');
+            }
+
+            // Update nav items
+            if (navEl) {
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                navEl.classList.add('active');
+            } else {
+                const tabMap = {
+                    'map-screen': 0,
+                    'report-screen': 1,
+                    'detail-screen': 0,
+                    'sim-screen': 0,
+                    'logs-screen': 3
+                };
+                const tabIndex = tabMap[screenId];
+                if (tabIndex !== undefined) {
+                    const navItems = document.querySelectorAll('.nav-item');
+                    navItems.forEach(item => item.classList.remove('active'));
+                    navItems[tabIndex].classList.add('active');
+                }
+            }
+            
+            // Trigger animation refresh
+            const activeView = document.querySelector('.view.active');
+            if (activeView) {
+                const anims = activeView.querySelectorAll('.animate-up');
+                anims.forEach(el => {
+                    el.style.animation = 'none';
+                    el.offsetHeight; 
+                    el.style.animation = null;
+                });
+            }
+        }
+    </script>
+</body>
+</html>
