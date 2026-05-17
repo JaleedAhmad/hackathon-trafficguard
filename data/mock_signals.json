@@ -1,0 +1,48 @@
+{
+  "signals": [
+    {
+      "id": "rep_001",
+      "type": "community_report",
+      "location": "Canal Road, Karachi",
+      "description": "Water level is rising fast near the underpass, cars are getting stuck.",
+      "timestamp": "2026-05-16T18:30:00Z"
+    },
+    {
+      "id": "rep_002",
+      "type": "community_report",
+      "location": "Canal Road",
+      "description": "Flooding on Canal road. Traffic is completely blocked.",
+      "timestamp": "2026-05-16T18:35:00Z"
+    },
+    {
+      "id": "rep_003",
+      "type": "community_report",
+      "location": "Canal Rd, KHI",
+      "description": "Severe water logging, avoid canal road if possible.",
+      "timestamp": "2026-05-16T18:40:00Z"
+    },
+    {
+      "id": "rep_004",
+      "type": "community_report",
+      "location": "Canal Road Underpass",
+      "description": "Two bikes slipped due to the flood water. Send help.",
+      "timestamp": "2026-05-16T18:45:00Z"
+    },
+    {
+      "id": "sig_wx_001",
+      "type": "weather_signal",
+      "location": "Karachi South",
+      "condition": "heavy_rain",
+      "precipitation_mm": 45.5,
+      "timestamp": "2026-05-16T18:00:00Z"
+    },
+    {
+      "id": "sig_map_001",
+      "type": "maps_signal",
+      "location": "Canal Road",
+      "status": "severe_congestion",
+      "avg_speed_kmh": 2.5,
+      "timestamp": "2026-05-16T18:45:00Z"
+    }
+  ]
+}
