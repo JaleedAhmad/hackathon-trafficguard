@@ -10,7 +10,7 @@
         android:windowSoftInputMode="adjustResize"
         android:theme="@style/Theme.Android">
         <activity
-            android:name="com.trafficguard.app.MainActivity"
+            android:name="com.traffic_guard.ai.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

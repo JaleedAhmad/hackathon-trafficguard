@@ -1,4 +1,4 @@
-package com.trafficguard.app
+package com.traffic_guard.ai
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.trafficguard.app.theme.AndroidTheme
+import com.traffic_guard.ai.theme.AndroidTheme
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {

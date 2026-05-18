@@ -223,3 +223,15 @@ To integrate these APIs into the Android app using libraries like Retrofit or Kt
 ## Navigation 
 we need to Implement a navigation screen with real time alerts through firebase, 
 navigation screen should be able to do real time navigation just like google maps, where based on alerts from what users reports and after anaylyzing and confirming the trust score we would be able to show users about hurdles ahead if thery are in thier way or witin 2km of thier precise location range
+
+
+<!-- Stitch -->
+Generate ALL requested screens individually.
+
+Do not skip screens.
+
+Do not summarize screens.
+
+Create complete mobile UI mockups for every screen listed.
+
+If token/output limits are reached, prioritize finishing all screens before adding extra explanations.

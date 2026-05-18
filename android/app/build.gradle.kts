@@ -5,10 +5,10 @@ plugins {
 }
 
 android {
-    namespace = "com.trafficguard.app"
+    namespace = "com.traffic_guard.ai"
     compileSdk = 36
     defaultConfig {
-        applicationId = "com.trafficguard.app"
+        applicationId = "com.traffic_guard.ai"
         minSdk = 24
         targetSdk = 36
         versionCode = 1

@@ -1,4 +1,4 @@
-package com.trafficguard.app
+package com.traffic_guard.ai
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
@@ -8,7 +8,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.trafficguard.app.ui.main.MainScreen
+import com.traffic_guard.ai.ui.main.MainScreen
 
 @Composable
 fun MainNavigation() {

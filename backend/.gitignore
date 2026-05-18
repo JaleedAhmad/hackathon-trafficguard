@@ -3,6 +3,7 @@
 
 # Credentials
 firebase_credentials.json
+firebase_credentials.old.json
 
 # Virtual Environments
 venv/

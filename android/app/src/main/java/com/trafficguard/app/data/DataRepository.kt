@@ -1,4 +1,4 @@
-package com.trafficguard.app.data
+package com.traffic_guard.ai.data
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

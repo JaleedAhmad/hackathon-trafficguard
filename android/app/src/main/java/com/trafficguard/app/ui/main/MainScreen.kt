@@ -1,4 +1,4 @@
-package com.trafficguard.app.ui.main
+package com.traffic_guard.ai.ui.main
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
@@ -9,8 +9,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
-import com.trafficguard.app.data.DefaultDataRepository
-import com.trafficguard.app.theme.AndroidTheme
+import com.traffic_guard.ai.data.DefaultDataRepository
+import com.traffic_guard.ai.theme.AndroidTheme
 
 @Composable
 fun MainScreen(
