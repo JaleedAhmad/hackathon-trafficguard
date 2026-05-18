@@ -216,3 +216,10 @@ To integrate these APIs into the Android app using libraries like Retrofit or Kt
 2.  **Network Client:** Set up a network client pointing to the backend host (e.g., `http://10.0.2.2:8000` for Android Emulator localhost, or your production IP).
 3.  **POST `/report`:** Use this when a user submits an incident via the mobile app.
 4.  **GET `/alerts/nearby`:** Use this for background location polling or refreshing the home screen to show active alerts near the user.
+
+
+---
+
+## Navigation 
+we need to Implement a navigation screen with real time alerts through firebase, 
+navigation screen should be able to do real time navigation just like google maps, where based on alerts from what users reports and after anaylyzing and confirming the trust score we would be able to show users about hurdles ahead if thery are in thier way or witin 2km of thier precise location range
