@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pinpoint Location</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#f9f9ff",
+                        "surface-container-low": "#f0f3ff",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#263143",
+                        "surface-container": "#e7eeff",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "tertiary-fixed": "#ffdbcd",
+                        "tertiary": "#943700",
+                        "outline": "#737686",
+                        "on-background": "#111c2d",
+                        "primary-fixed": "#dbe1ff",
+                        "on-surface-variant": "#434655",
+                        "on-surface": "#111c2d",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-tertiary-container": "#ffede6",
+                        "surface-bright": "#f9f9ff",
+                        "secondary": "#505f76",
+                        "inverse-on-surface": "#ecf1ff",
+                        "on-primary-container": "#eeefff",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#cfdaf2",
+                        "on-tertiary-fixed": "#360f00",
+                        "background": "#f9f9ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#0b1c30",
+                        "secondary-container": "#d0e1fb",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-error-container": "#93000a",
+                        "on-primary": "#ffffff",
+                        "primary": "#004ac6",
+                        "on-secondary-container": "#54647a",
+                        "surface-container-high": "#dee8ff",
+                        "primary-container": "#2563eb",
+                        "surface-container-highest": "#d8e3fb",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#d3e4fe",
+                        "outline-variant": "#c3c6d7",
+                        "surface-variant": "#d8e3fb",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#bc4800",
+                        "inverse-primary": "#b4c5ff",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "surface-tint": "#0053db",
+                        "on-primary-fixed": "#00174b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "columns-mobile": "4",
+                        "unit": "8px",
+                        "safe-area-bottom": "34px",
+                        "gutter-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "label-lg": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface h-screen w-full overflow-hidden flex flex-col relative font-body-md">
+<!-- Top Action Area (Contextual Task - Back Button) -->
+<div class="absolute top-0 w-full z-40 p-4 pt-6 flex justify-between items-center pointer-events-none">
+<button aria-label="Go Back" class="w-12 h-12 bg-surface rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.1)] flex items-center justify-center text-on-surface pointer-events-auto active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+</button>
+<button class="h-12 px-4 bg-surface rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.1)] flex items-center justify-center text-primary font-label-lg text-label-lg pointer-events-auto active:scale-95 transition-transform duration-200 gap-2">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 0;">my_location</span>
+            Recenter
+        </button>
+</div>
+<!-- Map Canvas -->
+<div class="absolute inset-0 z-0">
+<img alt="Map View" class="w-full h-full object-cover" data-alt="A highly detailed, top-down digital street map displaying a dense metropolitan grid. The map utilizes a modern, light-mode aesthetic with soft grey pathways, pale blue rivers, and off-white city blocks. The lighting is flat and uniform, typical of professional navigation software, creating a clean, corporate atmosphere that emphasizes clarity and utility over excessive decoration." data-location="Metropolitan City Center" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxyqUgxEB3koLcvnwyp35KgnfsWcYp-DDqd3ocrClDPIylPP6tEhS3Xx0WAOZiWxIuW2HqDAKfocHXDddOKQ0EqVgM5ylgVqi7vczrf9Fr_za7nhd24LtsREz1aE9sQhGoVdRbldYpv1vlELErru_RpEVpmk7LwSZgX5i3v8fgGloNyYXDbWTtXw0PFtMexRdNrvZ2Yl98olrfzLpS_QldcYhoOjsvFNVk2GoXt7cjH9TjriGgCBaHuM9EcCN3JLt6k90euU8Lbw"/>
+</div>
+<!-- Center Draggable Pin Indicator -->
+<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center pointer-events-none">
+<span class="material-symbols-outlined text-[56px] text-error drop-shadow-[0_8px_12px_rgba(186,26,26,0.3)] -mb-2" style="font-variation-settings: 'FILL' 1;">location_on</span>
+<!-- Shadow base for depth -->
+<div class="w-5 h-1.5 bg-black/20 rounded-[50%] blur-[1px]"></div>
+</div>
+<!-- Interaction Overlay (Simulating draggable area) -->
+<div class="absolute inset-0 z-10 cursor-move"></div>
+<!-- Bottom Sheet / Confirmation Card -->
+<div class="absolute bottom-0 w-full bg-surface rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.15)] z-40 flex flex-col pt-3 pb-[calc(16px+34px)] px-6">
+<!-- Drag Handle Indicator -->
+<div class="w-12 h-1.5 bg-outline-variant/40 rounded-full mx-auto mb-6"></div>
+<!-- Sheet Header -->
+<h1 class="font-headline-md text-headline-md text-on-surface mb-5">
+            Incident Location
+        </h1>
+<!-- Address Card (Glassmorphism inspired subtle container) -->
+<div class="flex items-start gap-4 p-4 bg-surface-container-low border border-surface-container-high rounded-xl mb-6">
+<div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-on-primary-fixed-variant" style="font-variation-settings: 'FILL' 1;">push_pin</span>
+</div>
+<div class="flex flex-col">
+<p class="font-body-lg text-body-lg font-medium text-on-surface tracking-tight">
+                    Intersection of 4th &amp; Market St
+                </p>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">
+                    Financial District, San Francisco, CA 94103
+                </p>
+</div>
+</div>
+<!-- Primary Action -->
+<button class="w-full bg-primary text-on-primary font-label-lg text-label-lg h-14 rounded-full shadow-md active:scale-[0.98] transition-transform duration-150 flex justify-center items-center gap-2">
+            Confirm Location
+            <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">check_circle</span>
+</button>
+</div>
+</body></html>

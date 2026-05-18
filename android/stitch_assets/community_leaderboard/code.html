@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Traffic Guard - Leaderboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .podium-gradient-1 { background: linear-gradient(180deg, #FFD700 0%, #FFA000 100%); }
+        .podium-gradient-2 { background: linear-gradient(180deg, #C0C0C0 0%, #909090 100%); }
+        .podium-gradient-3 { background: linear-gradient(180deg, #CD7F32 0%, #A0522D 100%); }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed": "#d3e4fe",
+                    "surface-container-low": "#f0f3ff",
+                    "on-secondary-container": "#54647a",
+                    "on-primary": "#ffffff",
+                    "outline-variant": "#c3c6d7",
+                    "secondary": "#505f76",
+                    "primary": "#004ac6",
+                    "surface-variant": "#d8e3fb",
+                    "primary-fixed": "#dbe1ff",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "surface-container": "#e7eeff",
+                    "background": "#f9f9ff",
+                    "surface": "#f9f9ff",
+                    "surface-dim": "#cfdaf2",
+                    "tertiary": "#943700",
+                    "surface-bright": "#f9f9ff",
+                    "on-secondary-fixed-variant": "#38485d",
+                    "surface-container-highest": "#d8e3fb",
+                    "surface-container-high": "#dee8ff",
+                    "on-surface-variant": "#434655",
+                    "on-surface": "#111c2d",
+                    "inverse-primary": "#b4c5ff",
+                    "tertiary-fixed": "#ffdbcd",
+                    "error-container": "#ffdad6",
+                    "error": "#ba1a1a",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "tertiary-container": "#bc4800",
+                    "outline": "#737686",
+                    "on-secondary-fixed": "#0b1c30",
+                    "secondary-fixed-dim": "#b7c8e1",
+                    "on-tertiary-container": "#ffede6",
+                    "on-error": "#ffffff",
+                    "on-background": "#111c2d",
+                    "surface-tint": "#0053db",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "inverse-on-surface": "#ecf1ff",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed": "#360f00",
+                    "on-primary-fixed": "#00174b",
+                    "inverse-surface": "#263143",
+                    "on-primary-container": "#eeefff",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "on-tertiary": "#ffffff",
+                    "primary-container": "#2563eb",
+                    "secondary-container": "#d0e1fb",
+                    "on-error-container": "#93000a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "margin-mobile": "16px",
+                    "gutter-mobile": "16px",
+                    "columns-mobile": "4",
+                    "safe-area-bottom": "34px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Hanken Grotesk"],
+                    "display-lg": ["Hanken Grotesk"],
+                    "label-lg": ["Inter"],
+                    "headline-md": ["Hanken Grotesk"],
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-lg-mobile": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-24">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-4 h-16 bg-surface/95 backdrop-blur-md shadow-sm">
+<div class="flex items-center gap-4">
+<button class="p-2 transition-all duration-200 active:scale-95 hover:bg-surface-variant/50 rounded-full">
+<span class="material-symbols-outlined text-primary">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Traffic Guard</h1>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center overflow-hidden border-2 border-primary/20">
+<img alt="User avatar" class="w-full h-full object-cover" data-alt="A professional headshot of a diverse driver in their thirties, wearing a clean modern polo shirt. The lighting is soft and natural, suggesting a bright morning atmosphere. The style is crisp and high-resolution, maintaining a Corporate Modern aesthetic with a clean, out-of-focus city background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnl6o_ZVE_zvzvY9wCjR6du8vwSSq6TT-QnPGogf8luzF2V4Md2HShVRCwXhLcq4uwy4CoFzwq1goGc1U3HdPj9uISUr8mERR4N2Y_wgxdrdnD-ee4HI_c-bJr0m7EbP19qpStqWxnkohq7XOz1rpHVdmmlJAwp5XvgAzNC9LsbPJizzfeyw0WplEhHxgwzlBDYWGUJctQsPIqZ9KD6lxykt2ICNiL_POpYJYolPFCt3k4gxF8jiBDbrh6VluKF1LFzrfxdwDifQ"/>
+</div>
+</div>
+</header>
+<main class="pt-20 px-4 max-w-lg mx-auto">
+<!-- Gamified Header Section -->
+<div class="mb-8 text-center pt-4">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2">Hall of Fame</h2>
+<p class="text-on-surface-variant font-body-md">Top Traffic Sentinels this week</p>
+</div>
+<!-- Segmented Control (Tabs) -->
+<div class="flex p-1 bg-surface-container-high rounded-full mb-8 shadow-inner">
+<button class="flex-1 py-2 rounded-full font-label-lg text-label-lg bg-surface-container-lowest text-primary shadow-sm transition-all duration-200">Global</button>
+<button class="flex-1 py-2 rounded-full font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200">Local (New York)</button>
+</div>
+<!-- Podium Section (Top 3) -->
+<div class="flex items-end justify-center gap-3 mb-12 h-64">
+<!-- 2nd Place -->
+<div class="flex flex-col items-center flex-1">
+<div class="relative mb-3">
+<div class="w-16 h-16 rounded-full border-4 border-outline-variant overflow-hidden">
+<img alt="Silver" data-alt="A smiling young woman with glasses and headphones, sitting in a modern home office with soft blue lighting. The image is rendered in a high-fidelity digital art style, emphasizing warmth and competence. The colors are muted and professional with subtle blue and grey tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgTXC6-CzylAF_ahMc7HWTDPpCGJXiBsHApRe3P5Ajj5H-9wiut5Y-9JUqrNTpb11Or-wz9BjQXYk8p8d6VmQHsTPBOYh4RZJCIBAf71kQs7sJCl-oS0t-k8WVSTsb7Vw0paVI9FSd6_oMbtT5vIJ2HUbdxhfR9ajMXP64rFnhObBgOXNpdGZqtGgqNCYyeW-1Dj3cOHVBMXe7wOTWApQsrY4oZxG_5ntZ1xe3D-KEPKwh_mT7FlD5609EASggPMCsRwy__RsUvg"/>
+</div>
+<div class="absolute -bottom-2 -right-1 w-8 h-8 rounded-full podium-gradient-2 flex items-center justify-center text-white font-bold text-sm border-2 border-white shadow-sm">2</div>
+</div>
+<div class="w-full bg-surface-container-high h-24 rounded-t-xl flex flex-col items-center justify-end pb-3">
+<p class="font-label-sm text-label-sm font-bold text-on-surface">Alex R.</p>
+<p class="font-label-sm text-label-sm text-secondary">2,840 pts</p>
+</div>
+</div>
+<!-- 1st Place -->
+<div class="flex flex-col items-center flex-1">
+<div class="relative mb-3">
+<span class="material-symbols-outlined absolute -top-8 left-1/2 -translate-x-1/2 text-4xl text-yellow-500" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+<div class="w-20 h-20 rounded-full border-4 border-primary overflow-hidden shadow-lg">
+<img alt="Gold" data-alt="A confident man in his late 40s with a neatly trimmed beard, wearing a tech-inspired jacket. The background is a crisp, bright architectural setting with large windows and plenty of daylight. The visual style is premium corporate photography, conveying leadership and success through high-key lighting and a professional color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQCn39PQWEeHk_YHVUpc1UdGOvjQpeeWptBuDJK1dd-y-TFS7mTuxJXCeU3a8p_lmgUKudeaSAt5htwU-SjCK4O0BpoV8LkzEhFVv-AFw3JZnTq7leF8uTPxT61Ym8SXKS1Y5VfouJC7N8weidLnf7dYAXBKUMggo_WlPZXQhzWyY2BsTT9CYOzxL6oOyJC8yuWMPWIuCDQBTgLvx0MXERUBoISzeg-tAknWOSsHmAIEwEy1mMF6Q054zlH9RW5BhxsoveqxByzA"/>
+</div>
+<div class="absolute -bottom-2 -right-1 w-10 h-10 rounded-full podium-gradient-1 flex items-center justify-center text-white font-bold text-lg border-2 border-white shadow-md">1</div>
+</div>
+<div class="w-full bg-primary h-36 rounded-t-xl flex flex-col items-center justify-end pb-4 shadow-xl">
+<p class="font-label-lg text-label-lg font-bold text-on-primary">Jordan M.</p>
+<p class="font-label-sm text-label-sm text-primary-fixed">3,120 pts</p>
+</div>
+</div>
+<!-- 3rd Place -->
+<div class="flex flex-col items-center flex-1">
+<div class="relative mb-3">
+<div class="w-16 h-16 rounded-full border-4 border-[#CD7F32] overflow-hidden">
+<img alt="Bronze" data-alt="A professional woman with a bright smile, wearing a modern business-casual blazer. The lighting is warm and golden, as if from a sunset, giving the scene an optimistic and energetic mood. The style is clean, modern, and high-quality, focusing on friendly approachability and excellence." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfFW3wrksd2KGBge5foEDJymq3dBsWZlSTUs-5N13rs6ylD_w9P3UK5hHlz3QKYvNM1VL9nxBV29OZAlGA5U6VOnoBTZtHtMADxbH7Z3w8C73qxSAk3e00wr1rjVVlqFnulywgw2SoAMzXuA4JheMuhn7vkMc3piAVQT1iNlhl9ZUBF95M5NGyACPOZ2PYbFrHLKU_oNimsfL8x_ELu1QhYH0ciKGU4lqlXxhUtB18lYu7_jpwYK0fAQj_LKQoNBv0nz-oohY5iA"/>
+</div>
+<div class="absolute -bottom-2 -right-1 w-8 h-8 rounded-full podium-gradient-3 flex items-center justify-center text-white font-bold text-sm border-2 border-white shadow-sm">3</div>
+</div>
+<div class="w-full bg-surface-container-high h-20 rounded-t-xl flex flex-col items-center justify-end pb-3">
+<p class="font-label-sm text-label-sm font-bold text-on-surface">Sarah K.</p>
+<p class="font-label-sm text-label-sm text-secondary">2,450 pts</p>
+</div>
+</div>
+</div>
+<!-- Leaderboard List -->
+<div class="space-y-3 pb-8">
+<!-- Rank 4 -->
+<div class="flex items-center p-4 bg-surface-container rounded-xl shadow-sm hover:bg-surface-container-high transition-all">
+<span class="w-8 font-headline-md text-on-surface-variant">4</span>
+<div class="w-12 h-12 rounded-full bg-surface-variant mr-4 overflow-hidden">
+<img alt="User" data-alt="Portrait of a young tech enthusiast in a bright, modern cafe setting. Soft focus background shows a clean, minimal interior. High-quality digital photography with a fresh, youthful energy and a clean professional color grade." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAs-s0trRFyhfvLGalDRNhQnVO-rW3nuTdZ0HxiIAJz5zehUkF6DM2zFOESvPE4e0ZV_SKcKEX2xheD3_DctZ6Ws9VnOZFkvIAjhgLpE9R7ghscbCFSX8LIF_SL_eb55zB3L3-Nt6KuYM7NXdsIwREjQ-BhiNuK3ua3JfYeHDPV-Ty3De2WCwe6lFnlWLBS3kvLXB0szQshLGVT8a-CjdtE-PGNnJ9puailxg4vJVlasPFuD0rWrOMkyLUvOg4U_FJQCHe0uOddlA"/>
+</div>
+<div class="flex-1">
+<p class="font-label-lg text-label-lg text-on-surface">David Chen</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">124 reports</p>
+</div>
+<div class="text-right">
+<p class="font-headline-md text-primary">2,100</p>
+<p class="text-[10px] font-bold text-green-600 flex items-center justify-end">
+<span class="material-symbols-outlined text-[12px]">trending_up</span> 3
+                    </p>
+</div>
+</div>
+<!-- Rank 5 -->
+<div class="flex items-center p-4 bg-surface-container rounded-xl shadow-sm hover:bg-surface-container-high transition-all">
+<span class="w-8 font-headline-md text-on-surface-variant">5</span>
+<div class="w-12 h-12 rounded-full bg-surface-variant mr-4 overflow-hidden">
+<img alt="User" data-alt="A middle-aged professional woman smiling warmly against a bright, modern office backdrop. The lighting is balanced and clean, enhancing a sense of trustworthiness and community. The aesthetic is modern corporate, focusing on high-end production quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQ_vjigbK2cNdALX3rGOe_sDtlXGJR8UJRmz9HC5hdUxWRAvSqCVp5tmIWuDZDbYwWVdAoHzuBGJnRmhkk_gP7Vqn1L7jtb5f4bEu7nJ9VLbeDA4N1q9KoWJw9aX-gmHCdfVXY24_AYburNl0RuMwUk4vlNzoZg2GbNo_RPY7_7aEJOH65kvVZ1j1ra-IeuyNJfWVTQIqIU6eowfpNOFJDpyiI2Fy91X8ayLGQwpHamKU6CwpsA6382hwBZvlcl2kjUthhi8c5tA"/>
+</div>
+<div class="flex-1">
+<p class="font-label-lg text-label-lg text-on-surface">Elena Rodriguez</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">98 reports</p>
+</div>
+<div class="text-right">
+<p class="font-headline-md text-primary">1,980</p>
+<p class="text-[10px] font-bold text-on-surface-variant flex items-center justify-end">
+<span class="material-symbols-outlined text-[12px]">horizontal_rule</span>
+</p>
+</div>
+</div>
+<!-- Current User Ranking (Pinned Bottom Style) -->
+<div class="flex items-center p-4 bg-primary-container rounded-xl shadow-lg border-2 border-primary/20 mt-8 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-2 opacity-10">
+<span class="material-symbols-outlined text-6xl">military_tech</span>
+</div>
+<span class="w-8 font-headline-md text-on-primary-container">42</span>
+<div class="w-12 h-12 rounded-full bg-white mr-4 overflow-hidden border-2 border-primary">
+<img alt="User avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3gL3tspsYksQ-rcSt_3Q5EVjuF4RVqPUojrm-un-CPipU2cbOmzMWJpxl2qR3uJ4Otj2TzqFBsUXB7urcHm9F5mJ5Rxn3tPh_ikRRkC5U4iBHBzuH66U0A3AQZyjNdaEiahkKABzWmepg0sKNXfILr8OzcYQCZz7Br3IlurG8RAc6JngS95FgMIKNcFqz140hmv_sTfXAFQ90R69VOqkf40_sTGPAmNdDwkLtJRwkwQ_-x_MMpQSJ7GK5buXr5AmwPNmu7QcG1w"/>
+</div>
+<div class="flex-1">
+<p class="font-label-lg text-label-lg font-bold text-on-primary-container">You (Active Driver)</p>
+<p class="font-label-sm text-label-sm text-on-primary-container/80">Keep going! Top 10%</p>
+</div>
+<div class="text-right">
+<p class="font-headline-md text-on-primary-container">842</p>
+<p class="text-[10px] font-bold text-on-primary-container flex items-center justify-end">
+                        Next: 58 pts
+                    </p>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 pb-safe-area-bottom pt-2 bg-surface-container shadow-[0_-4px_12px_rgba(0,0,0,0.05)] rounded-t-xl">
+<button class="flex flex-col items-center justify-center text-on-surface-variant transition-transform duration-300 ease-out active:scale-90 p-2">
+<span class="material-symbols-outlined">directions_car</span>
+<span class="font-label-sm text-label-sm mt-1">Go</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant transition-transform duration-300 ease-out active:scale-90 p-2">
+<span class="material-symbols-outlined">warning</span>
+<span class="font-label-sm text-label-sm mt-1">Alerts</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 transition-transform duration-300 ease-out active:scale-90">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">leaderboard</span>
+<span class="font-label-sm text-label-sm">Top</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant transition-transform duration-300 ease-out active:scale-90 p-2">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm mt-1">Profile</span>
+</button>
+</nav>
+<!-- FAB for Action (Contextual: Report New Traffic) -->
+<button class="fixed bottom-24 right-6 w-14 h-14 bg-primary text-on-primary rounded-2xl shadow-xl flex items-center justify-center transition-all active:scale-95 z-40">
+<span class="material-symbols-outlined text-3xl">add_location_alt</span>
+</button>
+</body></html>

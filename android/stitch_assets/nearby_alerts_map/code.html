@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Traffic Guard - Alerts Map</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed": "#d3e4fe",
+                    "surface-container-low": "#f0f3ff",
+                    "on-secondary-container": "#54647a",
+                    "on-primary": "#ffffff",
+                    "outline-variant": "#c3c6d7",
+                    "secondary": "#505f76",
+                    "primary": "#004ac6",
+                    "surface-variant": "#d8e3fb",
+                    "primary-fixed": "#dbe1ff",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "surface-container": "#e7eeff",
+                    "background": "#f9f9ff",
+                    "surface": "#f9f9ff",
+                    "surface-dim": "#cfdaf2",
+                    "tertiary": "#943700",
+                    "surface-bright": "#f9f9ff",
+                    "on-secondary-fixed-variant": "#38485d",
+                    "surface-container-highest": "#d8e3fb",
+                    "surface-container-high": "#dee8ff",
+                    "on-surface-variant": "#434655",
+                    "on-surface": "#111c2d",
+                    "inverse-primary": "#b4c5ff",
+                    "tertiary-fixed": "#ffdbcd",
+                    "error-container": "#ffdad6",
+                    "error": "#ba1a1a",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "tertiary-container": "#bc4800",
+                    "outline": "#737686",
+                    "on-secondary-fixed": "#0b1c30",
+                    "secondary-fixed-dim": "#b7c8e1",
+                    "on-tertiary-container": "#ffede6",
+                    "on-error": "#ffffff",
+                    "on-background": "#111c2d",
+                    "surface-tint": "#0053db",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "inverse-on-surface": "#ecf1ff",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed": "#360f00",
+                    "on-primary-fixed": "#00174b",
+                    "inverse-surface": "#263143",
+                    "on-primary-container": "#eeefff",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "on-tertiary": "#ffffff",
+                    "primary-container": "#2563eb",
+                    "secondary-container": "#d0e1fb",
+                    "on-error-container": "#93000a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "margin-mobile": "16px",
+                    "gutter-mobile": "16px",
+                    "columns-mobile": "4",
+                    "safe-area-bottom": "34px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Hanken Grotesk"],
+                    "display-lg": ["Hanken Grotesk"],
+                    "label-lg": ["Inter"],
+                    "headline-md": ["Hanken Grotesk"],
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-lg-mobile": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md overflow-hidden">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-4 h-16 bg-surface/95 backdrop-blur-md shadow-sm">
+<div class="flex items-center gap-4">
+<button class="p-2 text-primary transition-all duration-200 active:scale-95 hover:bg-surface-variant/50 rounded-full">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Traffic Guard</h1>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-highest border border-outline-variant flex items-center justify-center overflow-hidden">
+<img alt="User avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_MDF7WR6waukeAAvbG4Nc6QJQWYcbFH3L-TvsoVZK5-ZgRothIkpuEgEpSnml1Pnh9gCFLkQzI5jL-3Mg5KdCR4iWimgvZzc7zevyNNTeMUVgKbp2AaSdkdPltWBYT_KjN7-E5ruq2FFfHMo6yWmlJNaHYG66ZeBucCPj74XF8Zg5-tbr_z-7myUtQM9NVnJqncomc0z43P_zXc_qPqUIujRaFEBVaVVw0bHVkyWzwBn6pFtPG6WHePUBUY28CSUxVt8hCAMVCw"/>
+</div>
+</header>
+<!-- Main Map View Canvas -->
+<main class="relative h-screen w-full pt-16">
+<!-- Background Map Image -->
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover" data-alt="A high-resolution, detailed top-down aerial map of a modern city grid with clean vector-style rendering. The color palette is light and professional, using soft greys for roads and pale blues for water bodies, maintaining a high-utility UI aesthetic. Soft sunlight casts minimal shadows, creating a clear and legible environment for navigation and traffic monitoring." data-location="San Francisco" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhBydBLo_bnfyxWY06TH7UVwQi9TkeRliE1KvgkzFkYYJI6VQTMtU18S9KAbEc3JAvdx_89hMSw3BDCOVoKLcb1YW7dRcDUlIYebGGEhTlM8AA47FwyvgyzLavrrqJ75Wj4acy6LoEArwbAzYfHcGkn7_qiUTND0fw-FjCiEdga28w92R3Yx8C1GtpHVz8T9kIgKtoMyEP479c5EvgoQAEAXWSZFBq0qm-KMjGqakdIaajG54zYtYmxrvflPMPyjGyvFPdzEh_6w"/>
+</div>
+<!-- Floating UI Overlays (Map Controls) -->
+<div class="absolute top-20 right-4 z-20 flex flex-col gap-3">
+<!-- Map Layers Toggle Group -->
+<div class="flex flex-col bg-surface/90 backdrop-blur-md rounded-xl shadow-lg border border-outline-variant overflow-hidden">
+<button class="p-3 text-on-surface-variant hover:bg-surface-variant transition-colors border-b border-outline-variant active:scale-95">
+<span class="material-symbols-outlined" data-icon="traffic">traffic</span>
+</button>
+<button class="p-3 text-on-surface-variant hover:bg-surface-variant transition-colors border-b border-outline-variant active:scale-95">
+<span class="material-symbols-outlined" data-icon="report_problem">report_problem</span>
+</button>
+<button class="p-3 text-primary bg-primary-container transition-colors active:scale-95">
+<span class="material-symbols-outlined" data-icon="speed" style="font-variation-settings: 'FILL' 1;">speed</span>
+</button>
+</div>
+<!-- Recenter Button -->
+<button class="w-12 h-12 flex items-center justify-center bg-primary text-on-primary rounded-full shadow-lg transition-all duration-200 active:scale-95">
+<span class="material-symbols-outlined" data-icon="my_location">my_location</span>
+</button>
+</div>
+<!-- Map Clusters / Markers -->
+<div class="absolute inset-0 z-10 pointer-events-none">
+<!-- Cluster 1 -->
+<div class="absolute top-[30%] left-[40%] pointer-events-auto">
+<div class="relative group cursor-pointer">
+<div class="flex items-center justify-center w-12 h-12 bg-error text-on-error rounded-full shadow-xl border-4 border-white animate-pulse">
+<span class="material-symbols-outlined text-[20px]" data-icon="warning">warning</span>
+</div>
+<div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-surface text-on-surface px-3 py-1 rounded-full text-label-sm shadow-md border border-outline-variant whitespace-nowrap">
+                        3 Heavy Alerts
+                    </div>
+</div>
+</div>
+<!-- Single Hazard Marker -->
+<div class="absolute top-[55%] left-[65%] pointer-events-auto">
+<div class="flex items-center justify-center w-8 h-8 bg-tertiary text-on-tertiary rounded-full shadow-lg border-2 border-white cursor-pointer hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[16px]" data-icon="construction">construction</span>
+</div>
+</div>
+<!-- Speed Trap Marker -->
+<div class="absolute top-[42%] left-[25%] pointer-events-auto">
+<div class="flex items-center justify-center w-10 h-10 bg-primary text-on-primary rounded-full shadow-lg border-2 border-white cursor-pointer hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[18px]" data-icon="videocam">videocam</span>
+</div>
+</div>
+</div>
+<!-- Bottom Sheet (Closest Incidents) -->
+<div class="absolute bottom-[88px] left-0 w-full z-30 transition-all duration-300">
+<div class="mx-auto max-w-md bg-surface-container-low rounded-t-3xl shadow-[0_-10px_25px_rgba(0,0,0,0.1)] border-t border-outline-variant">
+<!-- Handle -->
+<div class="flex justify-center pt-3 pb-2">
+<div class="w-10 h-1 bg-outline-variant rounded-full"></div>
+</div>
+<!-- Content Header -->
+<div class="px-6 pb-4">
+<div class="flex justify-between items-center">
+<h2 class="font-headline-md text-headline-md text-on-surface">Nearby Alerts</h2>
+<span class="bg-secondary-container text-on-secondary-container px-2 py-1 rounded-lg text-label-sm">5 Total</span>
+</div>
+</div>
+<!-- Alerts List -->
+<div class="px-4 pb-12 max-h-[320px] overflow-y-auto hide-scrollbar">
+<div class="flex flex-col gap-3">
+<!-- Alert Item 1 -->
+<div class="flex items-center gap-4 p-4 bg-surface rounded-2xl border border-outline-variant shadow-sm hover:bg-surface-container-high transition-colors cursor-pointer">
+<div class="w-12 h-12 flex-shrink-0 flex items-center justify-center bg-error-container text-error rounded-xl">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h3 class="font-label-lg text-on-surface font-semibold">Major Accident</h3>
+<span class="text-label-sm text-outline">0.2 mi</span>
+</div>
+<p class="text-label-sm text-on-surface-variant">Highway 101 N - 3 lanes blocked</p>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="chevron_right">chevron_right</span>
+</div>
+<!-- Alert Item 2 -->
+<div class="flex items-center gap-4 p-4 bg-surface rounded-2xl border border-outline-variant shadow-sm hover:bg-surface-container-high transition-colors cursor-pointer">
+<div class="w-12 h-12 flex-shrink-0 flex items-center justify-center bg-primary-container text-on-primary-container rounded-xl">
+<span class="material-symbols-outlined" data-icon="videocam">videocam</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h3 class="font-label-lg text-on-surface font-semibold">Speed Trap</h3>
+<span class="text-label-sm text-outline">0.8 mi</span>
+</div>
+<p class="text-label-sm text-on-surface-variant">Mission St - Under bridge</p>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="chevron_right">chevron_right</span>
+</div>
+<!-- Alert Item 3 -->
+<div class="flex items-center gap-4 p-4 bg-surface rounded-2xl border border-outline-variant shadow-sm hover:bg-surface-container-high transition-colors cursor-pointer">
+<div class="w-12 h-12 flex-shrink-0 flex items-center justify-center bg-surface-container-highest text-on-surface-variant rounded-xl">
+<span class="material-symbols-outlined" data-icon="construction">construction</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h3 class="font-label-lg text-on-surface font-semibold">Road Work</h3>
+<span class="text-label-sm text-outline">1.5 mi</span>
+</div>
+<p class="text-label-sm text-on-surface-variant">Market St - Right lane closed</p>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 pb-safe-area-bottom pt-2 bg-surface-container shadow-[0_-4px_12px_rgba(0,0,0,0.05)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 transition-transform duration-300 ease-out active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="directions_car" style="font-variation-settings: 'FILL' 1;">directions_car</span>
+<span class="font-label-sm text-label-sm">Go</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-transform duration-300 ease-out active:scale-90 px-5 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+<span class="font-label-sm text-label-sm">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-transform duration-300 ease-out active:scale-90 px-5 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="add_location_alt">add_location_alt</span>
+<span class="font-label-sm text-label-sm">Reports</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-transform duration-300 ease-out active:scale-90 px-5 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</nav>
+<!-- FAB (Suppressed for focused map/list view as per guidelines, but if required would be placed above bottom sheet) -->
+</body></html>

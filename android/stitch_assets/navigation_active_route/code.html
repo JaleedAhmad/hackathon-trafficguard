@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Traffic Guard - Active Navigation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#360f00",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#0053db",
+                        "secondary": "#505f76",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "surface-container-highest": "#d8e3fb",
+                        "error-container": "#ffdad6",
+                        "primary-fixed": "#dbe1ff",
+                        "on-secondary-fixed": "#0b1c30",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#943700",
+                        "inverse-surface": "#263143",
+                        "error": "#ba1a1a",
+                        "outline": "#737686",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "surface-container-high": "#dee8ff",
+                        "on-primary-container": "#eeefff",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "secondary-container": "#d0e1fb",
+                        "on-surface": "#111c2d",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "background": "#f9f9ff",
+                        "surface": "#f9f9ff",
+                        "outline-variant": "#c3c6d7",
+                        "on-secondary-container": "#54647a",
+                        "on-surface-variant": "#434655",
+                        "tertiary-container": "#bc4800",
+                        "on-error-container": "#93000a",
+                        "on-background": "#111c2d",
+                        "on-primary-fixed": "#00174b",
+                        "surface-variant": "#d8e3fb",
+                        "surface-container": "#e7eeff",
+                        "inverse-primary": "#b4c5ff",
+                        "surface-dim": "#cfdaf2",
+                        "tertiary-fixed": "#ffdbcd",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#f0f3ff",
+                        "secondary-fixed": "#d3e4fe",
+                        "on-tertiary-container": "#ffede6",
+                        "on-tertiary": "#ffffff",
+                        "primary-container": "#2563eb",
+                        "inverse-on-surface": "#ecf1ff",
+                        "primary": "#004ac6",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "surface-bright": "#f9f9ff",
+                        // Adding a custom green for the navigation header as requested
+                        "nav-green": "#16a34a",
+                        "on-nav-green": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px",
+                        "2xl": "1rem"
+                    },
+                    "spacing": {
+                        "safe-area-bottom": "34px",
+                        "gutter-mobile": "16px",
+                        "margin-mobile": "16px",
+                        "columns-mobile": "4",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "label-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>.material-symbols-outlined {
+    font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24
+    }
+/* Hide scrollbar for clean map view */
+body {
+    overflow: hidden
+    }
+.map-bg {
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuBwYCavQO42oRSGPzjC0BsUqHkwgKQ11s4_F28lEDadHL0JMpwADpzEvucZU6l5hfnnYbqUM0QzfCPJtCgchXfmLcgEqfKGDZSXMccARms4avSBXteWtPMjk-2mpuiHZCId5adx4Sv977itoaWQFECfy4B3mEi4pMTjDB_686TYrBVnvpJ92l90jXk91jnPo6O4dLTtoEmhoKZTyneRiqqd2FWvXZnF_7yuCcNR6pONwHednkt6c4rrwd8zN5TVUzpExANMXZ3dKw);
+    background-size: cover;
+    background-position: center
+    }</style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background h-screen w-screen flex flex-col relative">
+<!-- Background Map Layer -->
+<div class="absolute inset-0 map-bg z-0" data-alt="A highly detailed top-down view of a modern city map interface, displaying roads, parks, and buildings in a clean, light-mode aesthetic. The map features subtle terrain shading and prominent blue route lines. The lighting is bright and even, giving a clear, functional appearance typical of premium navigation software." data-location="Seattle" style="">
+<!-- Current Position Arrow / Route Line Overlay -->
+<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
+<!-- Simulated Route Line -->
+<div class="absolute bottom-1/2 left-1/2 w-4 h-64 bg-primary/80 transform -translate-x-1/2 origin-bottom rounded-full shadow-lg" style="filter: drop-shadow(0 0 8px rgba(0,74,198,0.4));"></div>
+<!-- Navigation Arrow -->
+<div class="relative w-16 h-16 bg-white rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.15)] flex items-center justify-center border-4 border-white">
+<div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-inner">
+<span class="material-symbols-outlined text-white text-[32px] transform -rotate-45">navigation</span>
+</div>
+</div>
+<!-- Ripple Effect -->
+<div class="absolute inset-0 bg-primary/20 rounded-full animate-ping scale-150"></div>
+</div>
+</div>
+<!-- Top Direction Banner -->
+<div class="absolute top-0 left-0 w-full z-40 p-4 pt-safe-area-bottom">
+<div class="bg-[#16a34a] text-white rounded-2xl shadow-[0_10px_25px_rgba(0,0,0,0.2)] overflow-hidden">
+<div class="p-4 flex items-center gap-4">
+<div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center shrink-0 backdrop-blur-sm">
+<span class="material-symbols-outlined text-[40px] text-white">turn_left</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="font-headline-md text-headline-md text-white truncate">Main St</div>
+<div class="font-body-md text-body-md text-white/90">Turn left in 500m</div>
+</div>
+</div>
+<!-- Secondary instruction -->
+<div class="bg-black/10 px-4 py-2 flex items-center gap-2 backdrop-blur-md">
+<span class="material-symbols-outlined text-[20px] text-white/80">turn_slight_right</span>
+<span class="font-label-sm text-label-sm text-white/90">Then right onto 2nd Ave</span>
+</div>
+</div>
+</div>
+<!-- On-Map Floating Controls (Right Side) -->
+<div class="absolute right-4 top-1/2 transform -translate-y-1/2 z-30 flex flex-col gap-4">
+<button class="w-12 h-12 bg-surface rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.1)] flex items-center justify-center text-on-surface hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="w-12 h-12 bg-surface rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.1)] flex items-center justify-center text-on-surface hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">volume_up</span>
+</button>
+<div class="flex flex-col gap-1 bg-surface rounded-full p-1 shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">add</span>
+</button>
+<div class="w-6 h-[1px] bg-outline-variant/50 mx-auto"></div>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">remove</span>
+</button>
+</div>
+<button class="w-12 h-12 bg-surface rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.1)] flex items-center justify-center text-on-surface hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">my_location</span>
+</button>
+</div>
+<!-- Bottom Navigation Panel (Trip Details) -->
+<div class="absolute bottom-0 left-0 w-full z-40">
+<!-- Re-center button (shows when user pans) -->
+<!-- <div class="flex justify-center mb-4 hidden">
+            <button class="bg-primary text-on-primary px-6 py-2 rounded-full font-label-lg text-label-lg shadow-lg flex items-center gap-2">
+                <span class="material-symbols-outlined text-[20px]">my_location</span>
+                Re-center
+            </button>
+        </div> -->
+<div class="bg-surface rounded-t-3xl shadow-[0_-10px_25px_rgba(0,0,0,0.1)] pb-safe-area-bottom pt-2">
+<!-- Drag Handle -->
+<div class="w-12 h-1.5 bg-outline-variant/50 rounded-full mx-auto mb-4"></div>
+<div class="px-6 pb-6">
+<div class="flex items-end justify-between mb-6">
+<div>
+<div class="flex items-baseline gap-2 text-error">
+<span class="font-headline-lg-mobile text-headline-lg-mobile">24</span>
+<span class="font-body-md text-body-md font-semibold">min</span>
+</div>
+<div class="font-body-md text-body-md text-on-surface-variant flex items-center gap-2 mt-1">
+<span>12.5 km</span>
+<span class="w-1 h-1 bg-outline rounded-full"></span>
+<span>ETA 14:32</span>
+</div>
+</div>
+<button class="w-14 h-14 bg-error-container text-on-error-container rounded-full flex items-center justify-center shadow-sm hover:bg-[#ffdad6]/80 transition-colors">
+<span class="material-symbols-outlined text-[28px]">close</span>
+</button>
+</div>
+<!-- Live Traffic Graph -->
+<div class="h-2 w-full bg-surface-variant rounded-full overflow-hidden flex mb-2">
+<div class="h-full bg-primary w-1/3"></div>
+<div class="h-full bg-error w-1/6"></div>
+<div class="h-full bg-primary w-1/2"></div>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Moderate traffic ahead</span>
+<span>Delay: +3m</span>
+</div>
+</div>
+</div>
+</div>
+</body></html>

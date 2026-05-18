@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Notification Settings - Traffic Guard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "inverse-primary": "#b4c5ff",
+                    "on-tertiary-container": "#ffede6",
+                    "surface": "#f9f9ff",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "surface-dim": "#cfdaf2",
+                    "tertiary": "#943700",
+                    "on-primary-fixed": "#00174b",
+                    "on-secondary-container": "#54647a",
+                    "on-error": "#ffffff",
+                    "secondary-container": "#d0e1fb",
+                    "primary-fixed": "#dbe1ff",
+                    "tertiary-container": "#bc4800",
+                    "on-tertiary-fixed": "#360f00",
+                    "on-surface-variant": "#434655",
+                    "inverse-on-surface": "#ecf1ff",
+                    "surface-container": "#e7eeff",
+                    "on-secondary-fixed": "#0b1c30",
+                    "on-surface": "#111c2d",
+                    "on-secondary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-variant": "#d8e3fb",
+                    "surface-container-low": "#f0f3ff",
+                    "primary": "#004ac6",
+                    "secondary-fixed": "#d3e4fe",
+                    "surface-container-highest": "#d8e3fb",
+                    "secondary": "#505f76",
+                    "on-primary": "#ffffff",
+                    "surface-tint": "#0053db",
+                    "inverse-surface": "#263143",
+                    "secondary-fixed-dim": "#b7c8e1",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "tertiary-fixed": "#ffdbcd",
+                    "outline-variant": "#c3c6d7",
+                    "outline": "#737686",
+                    "on-tertiary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "primary-container": "#2563eb",
+                    "surface-container-high": "#dee8ff",
+                    "on-error-container": "#93000a",
+                    "background": "#f9f9ff",
+                    "surface-bright": "#f9f9ff",
+                    "on-background": "#111c2d",
+                    "on-secondary-fixed-variant": "#38485d",
+                    "on-primary-container": "#eeefff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter-mobile": "16px",
+                    "safe-area-bottom": "34px",
+                    "margin-mobile": "16px",
+                    "unit": "8px",
+                    "columns-mobile": "4"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Hanken Grotesk"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg-mobile": ["Hanken Grotesk"],
+                    "label-lg": ["Inter"],
+                    "headline-md": ["Hanken Grotesk"],
+                    "display-lg": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f9f9ff;
+            color: #111c2d;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .toggle-checkbox:checked + .toggle-slot {
+            background-color: #004ac6;
+        }
+        .toggle-checkbox:checked + .toggle-slot .toggle-dot {
+            transform: translateX(20px);
+            background-color: #ffffff;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c3c6d7;
+            border-radius: 10px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- Top App Bar (Suppressing Shell as per task-focused sub-page rule) -->
+<header class="fixed top-0 w-full z-50 flex items-center px-4 h-16 bg-surface/95 backdrop-blur-md shadow-sm">
+<button class="p-2 -ml-2 transition-all duration-200 active:scale-95 hover:bg-surface-variant/50 rounded-full">
+<span class="material-symbols-outlined text-primary" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="ml-4 font-headline-md text-headline-md text-on-surface">Notification Settings</h1>
+</header>
+<main class="flex-1 mt-16 px-4 pb-24 max-w-2xl mx-auto w-full">
+<!-- Hero Section / Header Explanation -->
+<div class="py-8">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary mb-2">Alert Preferences</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Stay updated with the latest road conditions. Manage how and when you receive critical traffic data.</p>
+</div>
+<!-- Section: Traffic Alerts -->
+<section class="mb-8">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary" data-icon="traffic">traffic</span>
+<h3 class="font-label-lg text-label-lg uppercase tracking-wider text-outline">Traffic Alerts</h3>
+</div>
+<div class="space-y-4">
+<!-- Toggle Card 1 -->
+<div class="bg-surface-container-low border border-outline-variant p-4 rounded-xl flex items-center justify-between shadow-sm">
+<div class="flex-1 pr-4">
+<p class="font-label-lg text-label-lg text-on-surface">Heavy Congestion</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Get notified when significant delays occur on your route.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only toggle-checkbox" type="checkbox"/>
+<div class="toggle-slot w-12 h-7 bg-outline-variant rounded-full transition-colors duration-200">
+<div class="toggle-dot absolute top-1 left-1 bg-surface w-5 h-5 rounded-full transition-transform duration-200 shadow-sm"></div>
+</div>
+</label>
+</div>
+<!-- Toggle Card 2 -->
+<div class="bg-surface-container-low border border-outline-variant p-4 rounded-xl flex items-center justify-between shadow-sm">
+<div class="flex-1 pr-4">
+<p class="font-label-lg text-label-lg text-on-surface">New Route Optimization</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Instant alerts when a faster path is discovered.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only toggle-checkbox" type="checkbox"/>
+<div class="toggle-slot w-12 h-7 bg-outline-variant rounded-full transition-colors duration-200">
+<div class="toggle-dot absolute top-1 left-1 bg-surface w-5 h-5 rounded-full transition-transform duration-200 shadow-sm"></div>
+</div>
+</label>
+</div>
+</div>
+</section>
+<!-- Section: Hazard Warnings -->
+<section class="mb-8">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-error" data-icon="report_problem">report_problem</span>
+<h3 class="font-label-lg text-label-lg uppercase tracking-wider text-outline">Hazard Warnings</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="bg-surface-container border-l-4 border-error p-4 rounded-xl shadow-sm">
+<div class="flex justify-between items-start mb-2">
+<p class="font-label-lg text-label-lg text-on-surface">Accidents</p>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only toggle-checkbox" type="checkbox"/>
+<div class="toggle-slot w-12 h-7 bg-outline-variant rounded-full transition-colors duration-200">
+<div class="toggle-dot absolute top-1 left-1 bg-surface w-5 h-5 rounded-full transition-transform duration-200 shadow-sm"></div>
+</div>
+</label>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Critical road incidents within 5 miles.</p>
+</div>
+<div class="bg-surface-container border-l-4 border-tertiary p-4 rounded-xl shadow-sm">
+<div class="flex justify-between items-start mb-2">
+<p class="font-label-lg text-label-lg text-on-surface">Construction</p>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only toggle-checkbox" type="checkbox"/>
+<div class="toggle-slot w-12 h-7 bg-outline-variant rounded-full transition-colors duration-200">
+<div class="toggle-dot absolute top-1 left-1 bg-surface w-5 h-5 rounded-full transition-transform duration-200 shadow-sm"></div>
+</div>
+</label>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Scheduled roadworks and lane closures.</p>
+</div>
+</div>
+</section>
+<!-- Section: Community Updates -->
+<section class="mb-8">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-secondary" data-icon="groups">groups</span>
+<h3 class="font-label-lg text-label-lg uppercase tracking-wider text-outline">Community Updates</h3>
+</div>
+<div class="bg-surface-container-highest rounded-2xl overflow-hidden shadow-md">
+<div class="p-4 border-b border-outline-variant/30 flex items-center justify-between">
+<div>
+<p class="font-label-lg text-label-lg text-on-surface">Nearby User Reports</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Verified live updates from other drivers.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only toggle-checkbox" type="checkbox"/>
+<div class="toggle-slot w-12 h-7 bg-outline-variant rounded-full transition-colors duration-200">
+<div class="toggle-dot absolute top-1 left-1 bg-surface w-5 h-5 rounded-full transition-transform duration-200 shadow-sm"></div>
+</div>
+</label>
+</div>
+<div class="p-4 flex items-center justify-between">
+<div>
+<p class="font-label-lg text-label-lg text-on-surface">Speed Trap Alerts</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Community reported mobile radar zones.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only toggle-checkbox" type="checkbox"/>
+<div class="toggle-slot w-12 h-7 bg-outline-variant rounded-full transition-colors duration-200">
+<div class="toggle-dot absolute top-1 left-1 bg-surface w-5 h-5 rounded-full transition-transform duration-200 shadow-sm"></div>
+</div>
+</label>
+</div>
+</div>
+</section>
+<!-- Section: System Notifications -->
+<section>
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-outline" data-icon="settings">settings</span>
+<h3 class="font-label-lg text-label-lg uppercase tracking-wider text-outline">System Notifications</h3>
+</div>
+<ul class="divide-y divide-outline-variant/30">
+<li class="py-4 flex items-center justify-between">
+<span class="font-body-md text-body-md text-on-surface">App Updates &amp; Features</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only toggle-checkbox" type="checkbox"/>
+<div class="toggle-slot w-12 h-7 bg-outline-variant rounded-full transition-colors duration-200">
+<div class="toggle-dot absolute top-1 left-1 bg-surface w-5 h-5 rounded-full transition-transform duration-200 shadow-sm"></div>
+</div>
+</label>
+</li>
+<li class="py-4 flex items-center justify-between">
+<span class="font-body-md text-body-md text-on-surface">Membership &amp; Rewards</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only toggle-checkbox" type="checkbox"/>
+<div class="toggle-slot w-12 h-7 bg-outline-variant rounded-full transition-colors duration-200">
+<div class="toggle-dot absolute top-1 left-1 bg-surface w-5 h-5 rounded-full transition-transform duration-200 shadow-sm"></div>
+</div>
+</label>
+</li>
+<li class="py-4 flex items-center justify-between">
+<span class="font-body-md text-body-md text-on-surface">Security &amp; Logins</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only toggle-checkbox" disabled="" type="checkbox"/>
+<div class="toggle-slot w-12 h-7 bg-primary opacity-50 rounded-full">
+<div class="toggle-dot absolute top-1 left-6 bg-surface w-5 h-5 rounded-full"></div>
+</div>
+</label>
+</li>
+</ul>
+</section>
+<!-- Footer Action -->
+<div class="mt-12 flex flex-col gap-4">
+<button class="w-full bg-primary text-on-primary py-4 rounded-xl font-label-lg text-label-lg transition-all duration-200 active:scale-[0.98] shadow-md hover:brightness-110">
+                Save Changes
+            </button>
+<button class="w-full text-primary font-label-lg text-label-lg py-2 hover:underline">
+                Reset to Default Settings
+            </button>
+</div>
+</main>
+<!-- Visual Polish / Graphic Decoration -->
+<div class="fixed bottom-0 right-0 p-8 opacity-10 pointer-events-none -z-10">
+<span class="material-symbols-outlined text-[120px]" data-icon="notifications_active">notifications_active</span>
+</div>
+</body></html>

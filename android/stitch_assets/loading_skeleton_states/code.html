@@ -1,0 +1,292 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Loading &amp; Skeleton States</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-background": "#111c2d",
+                      "on-surface": "#111c2d",
+                      "on-surface-variant": "#434655",
+                      "on-tertiary-container": "#ffede6",
+                      "on-tertiary-fixed-variant": "#7d2d00",
+                      "on-primary-container": "#eeefff",
+                      "outline": "#737686",
+                      "error-container": "#ffdad6",
+                      "surface-dim": "#cfdaf2",
+                      "surface-tint": "#0053db",
+                      "on-error": "#ffffff",
+                      "background": "#f9f9ff",
+                      "on-tertiary-fixed": "#360f00",
+                      "inverse-primary": "#b4c5ff",
+                      "surface-container": "#e7eeff",
+                      "on-error-container": "#93000a",
+                      "tertiary-fixed": "#ffdbcd",
+                      "primary-fixed": "#dbe1ff",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "inverse-surface": "#263143",
+                      "surface-container-high": "#dee8ff",
+                      "outline-variant": "#c3c6d7",
+                      "secondary": "#505f76",
+                      "primary-container": "#2563eb",
+                      "tertiary": "#943700",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-low": "#f0f3ff",
+                      "secondary-fixed-dim": "#b7c8e1",
+                      "surface": "#f9f9ff",
+                      "on-secondary-container": "#54647a",
+                      "secondary-fixed": "#d3e4fe",
+                      "tertiary-container": "#bc4800",
+                      "surface-variant": "#d8e3fb",
+                      "secondary-container": "#d0e1fb",
+                      "on-primary-fixed": "#00174b",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "on-secondary-fixed": "#0b1c30",
+                      "primary": "#004ac6",
+                      "error": "#ba1a1a",
+                      "on-primary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary-fixed-variant": "#38485d",
+                      "on-secondary": "#ffffff",
+                      "surface-bright": "#f9f9ff",
+                      "surface-container-highest": "#d8e3fb",
+                      "inverse-on-surface": "#ecf1ff",
+                      "tertiary-fixed-dim": "#ffb596"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter-mobile": "16px",
+                      "margin-mobile": "16px",
+                      "unit": "8px",
+                      "columns-mobile": "4",
+                      "safe-area-bottom": "34px"
+              },
+              "fontFamily": {
+                      "display-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-md": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-lg-mobile": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "label-lg": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-lg": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen font-body-md antialiased selection:bg-primary selection:text-on-primary">
+<!-- TopAppBar -->
+<header class="bg-surface w-full top-0 sticky shadow-sm flex justify-between items-center h-16 px-4 z-40">
+<button class="text-on-surface-variant hover:bg-surface-container-low transition-colors active:scale-95 duration-150 ease-in-out p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md text-primary">Traffic Guard</h1>
+<button class="text-on-surface-variant hover:bg-surface-container-low transition-colors active:scale-95 duration-150 ease-in-out p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</header>
+<main class="pt-6 pb-[calc(100px+34px)] px-margin-mobile space-y-10 max-w-md mx-auto md:max-w-4xl">
+<!-- Active Loading State Section -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-background">Data Refresh</h2>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container-high px-2 py-1 rounded-full">State 1</span>
+</div>
+<div class="bg-surface rounded-xl p-8 flex flex-col items-center justify-center min-h-[200px] border border-outline-variant/30 shadow-sm relative overflow-hidden">
+<!-- Subtle gradient background for high-end feel -->
+<div class="absolute inset-0 bg-gradient-to-br from-surface to-surface-container-low opacity-50 z-0"></div>
+<div class="z-10 flex flex-col items-center space-y-4">
+<!-- Static Spinner Placeholder (adhering to no-animation rule) -->
+<span class="material-symbols-outlined text-primary text-[40px]" data-icon="sync" style="font-variation-settings: 'wght' 300;">sync</span>
+<div class="space-y-1 text-center">
+<p class="font-label-lg text-label-lg text-on-surface">Syncing Dashboard</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Gathering your latest metrics...</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Skeleton State Section (Bento Grid) -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-background">Overview</h2>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container-high px-2 py-1 rounded-full">State 2</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<!-- Skeleton Card 1 (Hero Image/Graph) -->
+<div class="col-span-2 bg-surface rounded-xl p-5 border border-outline-variant/30 shadow-sm flex flex-col space-y-4">
+<div class="flex justify-between items-start">
+<div class="space-y-2 w-1/2">
+<div class="h-6 w-3/4 bg-surface-container-highest rounded-md"></div>
+<div class="h-4 w-1/2 bg-surface-variant rounded-md"></div>
+</div>
+<div class="h-8 w-8 bg-surface-variant rounded-full"></div>
+</div>
+<div class="h-32 w-full bg-surface-container-high rounded-lg mt-2 relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-r from-transparent via-surface-container-lowest/20 to-transparent"></div>
+</div>
+</div>
+<!-- Skeleton Card 2 (Stat Block) -->
+<div class="bg-surface rounded-xl p-5 border border-outline-variant/30 shadow-sm flex flex-col justify-between min-h-[140px]">
+<div class="h-10 w-10 bg-surface-variant rounded-full mb-4"></div>
+<div class="space-y-2">
+<div class="h-8 w-2/3 bg-surface-container-highest rounded-md"></div>
+<div class="h-4 w-full bg-surface-variant rounded-md"></div>
+</div>
+</div>
+<!-- Skeleton Card 3 (Stat Block) -->
+<div class="bg-surface rounded-xl p-5 border border-outline-variant/30 shadow-sm flex flex-col justify-between min-h-[140px]">
+<div class="h-10 w-10 bg-surface-variant rounded-full mb-4"></div>
+<div class="space-y-2">
+<div class="h-8 w-1/2 bg-surface-container-highest rounded-md"></div>
+<div class="h-4 w-4/5 bg-surface-variant rounded-md"></div>
+</div>
+</div>
+<!-- Skeleton Card 4 (List Item 1) -->
+<div class="col-span-2 bg-surface rounded-xl p-4 border border-outline-variant/30 shadow-sm flex items-center gap-4">
+<div class="h-12 w-12 bg-surface-variant rounded-full shrink-0"></div>
+<div class="flex-1 space-y-2">
+<div class="h-5 w-1/2 bg-surface-container-highest rounded-md"></div>
+<div class="h-4 w-3/4 bg-surface-variant rounded-md"></div>
+</div>
+</div>
+<!-- Skeleton Card 5 (List Item 2) -->
+<div class="col-span-2 bg-surface rounded-xl p-4 border border-outline-variant/30 shadow-sm flex items-center gap-4">
+<div class="h-12 w-12 bg-surface-variant rounded-full shrink-0"></div>
+<div class="flex-1 space-y-2">
+<div class="h-5 w-2/3 bg-surface-container-highest rounded-md"></div>
+<div class="h-4 w-1/2 bg-surface-variant rounded-md"></div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-surface-container shadow-[0_-2px_10px_rgba(0,0,0,0.05)] md:hidden">
+<div class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pt-3 pb-[calc(8px+34px)]">
+<!-- Active: Home -->
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-5 py-1">
+<span class="material-symbols-outlined" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-sm text-label-sm mt-1">Home</span>
+</button>
+<!-- Inactive: Maps -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 transition-opacity active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-label-sm text-label-sm mt-1">Maps</span>
+</button>
+<!-- Inactive: Alerts -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 transition-opacity active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-label-sm text-label-sm mt-1">Alerts</span>
+</button>
+<!-- Inactive: Profile -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 transition-opacity active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm mt-1">Profile</span>
+</button>
+</div>
+</nav>
+
+
+</body></html>

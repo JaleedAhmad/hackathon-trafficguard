@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Voice Recording Interface</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface": "#f9f9ff",
+                        "surface-container-low": "#f0f3ff",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#263143",
+                        "surface-container": "#e7eeff",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "tertiary-fixed": "#ffdbcd",
+                        "tertiary": "#943700",
+                        "outline": "#737686",
+                        "on-background": "#111c2d",
+                        "primary-fixed": "#dbe1ff",
+                        "on-surface-variant": "#434655",
+                        "on-surface": "#111c2d",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-tertiary-container": "#ffede6",
+                        "surface-bright": "#f9f9ff",
+                        "secondary": "#505f76",
+                        "inverse-on-surface": "#ecf1ff",
+                        "on-primary-container": "#eeefff",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#cfdaf2",
+                        "on-tertiary-fixed": "#360f00",
+                        "background": "#f9f9ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#0b1c30",
+                        "secondary-container": "#d0e1fb",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-error-container": "#93000a",
+                        "on-primary": "#ffffff",
+                        "primary": "#004ac6",
+                        "on-secondary-container": "#54647a",
+                        "surface-container-high": "#dee8ff",
+                        "primary-container": "#2563eb",
+                        "surface-container-highest": "#d8e3fb",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#d3e4fe",
+                        "outline-variant": "#c3c6d7",
+                        "surface-variant": "#d8e3fb",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#bc4800",
+                        "inverse-primary": "#b4c5ff",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "surface-tint": "#0053db",
+                        "on-primary-fixed": "#00174b"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "margin-mobile": "16px",
+                        "columns-mobile": "4",
+                        "unit": "8px",
+                        "safe-area-bottom": "34px",
+                        "gutter-mobile": "16px"
+                    },
+                    fontFamily: {
+                        "label-sm": ["Inter"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "label-lg": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    fontSize: {
+                        "label-sm": ["12px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "500" }],
+                        "headline-lg-mobile": ["28px", { lineHeight: "36px", fontWeight: "600" }],
+                        "headline-lg": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "600" }],
+                        "display-lg": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "label-lg": ["14px", { lineHeight: "20px", letterSpacing: "0.01em", fontWeight: "500" }],
+                        "headline-md": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+                        "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+                        "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Custom styles for the simulated waveform to avoid JS */
+        .waveform-bar {
+            width: 4px;
+            border-radius: 9999px;
+            background-color: theme('colors.primary');
+            opacity: 0.8;
+            transition: height 0.2s ease-in-out;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface h-screen w-full flex flex-col antialiased selection:bg-primary-fixed selection:text-on-primary-fixed overflow-hidden">
+<!-- Top Context Bar -->
+<!-- Navigation shell is suppressed here to maintain a high-focus, task-specific environment for recording -->
+<header class="w-full flex items-center justify-center pt-8 pb-4 px-margin-mobile">
+<div class="flex items-center gap-2 px-4 py-1.5 rounded-full bg-error-container text-on-error-container">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="font-label-lg text-label-lg">Recording in progress</span>
+</div>
+</header>
+<!-- Main Recording Area -->
+<main class="flex-1 flex flex-col items-center justify-center px-margin-mobile w-full max-w-md mx-auto">
+<!-- Timer -->
+<div class="mb-12 text-center">
+<h1 class="font-display-lg text-display-lg text-on-surface tracking-tight tabular-nums">03:14</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">Field Report - Sector 7</p>
+</div>
+<!-- Simulated Active Waveform Visualizer -->
+<div class="flex items-center justify-center gap-1.5 h-24 mb-16 w-full px-8">
+<div class="waveform-bar h-4"></div>
+<div class="waveform-bar h-8"></div>
+<div class="waveform-bar h-12 bg-primary opacity-100"></div>
+<div class="waveform-bar h-6"></div>
+<div class="waveform-bar h-16 bg-primary opacity-100"></div>
+<div class="waveform-bar h-20 bg-primary opacity-100"></div>
+<div class="waveform-bar h-10"></div>
+<div class="waveform-bar h-14"></div>
+<div class="waveform-bar h-24 bg-primary opacity-100"></div>
+<div class="waveform-bar h-16"></div>
+<div class="waveform-bar h-8"></div>
+<div class="waveform-bar h-12"></div>
+<div class="waveform-bar h-6"></div>
+</div>
+<!-- Large Central Microphone Icon -->
+<div class="relative flex items-center justify-center mb-8">
+<!-- Pulsing Rings Simulation -->
+<div class="absolute inset-0 m-auto w-40 h-40 rounded-full bg-error opacity-10 scale-125"></div>
+<div class="absolute inset-0 m-auto w-40 h-40 rounded-full bg-error opacity-20 scale-110"></div>
+<!-- Core Mic Button -->
+<div class="relative z-10 w-32 h-32 rounded-full bg-error shadow-xl flex items-center justify-center shadow-error/20">
+<span class="material-symbols-outlined text-on-error" style="font-size: 56px; font-variation-settings: 'FILL' 1;">
+                    mic
+                </span>
+</div>
+</div>
+</main>
+<!-- Bottom Actions Container -->
+<footer class="w-full px-margin-mobile pb-[calc(16px+env(safe-area-inset-bottom,34px))] pt-6 max-w-md mx-auto">
+<div class="flex items-center justify-between w-full bg-surface-container rounded-xl p-2 shadow-sm">
+<!-- Cancel Button -->
+<button class="flex-1 flex flex-col items-center justify-center py-3 gap-1 rounded-lg text-on-surface-variant hover:bg-surface-variant transition-colors group">
+<span class="material-symbols-outlined text-outline group-active:scale-95 transition-transform">
+                    close
+                </span>
+<span class="font-label-sm text-label-sm">Cancel</span>
+</button>
+<!-- Divider -->
+<div class="w-px h-10 bg-outline-variant opacity-50 mx-2"></div>
+<!-- Stop Button (Primary Action) -->
+<button class="flex-[1.5] flex flex-col items-center justify-center py-3 gap-1 rounded-lg bg-surface hover:bg-surface-container-low shadow-sm transition-colors group mx-1 border border-outline-variant/30">
+<span class="material-symbols-outlined text-error group-active:scale-95 transition-transform" style="font-variation-settings: 'FILL' 1; font-size: 28px;">
+                    stop_circle
+                </span>
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">Stop</span>
+</button>
+<!-- Divider -->
+<div class="w-px h-10 bg-outline-variant opacity-50 mx-2"></div>
+<!-- Listen/Preview Button -->
+<button class="flex-1 flex flex-col items-center justify-center py-3 gap-1 rounded-lg text-primary hover:bg-primary-fixed transition-colors group">
+<span class="material-symbols-outlined group-active:scale-95 transition-transform">
+                    play_arrow
+                </span>
+<span class="font-label-sm text-label-sm">Listen</span>
+</button>
+</div>
+</footer>
+</body></html>

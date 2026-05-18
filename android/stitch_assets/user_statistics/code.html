@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Traffic Guard - User Statistics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary-fixed-variant": "#7d2d00",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "inverse-primary": "#b4c5ff",
+                      "on-tertiary-container": "#ffede6",
+                      "surface": "#f9f9ff",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "surface-dim": "#cfdaf2",
+                      "tertiary": "#943700",
+                      "on-primary-fixed": "#00174b",
+                      "on-secondary-container": "#54647a",
+                      "on-error": "#ffffff",
+                      "secondary-container": "#d0e1fb",
+                      "primary-fixed": "#dbe1ff",
+                      "tertiary-container": "#bc4800",
+                      "on-tertiary-fixed": "#360f00",
+                      "on-surface-variant": "#434655",
+                      "inverse-on-surface": "#ecf1ff",
+                      "surface-container": "#e7eeff",
+                      "on-secondary-fixed": "#0b1c30",
+                      "on-surface": "#111c2d",
+                      "on-secondary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-variant": "#d8e3fb",
+                      "surface-container-low": "#f0f3ff",
+                      "primary": "#004ac6",
+                      "secondary-fixed": "#d3e4fe",
+                      "surface-container-highest": "#d8e3fb",
+                      "secondary": "#505f76",
+                      "on-primary": "#ffffff",
+                      "surface-tint": "#0053db",
+                      "inverse-surface": "#263143",
+                      "secondary-fixed-dim": "#b7c8e1",
+                      "tertiary-fixed-dim": "#ffb596",
+                      "tertiary-fixed": "#ffdbcd",
+                      "outline-variant": "#c3c6d7",
+                      "outline": "#737686",
+                      "on-tertiary": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "primary-container": "#2563eb",
+                      "surface-container-high": "#dee8ff",
+                      "on-error-container": "#93000a",
+                      "background": "#f9f9ff",
+                      "surface-bright": "#f9f9ff",
+                      "on-background": "#111c2d",
+                      "on-secondary-fixed-variant": "#38485d",
+                      "on-primary-container": "#eeefff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter-mobile": "16px",
+                      "safe-area-bottom": "34px",
+                      "margin-mobile": "16px",
+                      "unit": "8px",
+                      "columns-mobile": "4"
+              },
+              "fontFamily": {
+                      "headline-lg": ["Hanken Grotesk"],
+                      "body-md": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-lg-mobile": ["Hanken Grotesk"],
+                      "label-lg": ["Inter"],
+                      "headline-md": ["Hanken Grotesk"],
+                      "display-lg": ["Hanken Grotesk"]
+              },
+              "fontSize": {
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                      "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        body { background-color: #f9f9ff; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-on-surface antialiased pb-safe-area-bottom">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-4 h-16 bg-surface/95 backdrop-blur-md shadow-sm">
+<div class="flex items-center gap-4">
+<button class="p-2 transition-all duration-200 active:scale-95 hover:bg-surface-variant/50 rounded-full">
+<span class="material-symbols-outlined text-primary">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Traffic Guard</h1>
+</div>
+<div class="flex items-center">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container">
+<img alt="User avatar" class="w-full h-full object-cover" data-alt="A professional studio headshot of a smiling man in his mid-30s with neat hair and a friendly expression. The lighting is soft and high-key, creating a bright and trustworthy professional aesthetic. The background is a clean, minimalist gradient of soft blues and whites that matches a modern corporate light-mode UI design system. High resolution and sharp detail." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7V2bPmZAoww3VySpwwTqIQNfoFptmHm68z-y2HT6DP0LhKG-ecUEc8xbiTddCYZ7pq9l7plZXOi9rJ65kay9zmFBmq7J9TV_O0x68lhIEnJer5ZCgK_rgU_nsKbm89UBOhAgSTs3qdgSF2dTxeN6nl0w0RWB-lIWWoKDbo6GC5ADklBDfPOrivbSFc-5EpZ9efZJ_Pmesf6xCPzb9REh8K9goo_B2lxH3SJHZfRXR4tSyYFHTCZybLZYjTOWXq-7VFJshE0Irzw"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-20 pb-24 px-4 max-w-lg mx-auto">
+<!-- Header Section -->
+<section class="mb-8">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Your Driving Activity</h2>
+<p class="font-body-md text-on-surface-variant">Tracking your contribution to road safety.</p>
+</section>
+<!-- Stats Bento Grid -->
+<div class="grid grid-cols-2 gap-4 mb-8">
+<!-- Miles Driven (Large Vertical) -->
+<div class="col-span-1 row-span-2 bg-primary-container text-on-primary-container p-5 rounded-xl flex flex-col justify-between shadow-sm">
+<div>
+<span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">directions_car</span>
+<h3 class="font-label-lg text-label-lg mt-4 opacity-90">Miles Driven</h3>
+</div>
+<div>
+<p class="font-display-lg text-display-lg leading-tight">1,284</p>
+<p class="font-label-sm text-label-sm mt-1 opacity-75">+12% this month</p>
+</div>
+</div>
+<!-- Reports Submitted -->
+<div class="bg-surface-container-high p-4 rounded-xl shadow-sm flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-tertiary">warning</span>
+<span class="text-tertiary font-bold font-label-sm text-label-sm">+4</span>
+</div>
+<div>
+<p class="font-headline-md text-headline-md">42</p>
+<h3 class="font-label-sm text-label-sm text-on-surface-variant">Reports Submitted</h3>
+</div>
+</div>
+<!-- Accuracy Rate -->
+<div class="bg-surface-container-high p-4 rounded-xl shadow-sm flex flex-col justify-between border-l-4 border-primary">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary">verified</span>
+</div>
+<div>
+<p class="font-headline-md text-headline-md">98.4%</p>
+<h3 class="font-label-sm text-label-sm text-on-surface-variant">Accuracy Rate</h3>
+</div>
+</div>
+</div>
+<!-- People Helped Card (Full Width) -->
+<div class="w-full bg-secondary-fixed text-on-secondary-fixed p-6 rounded-xl mb-8 flex items-center justify-between shadow-sm">
+<div class="flex flex-col">
+<h3 class="font-label-lg text-label-lg opacity-80">People Helped</h3>
+<p class="font-display-lg text-display-lg leading-none mt-2">3,492</p>
+</div>
+<div class="bg-on-secondary-fixed-variant/10 p-4 rounded-full">
+<span class="material-symbols-outlined text-5xl" style="font-variation-settings: 'FILL' 1;">group</span>
+</div>
+</div>
+<!-- Weekly Activity Chart Section -->
+<section class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant shadow-sm mb-8">
+<div class="flex justify-between items-end mb-6">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Weekly Activity</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Reporting trends per day</p>
+</div>
+<div class="text-right">
+<p class="font-label-lg text-label-lg text-primary font-bold">Avg. 6.2</p>
+</div>
+</div>
+<!-- Bar Chart Representation -->
+<div class="flex items-end justify-between h-40 gap-2">
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-surface-container rounded-t-lg transition-all duration-300" style="height: 40%;"></div>
+<span class="font-label-sm text-label-sm text-outline">M</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-surface-container rounded-t-lg transition-all duration-300" style="height: 65%;"></div>
+<span class="font-label-sm text-label-sm text-outline">T</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-primary-container rounded-t-lg transition-all duration-300" style="height: 90%;"></div>
+<span class="font-label-sm text-label-sm text-primary font-bold">W</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-surface-container rounded-t-lg transition-all duration-300" style="height: 55%;"></div>
+<span class="font-label-sm text-label-sm text-outline">T</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-surface-container rounded-t-lg transition-all duration-300" style="height: 75%;"></div>
+<span class="font-label-sm text-label-sm text-outline">F</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-surface-container rounded-t-lg transition-all duration-300" style="height: 30%;"></div>
+<span class="font-label-sm text-label-sm text-outline">S</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-surface-container rounded-t-lg transition-all duration-300" style="height: 20%;"></div>
+<span class="font-label-sm text-label-sm text-outline">S</span>
+</div>
+</div>
+</section>
+<!-- Achievements Mini List -->
+<section class="mb-4">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-headline-md text-headline-md">Top Badges</h3>
+<button class="text-primary font-label-lg text-label-lg">View All</button>
+</div>
+<div class="flex gap-4 overflow-x-auto hide-scrollbar pb-2">
+<div class="min-w-[120px] flex flex-col items-center p-4 bg-surface-container-low rounded-xl border border-outline-variant">
+<div class="w-12 h-12 bg-tertiary/10 rounded-full flex items-center justify-center mb-2">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+</div>
+<span class="font-label-sm text-label-sm text-center">First Alert</span>
+</div>
+<div class="min-w-[120px] flex flex-col items-center p-4 bg-surface-container-low rounded-xl border border-outline-variant">
+<div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">speed</span>
+</div>
+<span class="font-label-sm text-label-sm text-center">Fast Responder</span>
+</div>
+<div class="min-w-[120px] flex flex-col items-center p-4 bg-surface-container-low rounded-xl border border-outline-variant">
+<div class="w-12 h-12 bg-on-secondary-fixed-variant/10 rounded-full flex items-center justify-center mb-2">
+<span class="material-symbols-outlined text-on-secondary-fixed-variant" style="font-variation-settings: 'FILL' 1;">shield</span>
+</div>
+<span class="font-label-sm text-label-sm text-center">Safety Hero</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 pb-safe-area-bottom pt-2 bg-surface-container shadow-[0_-4px_12px_rgba(0,0,0,0.05)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant transition-transform duration-300 ease-out active:scale-90 px-4 py-2" href="#">
+<span class="material-symbols-outlined">directions_car</span>
+<span class="font-label-sm text-label-sm">Go</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant transition-transform duration-300 ease-out active:scale-90 px-4 py-2" href="#">
+<span class="material-symbols-outlined">warning</span>
+<span class="font-label-sm text-label-sm">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant transition-transform duration-300 ease-out active:scale-90 px-4 py-2" href="#">
+<span class="material-symbols-outlined">add_location_alt</span>
+<span class="font-label-sm text-label-sm">Reports</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 transition-transform duration-300 ease-out active:scale-90" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</nav>
+</body></html>

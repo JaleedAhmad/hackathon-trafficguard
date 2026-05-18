@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Traffic Guard | Community Validation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-lowest": "#ffffff",
+            "secondary-fixed": "#d3e4fe",
+            "surface-container-low": "#f0f3ff",
+            "on-secondary-container": "#54647a",
+            "on-primary": "#ffffff",
+            "outline-variant": "#c3c6d7",
+            "secondary": "#505f76",
+            "primary": "#004ac6",
+            "surface-variant": "#d8e3fb",
+            "primary-fixed": "#dbe1ff",
+            "primary-fixed-dim": "#b4c5ff",
+            "surface-container": "#e7eeff",
+            "background": "#f9f9ff",
+            "surface": "#f9f9ff",
+            "surface-dim": "#cfdaf2",
+            "tertiary": "#943700",
+            "surface-bright": "#f9f9ff",
+            "on-secondary-fixed-variant": "#38485d",
+            "surface-container-highest": "#d8e3fb",
+            "surface-container-high": "#dee8ff",
+            "on-surface-variant": "#434655",
+            "on-surface": "#111c2d",
+            "inverse-primary": "#b4c5ff",
+            "tertiary-fixed": "#ffdbcd",
+            "error-container": "#ffdad6",
+            "error": "#ba1a1a",
+            "tertiary-fixed-dim": "#ffb596",
+            "tertiary-container": "#bc4800",
+            "outline": "#737686",
+            "on-secondary-fixed": "#0b1c30",
+            "secondary-fixed-dim": "#b7c8e1",
+            "on-tertiary-container": "#ffede6",
+            "on-error": "#ffffff",
+            "on-background": "#111c2d",
+            "surface-tint": "#0053db",
+            "on-tertiary-fixed-variant": "#7d2d00",
+            "inverse-on-surface": "#ecf1ff",
+            "on-secondary": "#ffffff",
+            "on-tertiary-fixed": "#360f00",
+            "on-primary-fixed": "#00174b",
+            "inverse-surface": "#263143",
+            "on-primary-container": "#eeefff",
+            "on-primary-fixed-variant": "#003ea8",
+            "on-tertiary": "#ffffff",
+            "primary-container": "#2563eb",
+            "secondary-container": "#d0e1fb",
+            "on-error-container": "#93000a"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "unit": "8px",
+            "margin-mobile": "16px",
+            "gutter-mobile": "16px",
+            "columns-mobile": "4",
+            "safe-area-bottom": "34px"
+          },
+          "fontFamily": {
+            "headline-lg": ["Hanken Grotesk"],
+            "display-lg": ["Hanken Grotesk"],
+            "label-lg": ["Inter"],
+            "headline-md": ["Hanken Grotesk"],
+            "body-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "label-sm": ["Inter"],
+            "headline-lg-mobile": ["Hanken Grotesk"]
+          },
+          "fontSize": {
+            "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+            "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+            "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+            "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+            "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+            "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+            "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .pb-safe-area-bottom {
+      padding-bottom: 34px;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen font-body-md text-body-md">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-4 h-16 bg-surface/95 backdrop-blur-md shadow-sm">
+<div class="flex items-center gap-4">
+<button class="p-2 transition-all duration-200 active:scale-95 hover:bg-surface-variant/50 flex items-center justify-center rounded-full">
+<span class="material-symbols-outlined text-primary" data-icon="menu">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Traffic Guard</h1>
+</div>
+<div class="h-10 w-10 rounded-full overflow-hidden border-2 border-primary-fixed transition-all duration-200 active:scale-95">
+<img alt="User avatar" class="w-full h-full object-cover" data-alt="A professional close-up portrait of a tech-savvy individual in a modern, brightly lit office environment. The lighting is soft and high-key, emphasizing a clean and corporate aesthetic. The background features subtle blurs of a digital workspace with cool blue and white tones, reflecting a trustworthy and efficient persona consistent with the Traffic Guard brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrxcvodu7l_m0PDkmQTvdKv3BroM7YhJ-lZS83k5mXtNWk6ds65mY_sr0zjae5QSyo6LQeHP-2kh3hW6cIDzc4Fe8Cj77a5fc-QovgUUUzIWj5iveSfgeEdp5e6tS_nhPVzeEZ3l4p82FAJwRMSnyCWksVdpcGiYvZ4YJXvuCSeJNw7y2ycFWiHtOJfvdNTvB9eXSn4-N8j7-q1BnDm5ATfBBmUaczTJ-pBbyV2DIrJhRINlnFFSXUVemORQeKMIp5CR3A6ulosQ"/>
+</div>
+</header>
+<main class="pt-20 pb-32 px-4 max-w-lg mx-auto">
+<!-- User Impact Score Section -->
+<section class="mb-8 p-6 bg-primary-container rounded-xl shadow-sm">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="font-label-sm text-label-sm text-on-primary-container opacity-80 mb-1">Community Contributor</p>
+<h2 class="font-headline-md text-headline-md text-on-primary-container font-bold">842 Points</h2>
+</div>
+<div class="bg-surface-container-lowest/20 p-2 rounded-lg">
+<span class="material-symbols-outlined text-on-primary-container" data-icon="military_tech" style="font-variation-settings: 'FILL' 1;">military_tech</span>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between font-label-sm text-label-sm text-on-primary-container">
+<span>Level 4: Road Guardian</span>
+<span>158 to Next Level</span>
+</div>
+<div class="w-full bg-on-primary-container/20 h-2 rounded-full overflow-hidden">
+<div class="bg-on-primary-container h-full w-[72%]"></div>
+</div>
+</div>
+</section>
+<!-- Header for Validation List -->
+<div class="mb-6">
+<h3 class="font-headline-md text-headline-md text-on-surface font-semibold">Verify Incidents</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Help the community by validating recent reports near you.</p>
+</div>
+<!-- Validation Cards Cluster -->
+<div class="space-y-4">
+<!-- Validation Card 1 -->
+<article class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden shadow-sm transition-all duration-200 hover:shadow-md">
+<div class="p-4 border-l-4 border-primary">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+<span class="font-label-lg text-label-lg font-bold text-on-surface">Pothole Reported</span>
+</div>
+<span class="font-label-sm text-label-sm text-outline">12m ago</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4">Located at 5th Avenue &amp; Broadway. Heavy impact on right lane traffic.</p>
+<div class="relative w-full h-32 mb-4 rounded-lg overflow-hidden grayscale-[0.2]">
+<img alt="Incident map location" class="w-full h-full object-cover" data-alt="A detailed aerial view of a busy metropolitan intersection at 5th Avenue and Broadway. The urban landscape is rendered in a clean, professional style with high-utility lighting. The color palette is dominated by neutral city tones with a vibrant blue marker indicating the report location, maintaining the sophisticated and functional design system aesthetic." data-location="Manhattan, NYC" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzyrS5FI46zW_ckTp10v4ZMihvg4wbe0f33wZFgM03PzHWJJ3mjuOHWq_xwoDZxCqKo_gJwlbPheQsBkPgAR3tCCqiax4fRBBUnTXhGGQ4xZ_dlm6bhKngafoTuMjhcI3R5IghNCwdPanxeYf94mGlM6VsVOsXSxG5tXZTnVFd3FJ4x4_gF7HSNWkf12oGFVrapu4ZmN7ST9gZouLXl6u9wD3zga27zoC_P55kV4P-ciHD6HnBXZj9_R-QTarJqUI0g7HgnYY9bQ"/>
+</div>
+<div class="flex flex-col gap-3">
+<p class="font-label-lg text-label-lg text-on-surface font-medium text-center">Is this still there?</p>
+<div class="grid grid-cols-2 gap-3">
+<button class="flex items-center justify-center gap-2 py-3 px-4 bg-primary text-on-primary rounded-lg font-label-lg text-label-lg transition-all duration-200 active:scale-95 shadow-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="check">check</span>
+                Yes
+              </button>
+<button class="flex items-center justify-center gap-2 py-3 px-4 bg-surface-container-high text-on-surface-variant rounded-lg font-label-lg text-label-lg transition-all duration-200 active:scale-95 border border-outline-variant/20">
+<span class="material-symbols-outlined text-[20px]" data-icon="close">close</span>
+                No
+              </button>
+</div>
+</div>
+</div>
+</article>
+<!-- Validation Card 2 -->
+<article class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden shadow-sm transition-all duration-200 hover:shadow-md">
+<div class="p-4 border-l-4 border-tertiary-container">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary" data-icon="construction" style="font-variation-settings: 'FILL' 1;">construction</span>
+<span class="font-label-lg text-label-lg font-bold text-on-surface">Road Work</span>
+</div>
+<span class="font-label-sm text-label-sm text-outline">45m ago</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4">Maintenance crew blocking shoulder on I-95 South. Expect minor delays.</p>
+<div class="flex flex-col gap-3">
+<p class="font-label-lg text-label-lg text-on-surface font-medium text-center">Is this still there?</p>
+<div class="grid grid-cols-2 gap-3">
+<button class="flex items-center justify-center gap-2 py-3 px-4 bg-primary text-on-primary rounded-lg font-label-lg text-label-lg transition-all duration-200 active:scale-95 shadow-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="check">check</span>
+                Yes
+              </button>
+<button class="flex items-center justify-center gap-2 py-3 px-4 bg-surface-container-high text-on-surface-variant rounded-lg font-label-lg text-label-lg transition-all duration-200 active:scale-95 border border-outline-variant/20">
+<span class="material-symbols-outlined text-[20px]" data-icon="close">close</span>
+                No
+              </button>
+</div>
+</div>
+</div>
+</article>
+<!-- Validation Card 3 (Simple) -->
+<article class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden shadow-sm transition-all duration-200 hover:shadow-md">
+<div class="p-4 border-l-4 border-secondary">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="directions_car" style="font-variation-settings: 'FILL' 1;">directions_car</span>
+<span class="font-label-lg text-label-lg font-bold text-on-surface">Vehicle Stalled</span>
+</div>
+<span class="font-label-sm text-label-sm text-outline">1h ago</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4">Silver sedan with hazard lights on Oak St.</p>
+<div class="flex flex-col gap-3">
+<p class="font-label-lg text-label-lg text-on-surface font-medium text-center">Is this still there?</p>
+<div class="grid grid-cols-2 gap-3">
+<button class="flex items-center justify-center gap-2 py-3 px-4 bg-primary text-on-primary rounded-lg font-label-lg text-label-lg transition-all duration-200 active:scale-95 shadow-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="check">check</span>
+                Yes
+              </button>
+<button class="flex items-center justify-center gap-2 py-3 px-4 bg-surface-container-high text-on-surface-variant rounded-lg font-label-lg text-label-lg transition-all duration-200 active:scale-95 border border-outline-variant/20">
+<span class="material-symbols-outlined text-[20px]" data-icon="close">close</span>
+                No
+              </button>
+</div>
+</div>
+</div>
+</article>
+</div>
+<!-- Empty State / Load More -->
+<div class="mt-8 text-center pb-8">
+<button class="text-primary font-label-lg text-label-lg py-2 px-6 rounded-full hover:bg-primary-container transition-colors">
+        View More Nearby Reports
+      </button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 pb-safe-area-bottom pt-2 bg-surface-container shadow-[0_-4px_12px_rgba(0,0,0,0.05)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant transition-transform duration-300 ease-out active:scale-90 px-4 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="directions_car">directions_car</span>
+<span class="font-label-sm text-label-sm mt-1">Go</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 transition-transform duration-300 ease-out active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+<span class="font-label-sm text-label-sm mt-1">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant transition-transform duration-300 ease-out active:scale-90 px-4 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="add_location_alt">add_location_alt</span>
+<span class="font-label-sm text-label-sm mt-1">Reports</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant transition-transform duration-300 ease-out active:scale-90 px-4 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

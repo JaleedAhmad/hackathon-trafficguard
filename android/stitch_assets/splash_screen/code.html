@@ -1,0 +1,128 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Splash Screen</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#111c2d",
+                        "on-surface": "#111c2d",
+                        "on-surface-variant": "#434655",
+                        "on-tertiary-container": "#ffede6",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-primary-container": "#eeefff",
+                        "outline": "#737686",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#cfdaf2",
+                        "surface-tint": "#0053db",
+                        "on-error": "#ffffff",
+                        "background": "#f9f9ff",
+                        "on-tertiary-fixed": "#360f00",
+                        "inverse-primary": "#b4c5ff",
+                        "surface-container": "#e7eeff",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#ffdbcd",
+                        "primary-fixed": "#dbe1ff",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "inverse-surface": "#263143",
+                        "surface-container-high": "#dee8ff",
+                        "outline-variant": "#c3c6d7",
+                        "secondary": "#505f76",
+                        "primary-container": "#2563eb",
+                        "tertiary": "#943700",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-low": "#f0f3ff",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "surface": "#f9f9ff",
+                        "on-secondary-container": "#54647a",
+                        "secondary-fixed": "#d3e4fe",
+                        "tertiary-container": "#bc4800",
+                        "surface-variant": "#d8e3fb",
+                        "secondary-container": "#d0e1fb",
+                        "on-primary-fixed": "#00174b",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-secondary-fixed": "#0b1c30",
+                        "primary": "#004ac6",
+                        "error": "#ba1a1a",
+                        "on-primary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#f9f9ff",
+                        "surface-container-highest": "#d8e3fb",
+                        "inverse-on-surface": "#ecf1ff",
+                        "tertiary-fixed-dim": "#ffb596"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter-mobile": "16px",
+                        "margin-mobile": "16px",
+                        "unit": "8px",
+                        "columns-mobile": "4",
+                        "safe-area-bottom": "34px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-lowest text-on-background h-screen w-full flex flex-col relative overflow-hidden">
+<!-- Canvas area: Centered Logo -->
+<main class="flex-1 flex flex-col items-center justify-center px-margin-mobile">
+<!-- Brand Mark -->
+<div class="flex flex-col items-center gap-6">
+<!-- Logo Icon Container (Simulating a premium glyph) -->
+<div class="w-24 h-24 rounded-3xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-on-primary text-5xl" data-icon="all_inclusive" style="font-variation-settings: 'FILL' 1;">
+                    all_inclusive
+                </span>
+</div>
+<!-- Brand Name -->
+<h1 class="font-display-lg text-display-lg text-primary text-center">Traffic Guard</h1>
+</div>
+</main>
+<!-- Bottom Tagline anchored to safe area -->
+<footer class="absolute bottom-safe-area-bottom w-full flex justify-center pb-8">
+<p class="font-label-lg text-label-lg text-outline uppercase tracking-widest">
+            Empowering Your Journey
+        </p>
+</footer>
+
+
+</body></html>

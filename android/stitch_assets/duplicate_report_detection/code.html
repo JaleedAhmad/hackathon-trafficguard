@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Similar Report Warning</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface": "#f9f9ff",
+                    "surface-container-low": "#f0f3ff",
+                    "on-secondary": "#ffffff",
+                    "inverse-surface": "#263143",
+                    "surface-container": "#e7eeff",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "on-secondary-fixed-variant": "#38485d",
+                    "tertiary-fixed": "#ffdbcd",
+                    "tertiary": "#943700",
+                    "outline": "#737686",
+                    "on-background": "#111c2d",
+                    "primary-fixed": "#dbe1ff",
+                    "on-surface-variant": "#434655",
+                    "on-surface": "#111c2d",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "on-tertiary-container": "#ffede6",
+                    "surface-bright": "#f9f9ff",
+                    "secondary": "#505f76",
+                    "inverse-on-surface": "#ecf1ff",
+                    "on-primary-container": "#eeefff",
+                    "error": "#ba1a1a",
+                    "surface-dim": "#cfdaf2",
+                    "on-tertiary-fixed": "#360f00",
+                    "background": "#f9f9ff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed": "#0b1c30",
+                    "secondary-container": "#d0e1fb",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "on-error-container": "#93000a",
+                    "on-primary": "#ffffff",
+                    "primary": "#004ac6",
+                    "on-secondary-container": "#54647a",
+                    "surface-container-high": "#dee8ff",
+                    "primary-container": "#2563eb",
+                    "surface-container-highest": "#d8e3fb",
+                    "on-tertiary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed": "#d3e4fe",
+                    "outline-variant": "#c3c6d7",
+                    "surface-variant": "#d8e3fb",
+                    "on-error": "#ffffff",
+                    "tertiary-container": "#bc4800",
+                    "inverse-primary": "#b4c5ff",
+                    "secondary-fixed-dim": "#b7c8e1",
+                    "surface-tint": "#0053db",
+                    "on-primary-fixed": "#00174b"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "columns-mobile": "4",
+                    "unit": "8px",
+                    "safe-area-bottom": "34px",
+                    "gutter-mobile": "16px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "headline-lg-mobile": ["Hanken Grotesk"],
+                    "headline-lg": ["Hanken Grotesk"],
+                    "display-lg": ["Hanken Grotesk"],
+                    "label-lg": ["Inter"],
+                    "headline-md": ["Hanken Grotesk"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                    "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                    "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                    "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                    "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                    "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                    "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                    "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col font-body-md">
+<!-- Custom Top App Bar for Transactional Screen -->
+<header class="flex justify-between items-center h-16 px-4 w-full z-40 bg-surface sticky top-0 border-b border-surface-variant md:px-8">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors text-on-surface-variant active:scale-95 duration-150 ease-in-out">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+<h1 class="font-headline-md text-headline-md text-on-surface">Review Submission</h1>
+<div class="w-10 h-10"></div> <!-- Placeholder for balance -->
+</header>
+<!-- Main Content -->
+<main class="flex-grow flex flex-col p-4 md:p-8 max-w-4xl mx-auto w-full gap-6 pb-24 md:pb-8">
+<!-- Warning Banner -->
+<div class="bg-error-container text-on-error-container border-l-4 border-error rounded-r-lg p-4 flex gap-4 items-start shadow-sm">
+<span class="material-symbols-outlined text-error mt-0.5" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+<div>
+<h2 class="font-label-lg text-label-lg font-semibold mb-1 text-on-error-container">Similar Report Found</h2>
+<p class="font-body-md text-body-md opacity-90">A report matching your description was submitted nearby 15 minutes ago. Adding to the existing report helps resolve issues faster and prevents duplicate alerts.</p>
+</div>
+</div>
+<!-- Comparison Section -->
+<div class="flex flex-col md:flex-row gap-4 md:gap-6 mt-2">
+<!-- Existing Report (Left/Top) -->
+<div class="flex-1 bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden flex flex-col">
+<div class="bg-surface-container-low px-4 py-3 border-b border-outline-variant flex items-center justify-between">
+<span class="font-label-lg text-label-lg font-semibold text-secondary">Existing Report</span>
+<span class="bg-secondary-container text-on-secondary-container font-label-sm text-label-sm px-2 py-0.5 rounded-full">15m ago</span>
+</div>
+<div class="p-4 flex flex-col gap-4">
+<div class="w-full h-40 bg-surface-variant rounded-lg overflow-hidden relative">
+<img alt="Existing report image" class="w-full h-full object-cover" data-alt="A modern urban street scene showing a damaged public fixture, specifically a broken street light pole leaning slightly. The image is taken during the day with bright, clear lighting reflecting off the concrete. The overall aesthetic is clean, professional, and slightly clinical, utilizing a cool color palette with stark grays and subtle blue tones from the sky, fitting a high-utility corporate app design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgD_lV2nJMIb9izeGVMREB9rFmw9NzAcOo1z6JhKcyFoQwRc0ujAUMlAHZirOLdC13jpjF_DiwaIK5Sjf5h65tKvpRUoCaZLhDvzeuJROeFAyx4PEm9v_D4UmidTLOoAPYzjMWE3MN_O63f5vjBUgdqtAb-S1pC88rWwTp2QVBSLk2OY74ERPncyrTwvUSdnF2BcxWgcyGXc2g18g2HvisCcucZxBkg45Bgt6pgQk6JQ9XJNB1owq8kQR8ze1kM-UmVAUWW0DVvQ"/>
+<div class="absolute bottom-2 left-2 bg-surface/90 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="location_on">location_on</span>
+                            120ft away
+                        </div>
+</div>
+<div>
+<h3 class="font-label-lg text-label-lg font-semibold mb-1 text-on-surface">Fallen Street Light</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">The street light outside the coffee shop on 4th Ave has fallen over and is blocking the sidewalk.</p>
+</div>
+</div>
+</div>
+<!-- VS Divider (Desktop) / Connector (Mobile) -->
+<div class="hidden md:flex flex-col items-center justify-center w-8">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center shadow-sm border border-outline-variant">
+<span class="font-label-sm text-label-sm font-bold text-on-surface-variant">VS</span>
+</div>
+</div>
+<!-- New Report (Right/Bottom) -->
+<div class="flex-1 bg-surface-container-lowest rounded-xl border-2 border-primary shadow-sm overflow-hidden flex flex-col relative">
+<div class="absolute top-0 left-0 w-full h-1 bg-primary"></div>
+<div class="bg-primary/5 px-4 py-3 border-b border-primary/20 flex items-center justify-between">
+<span class="font-label-lg text-label-lg font-semibold text-primary">Your Report</span>
+<span class="bg-primary text-on-primary font-label-sm text-label-sm px-2 py-0.5 rounded-full">Draft</span>
+</div>
+<div class="p-4 flex flex-col gap-4">
+<div class="w-full h-40 bg-surface-variant rounded-lg overflow-hidden relative">
+<img alt="User report image" class="w-full h-full object-cover" data-alt="A close-up view of a similar damaged street fixture, focusing on the base of a fallen lamp post on a paved walkway. The lighting is bright and natural, casting sharp shadows on the ground. The visual style is highly realistic and practical, maintaining a neutral, cool-toned color palette dominated by concrete grays and metallic silvers, aligning with a professional, modern utility interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuACTVjafzhk3FWZPD9ECY7HSm9HEvhYedrcTeJliMejypwI_92w9SX8pTmYd-UvvX7mujpaypBjpaht8b3UWLTT3Sz9tZXWENxZta-gn17TykDLChpVQZaQ-K5Kmsbl71vPXvr_JpHR_LnOcilbSufYGJimgCUwvYmFNXuVrWVsHcMaE48hfaiHds7slVmJ-SDDPO2OU9er58YD2g9j1cUTAIR6tq75OGOyGty3Qp9exJncSyv4nFSa3fFnuTCpDBfIjk1tXn3DUw"/>
+<div class="absolute bottom-2 left-2 bg-surface/90 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="my_location">my_location</span>
+                            Current Location
+                        </div>
+</div>
+<div>
+<h3 class="font-label-lg text-label-lg font-semibold mb-1 text-on-surface">Broken Lamp Post</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Lamp post is down on the corner of 4th and Main, obstructing the pedestrian path.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Actions Footer -->
+<div class="fixed bottom-0 left-0 w-full bg-surface border-t border-surface-variant p-4 pb-[calc(16px+env(safe-area-inset-bottom,0px))] z-50 md:sticky md:bg-transparent md:border-none md:p-8 md:pt-0">
+<div class="max-w-4xl mx-auto flex flex-col sm:flex-row gap-3">
+<button class="flex-1 bg-surface-container-low text-primary border border-outline-variant font-label-lg text-label-lg px-6 py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-surface-variant transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+                This is different (Submit anyway)
+            </button>
+<button class="flex-1 bg-primary text-on-primary font-label-lg text-label-lg px-6 py-4 rounded-xl flex items-center justify-center gap-2 shadow-md hover:bg-primary-fixed-variant transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined" data-icon="thumb_up">thumb_up</span>
+                This is the same (Upvote existing)
+            </button>
+</div>
+</div>
+</body></html>

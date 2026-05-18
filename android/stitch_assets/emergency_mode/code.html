@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9f9ff;
+        }
+        .emergency-gradient {
+            background: linear-gradient(180deg, rgba(186, 26, 26, 0.15) 0%, rgba(249, 249, 255, 0) 100%);
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "inverse-primary": "#b4c5ff",
+                    "on-tertiary-container": "#ffede6",
+                    "surface": "#f9f9ff",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "surface-dim": "#cfdaf2",
+                    "tertiary": "#943700",
+                    "on-primary-fixed": "#00174b",
+                    "on-secondary-container": "#54647a",
+                    "on-error": "#ffffff",
+                    "secondary-container": "#d0e1fb",
+                    "primary-fixed": "#dbe1ff",
+                    "tertiary-container": "#bc4800",
+                    "on-tertiary-fixed": "#360f00",
+                    "on-surface-variant": "#434655",
+                    "inverse-on-surface": "#ecf1ff",
+                    "surface-container": "#e7eeff",
+                    "on-secondary-fixed": "#0b1c30",
+                    "on-surface": "#111c2d",
+                    "on-secondary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-variant": "#d8e3fb",
+                    "surface-container-low": "#f0f3ff",
+                    "primary": "#004ac6",
+                    "secondary-fixed": "#d3e4fe",
+                    "surface-container-highest": "#d8e3fb",
+                    "secondary": "#505f76",
+                    "on-primary": "#ffffff",
+                    "surface-tint": "#0053db",
+                    "inverse-surface": "#263143",
+                    "secondary-fixed-dim": "#b7c8e1",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "tertiary-fixed": "#ffdbcd",
+                    "outline-variant": "#c3c6d7",
+                    "outline": "#737686",
+                    "on-tertiary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "primary-container": "#2563eb",
+                    "surface-container-high": "#dee8ff",
+                    "on-error-container": "#93000a",
+                    "background": "#f9f9ff",
+                    "surface-bright": "#f9f9ff",
+                    "on-background": "#111c2d",
+                    "on-secondary-fixed-variant": "#38485d",
+                    "on-primary-container": "#eeefff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter-mobile": "16px",
+                    "safe-area-bottom": "34px",
+                    "margin-mobile": "16px",
+                    "unit": "8px",
+                    "columns-mobile": "4"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Hanken Grotesk"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg-mobile": ["Hanken Grotesk"],
+                    "label-lg": ["Inter"],
+                    "headline-md": ["Hanken Grotesk"],
+                    "display-lg": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-safe-area-bottom">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-4 h-16 bg-surface/95 backdrop-blur-md shadow-sm">
+<div class="flex items-center gap-4">
+<button class="transition-all duration-200 active:scale-95 hover:bg-surface-variant/50 p-2 rounded-full">
+<span class="material-symbols-outlined text-primary" data-icon="menu">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Traffic Guard</h1>
+</div>
+<div class="flex items-center gap-2">
+<div class="bg-error px-3 py-1 rounded-full flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+<span class="text-white font-label-sm text-label-sm uppercase tracking-wider">Emergency Mode</span>
+</div>
+</div>
+</header>
+<main class="pt-20 px-4 pb-24 max-w-lg mx-auto emergency-gradient min-h-screen">
+<!-- Emergency Broadcast Banner -->
+<div class="bg-error-container border-l-4 border-error rounded-xl p-4 mb-6 shadow-sm flex items-start gap-4">
+<span class="material-symbols-outlined text-error mt-1" data-icon="campaign" style="font-variation-settings: 'FILL' 1;">campaign</span>
+<div>
+<h2 class="font-label-lg text-label-lg text-on-error-container font-bold">Emergency Broadcast Active</h2>
+<p class="font-body-md text-body-md text-on-error-container opacity-90">Local authorities have issued a mandatory evacuation order for the Coastal District. Please follow the highlighted routes immediately.</p>
+</div>
+</div>
+<!-- Bento Grid Section -->
+<div class="grid grid-cols-2 gap-4 mb-8">
+<!-- Live Hazard Map (Large Card) -->
+<div class="col-span-2 bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden shadow-sm flex flex-col">
+<div class="p-4 border-b border-outline-variant flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-error" data-icon="map" style="font-variation-settings: 'FILL' 1;">map</span>
+<h3 class="font-headline-md text-headline-md">Live Hazard Map</h3>
+</div>
+<span class="bg-error/10 text-error px-2 py-0.5 rounded text-[10px] font-bold uppercase">Real-time</span>
+</div>
+<div class="h-64 relative bg-surface-container">
+<img alt="Hazard Map" class="w-full h-full object-cover grayscale-[0.2]" data-alt="A highly detailed digital map of a modern city overlaid with intense emergency graphics including glowing red hazard zones and pulsing danger icons. The visual style is high-tech and urgent with dark ui elements contrasting against vibrant amber and crimson warnings. Professional navigation interface aesthetic with clear topographic details underneath transparent alert layers. The mood is high-stakes and technologically advanced." data-location="San Francisco Coast" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAaawA8hsURDFQyWlCcpnsgmEmjpM_RdmdTiTy9XdQROM0IcNhdNLuQhGMWkFdX5a3sOYoYe5PiQnE3ICIxE7L2Xdwi1WADUOPKTBxEif9MOwPcAh7ObmA05I2B-0pGNpPxoiOYBKuKW6nu8C760Q-CEDvb0vps0aQGbwzFztXS3a-XOEMQqYOo_ykG1Yt8hVYenyCHL-bWM6JtXWYTFLV9PLYo7BT8gGbvXIflfrPjfi_tDgNAUn7BaoqyeK3zP9w9ueKxYDmn3A"/>
+<div class="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-md p-3 rounded-lg border border-error/20 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-xl" data-icon="warning">warning</span>
+<span class="font-label-lg text-label-lg">Bridge closure ahead</span>
+</div>
+<span class="text-on-surface-variant font-label-sm text-label-sm">2.4 mi</span>
+</div>
+</div>
+</div>
+<!-- Active Evacuation Routes (Tall Card) -->
+<div class="col-span-2 bg-surface-container-lowest rounded-xl border border-outline-variant p-4 shadow-sm">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary" data-icon="alt_route">alt_route</span>
+<h3 class="font-headline-md text-headline-md">Active Evacuation Routes</h3>
+</div>
+<div class="space-y-3">
+<!-- Route 1 -->
+<div class="flex items-center justify-between p-3 rounded-lg bg-surface-container-low border border-outline-variant">
+<div class="flex gap-3 items-center">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="navigation">navigation</span>
+</div>
+<div>
+<p class="font-label-lg text-label-lg font-bold">Highway 101 North</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Clear / Flowing</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-label-lg text-label-lg font-bold text-primary">12 min</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">to Shelter A</p>
+</div>
+</div>
+<!-- Route 2 -->
+<div class="flex items-center justify-between p-3 rounded-lg bg-surface-container-low border border-outline-variant">
+<div class="flex gap-3 items-center">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="directions_bus">directions_bus</span>
+</div>
+<div>
+<p class="font-label-lg text-label-lg font-bold">Transit Corridor C</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Limited Access</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-label-lg text-label-lg font-bold text-primary">24 min</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">to Hub B</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Emergency Contacts (Action Card) -->
+<div class="col-span-1 bg-surface-container-lowest rounded-xl border border-outline-variant p-4 shadow-sm flex flex-col justify-between">
+<span class="material-symbols-outlined text-error text-3xl mb-2" data-icon="emergency">emergency</span>
+<h4 class="font-label-lg text-label-lg font-bold leading-tight">Emergency Contacts</h4>
+<button class="mt-2 text-primary font-label-sm text-label-sm text-left flex items-center">
+                    Call 911 <span class="material-symbols-outlined text-sm ml-1" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+<!-- Nearby Shelters (Action Card) -->
+<div class="col-span-1 bg-surface-container-lowest rounded-xl border border-outline-variant p-4 shadow-sm flex flex-col justify-between">
+<span class="material-symbols-outlined text-primary text-3xl mb-2" data-icon="home_health">home_health</span>
+<h4 class="font-label-lg text-label-lg font-bold leading-tight">Nearby Shelters</h4>
+<button class="mt-2 text-primary font-label-sm text-label-sm text-left flex items-center">
+                    Find nearest <span class="material-symbols-outlined text-sm ml-1" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Critical Action Area -->
+<div class="space-y-4">
+<button class="w-full bg-error hover:bg-red-700 text-white font-headline-md text-headline-md py-4 rounded-xl shadow-lg transition-all duration-300 active:scale-95 flex items-center justify-center gap-3">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+                Exit Emergency Mode
+            </button>
+<p class="text-center font-label-sm text-label-sm text-on-surface-variant px-8">Exiting emergency mode will restore standard navigation features and clear active evacuation filters.</p>
+</div>
+</main>
+<!-- Navigation Shell (Bottom Nav - Visible on Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 pb-safe-area-bottom pt-2 bg-surface-container shadow-[0_-4px_12px_rgba(0,0,0,0.05)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant transition-transform duration-300 ease-out active:scale-90 px-3 py-1" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="directions_car">directions_car</span>
+<span class="font-label-sm text-label-sm">Go</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 transition-transform duration-300 ease-out active:scale-90" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+<span class="font-label-sm text-label-sm">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant transition-transform duration-300 ease-out active:scale-90 px-3 py-1" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="add_location_alt">add_location_alt</span>
+<span class="font-label-sm text-label-sm">Reports</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant transition-transform duration-300 ease-out active:scale-90 px-3 py-1" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</nav>
+<!-- FAB (Suppressed on this task-focused screen) -->
+<!-- Navigation Drawer (Hidden by default) -->
+<div class="hidden fixed inset-0 z-[70] bg-black/40 backdrop-blur-sm" id="drawer">
+<div class="fixed inset-y-0 left-0 z-[60] flex flex-col p-4 h-full w-[280px] rounded-r-2xl bg-surface shadow-2xl transition-transform duration-200 ease-in-out">
+<div class="flex items-center gap-4 mb-8">
+<div class="w-12 h-12 rounded-full bg-secondary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" data-icon="person">person</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-primary">Active Driver</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Pro Member</p>
+</div>
+</div>
+<div class="flex-1 space-y-1">
+<a class="flex items-center gap-3 p-3 rounded-lg text-on-surface-variant hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-body-md text-body-md">Offline Maps</span>
+</a>
+<a class="flex items-center gap-3 p-3 rounded-lg text-on-surface-variant hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="bar_chart">bar_chart</span>
+<span class="font-body-md text-body-md">Driving Stats</span>
+</a>
+<a class="flex items-center gap-3 p-3 rounded-lg text-on-surface-variant hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
+<span class="font-body-md text-body-md">Saved Places</span>
+</a>
+<a class="flex items-center gap-3 p-3 rounded-lg text-on-surface-variant hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</div>
+<div class="pt-4 border-t border-outline-variant">
+<p class="font-label-sm text-label-sm text-outline">v4.2.0</p>
+</div>
+</div>
+</div>
+</body></html>

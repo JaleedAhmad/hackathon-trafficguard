@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Traffic Guard - AI Reroute</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#360f00",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#0053db",
+                        "secondary": "#505f76",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "surface-container-highest": "#d8e3fb",
+                        "error-container": "#ffdad6",
+                        "primary-fixed": "#dbe1ff",
+                        "on-secondary-fixed": "#0b1c30",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#943700",
+                        "inverse-surface": "#263143",
+                        "error": "#ba1a1a",
+                        "outline": "#737686",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "surface-container-high": "#dee8ff",
+                        "on-primary-container": "#eeefff",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "secondary-container": "#d0e1fb",
+                        "on-surface": "#111c2d",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "background": "#f9f9ff",
+                        "surface": "#f9f9ff",
+                        "outline-variant": "#c3c6d7",
+                        "on-secondary-container": "#54647a",
+                        "on-surface-variant": "#434655",
+                        "tertiary-container": "#bc4800",
+                        "on-error-container": "#93000a",
+                        "on-background": "#111c2d",
+                        "on-primary-fixed": "#00174b",
+                        "surface-variant": "#d8e3fb",
+                        "surface-container": "#e7eeff",
+                        "inverse-primary": "#b4c5ff",
+                        "surface-dim": "#cfdaf2",
+                        "tertiary-fixed": "#ffdbcd",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#f0f3ff",
+                        "secondary-fixed": "#d3e4fe",
+                        "on-tertiary-container": "#ffede6",
+                        "on-tertiary": "#ffffff",
+                        "primary-container": "#2563eb",
+                        "inverse-on-surface": "#ecf1ff",
+                        "primary": "#004ac6",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "surface-bright": "#f9f9ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "safe-area-bottom": "34px",
+                        "gutter-mobile": "16px",
+                        "margin-mobile": "16px",
+                        "columns-mobile": "4",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "label-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .map-grid-pattern {
+            background-image: 
+                linear-gradient(to right, rgba(195, 198, 215, 0.2) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(195, 198, 215, 0.2) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md overflow-hidden selection:bg-primary/20">
+<!-- App Container -->
+<div class="relative w-full h-screen max-w-md mx-auto bg-surface overflow-hidden shadow-2xl flex flex-col">
+<!-- TopAppBar (From JSON) -->
+<header class="fixed top-0 w-full max-w-md z-50 flex items-center justify-between px-4 h-16 bg-surface/90 text-primary font-headline-md text-headline-md shadow-sm backdrop-blur-md transition-all duration-200">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-surface-variant/50 active:scale-95 transition-all text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<div class="font-headline-md text-headline-md font-bold text-primary tracking-tight">Traffic Guard</div>
+<button class="flex items-center justify-center w-8 h-8 rounded-full overflow-hidden hover:bg-surface-variant/50 active:scale-95 transition-all ring-2 ring-primary/20">
+<img alt="User avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEVPA5vXv93aJ-cBeUGSm8uI5oETUyXYlUIIWTIQLSvRDu1WPWJENgdbWER25Lv7gkjMqLov6L2pShBw8dHmDzyU9niZwZX_YYLFr9EpoL2esWxTbLkOW5z6mWBViSTrCeJbpapkJZONQKX5RMmqpYXAma9iRW6MiV3ye1BVHcmqhkqZgfVtLDTTc0OSYOSHXYPoMzm2-pOp3ecH4n0OCin57KOExttihWukXKYzT6o-yK2CQDDj8VEwE4l9DdYo3De_ALlKjN1Q"/>
+</button>
+</header>
+<!-- Map Canvas / Active Navigation View -->
+<div class="absolute inset-0 z-0">
+<!-- Simulated Map Background Image -->
+<div class="w-full h-full bg-cover bg-center object-cover opacity-80" data-alt="A clean, modern digital map interface viewed from a top-down perspective, similar to a high-end GPS navigation app. The map uses a light mode color palette with soft cool grays, crisp whites, and subtle topographic textures. Roadways are clearly defined against the minimal background. The lighting is even and flat, creating a functional, highly readable, and professional aesthetic suitable for a driving application." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBqSDdQP-uELmDXfJIObTJZxcDCY2I3K27KqOCg8CBMPi-tz6q49d9vur9ePgc6hH5dEAx8Y_V6vXig98Zm0LfBe6pbnI1pHeFORF9K-DMAET6KOXvxU6JaZcCx3zzaxwLSva2TCorGT1cZpD4wmdaCryi8TQtnsVrqhlu0zwYWD_odwan8QTlzohAykZTraqGSmqEAnvK62nzAsL-K81cKXW0jPf3fhShIpCsKlfmyrT27wuPP60tar40n9M19C3BK4yrLPBXqmQ');">
+</div>
+<!-- Map Overlay Pattern for texture -->
+<div class="absolute inset-0 map-grid-pattern opacity-50"></div>
+<!-- Gradient to ensure UI elements pop -->
+<div class="absolute inset-0 bg-gradient-to-b from-surface/40 via-transparent to-surface/80 pointer-events-none"></div>
+<!-- SVG Route Visualization -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none" preserveaspectratio="xMidYMid slice" viewbox="0 0 400 800">
+<!-- Original Route (Solid, secondary color) -->
+<path d="M 200 800 L 200 600 Q 200 450 280 350 L 320 200" fill="none" opacity="0.4" stroke="#505f76" stroke-linecap="round" stroke-linejoin="round" stroke-width="8"></path>
+<!-- AI Recommended Route (Dashed, primary color) -->
+<path class="drop-shadow-md" d="M 200 600 Q 150 500 120 380 L 120 250 Q 120 150 180 100 L 220 20" fill="none" stroke="#004ac6" stroke-dasharray="16 16" stroke-linecap="round" stroke-linejoin="round" stroke-width="8"></path>
+<!-- Vehicle Marker -->
+<g transform="translate(200, 600)">
+<circle cx="0" cy="0" fill="#004ac6" opacity="0.2" r="16"></circle>
+<circle cx="0" cy="0" fill="#ffffff" r="8" stroke="#004ac6" stroke-width="4"></circle>
+<!-- Heading Indicator -->
+<path d="M -6 -12 L 0 -20 L 6 -12 Z" fill="#004ac6"></path>
+</g>
+</svg>
+</div>
+<!-- Driving Context HUD (Top) -->
+<div class="absolute top-20 left-4 right-4 z-40">
+<div class="bg-surface-container/95 backdrop-blur-md rounded-[20px] shadow-lg p-4 flex items-center gap-4 border border-outline-variant/20">
+<div class="w-12 h-12 rounded-xl bg-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-primary text-[32px]" style="font-variation-settings: 'wght' 600;">turn_slight_left</span>
+</div>
+<div class="flex-1">
+<div class="font-headline-md text-headline-md font-bold text-on-surface leading-tight">1.2 mi</div>
+<div class="font-body-md text-body-md text-on-surface-variant font-medium">Keep left onto Highway 101</div>
+</div>
+</div>
+</div>
+<!-- AI Proactive Alert Card (Bottom Overlay) -->
+<div class="absolute bottom-[34px] left-4 right-4 z-50">
+<!-- Glassmorphism Card Wrapper -->
+<div class="bg-surface/95 backdrop-blur-xl rounded-[24px] shadow-[0_8px_32px_rgba(0,23,75,0.12)] border border-surface-variant overflow-hidden relative">
+<!-- AI Sparkle Top Accent Line -->
+<div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-primary-container via-primary to-surface-tint"></div>
+<div class="p-6">
+<!-- Header -->
+<div class="flex items-start gap-4 mb-5">
+<div class="w-12 h-12 rounded-full bg-primary-container/30 flex items-center justify-center shrink-0 text-primary">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div class="flex-1 pt-1">
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface mb-1 leading-none">AI Recommendation</h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-snug">
+                                Faster route found via <span class="font-semibold text-on-surface">B-Road</span>. Saves <span class="font-semibold text-primary">8 mins</span>.
+                            </p>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex gap-3">
+<button class="flex-1 h-12 bg-surface-container-high text-on-surface-variant font-label-lg text-label-lg font-semibold rounded-xl hover:bg-surface-variant transition-colors flex justify-center items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">close</span>
+                            Decline
+                        </button>
+<button class="flex-1 h-12 bg-primary text-on-primary font-label-lg text-label-lg font-bold rounded-xl shadow-md hover:bg-primary/90 active:scale-[0.98] transition-all flex justify-center items-center gap-2">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'wght' 600;">route</span>
+                            Accept
+                        </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

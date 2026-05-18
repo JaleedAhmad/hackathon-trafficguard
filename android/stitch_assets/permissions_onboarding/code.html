@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Traffic Guard - Permissions</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-dim": "#cfdaf2",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed": "#0b1c30",
+                        "secondary": "#505f76",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "surface-bright": "#f9f9ff",
+                        "inverse-primary": "#b4c5ff",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#0053db",
+                        "tertiary-container": "#bc4800",
+                        "on-secondary-container": "#54647a",
+                        "surface-container-lowest": "#ffffff",
+                        "background": "#f9f9ff",
+                        "on-primary-container": "#eeefff",
+                        "outline-variant": "#c3c6d7",
+                        "inverse-surface": "#263143",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "surface-container-highest": "#d8e3fb",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-tertiary-container": "#ffede6",
+                        "surface-container-high": "#dee8ff",
+                        "surface-container": "#e7eeff",
+                        "tertiary-fixed": "#ffdbcd",
+                        "outline": "#737686",
+                        "tertiary": "#943700",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "primary-fixed": "#dbe1ff",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-low": "#f0f3ff",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "surface": "#f9f9ff",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "secondary-fixed": "#d3e4fe",
+                        "on-primary-fixed": "#00174b",
+                        "on-surface-variant": "#434655",
+                        "on-surface": "#111c2d",
+                        "error": "#ba1a1a",
+                        "primary": "#004ac6",
+                        "inverse-on-surface": "#ecf1ff",
+                        "surface-variant": "#d8e3fb",
+                        "on-background": "#111c2d",
+                        "secondary-container": "#d0e1fb",
+                        "primary-container": "#2563eb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "gutter-mobile": "16px",
+                        "columns-mobile": "4",
+                        "margin-mobile": "16px",
+                        "safe-area-bottom": "34px"
+                    },
+                    "fontFamily": {
+                        "label-lg": ["Inter"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "label-sm": ["Inter"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md text-body-md antialiased min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
+<!-- 
+      Semantic Shell Logic Applied:
+      This is a Transactional/Onboarding screen. 
+      Therefore, TopAppBar and BottomNavBar are MANDATORILY SUPPRESSED to maintain user focus on the permission request.
+    -->
+<main class="flex-1 flex flex-col justify-center px-4 py-8 md:py-12 w-full max-w-md mx-auto">
+<!-- Hero Graphic -->
+<div class="flex flex-col items-center mb-10 text-center">
+<div class="relative w-24 h-24 flex items-center justify-center mb-6">
+<!-- Decorative glow -->
+<div class="absolute inset-0 bg-primary-container rounded-full opacity-60 blur-xl"></div>
+<!-- Core icon container -->
+<div class="relative z-10 bg-primary-container text-primary rounded-[2rem] p-5 shadow-sm transform -rotate-3 transition-transform hover:rotate-0 duration-300">
+<span class="material-symbols-outlined" data-icon="shield_lock" style="font-size: 40px;">shield_lock</span>
+</div>
+<!-- Accent dot -->
+<div class="absolute top-2 right-1 w-3 h-3 bg-tertiary-container rounded-full border-2 border-surface z-20"></div>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-3">
+                Secure Your Route
+            </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant px-2">
+                Traffic Guard needs a few permissions to provide real-time updates and keep you safe on the road.
+            </p>
+</div>
+<!-- Permissions Bento Cards -->
+<div class="flex flex-col gap-4 mb-12">
+<!-- Location Card -->
+<div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-5 flex gap-4 items-start shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-colors hover:border-primary/30">
+<div class="bg-secondary-container text-on-secondary-container rounded-xl p-3 shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="location_on">location_on</span>
+</div>
+<div class="flex flex-col gap-1.5 mt-0.5">
+<h2 class="font-headline-md text-[18px] leading-[24px] text-on-surface">
+                        Precise Location
+                    </h2>
+<p class="font-body-md text-[14px] leading-[20px] text-on-surface-variant">
+                        Required to analyze your current route, identify upcoming hazards, and suggest faster alternatives dynamically.
+                    </p>
+</div>
+</div>
+<!-- Notifications Card -->
+<div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-5 flex gap-4 items-start shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-colors hover:border-primary/30">
+<div class="bg-secondary-container text-on-secondary-container rounded-xl p-3 shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="notifications_active">notifications_active</span>
+</div>
+<div class="flex flex-col gap-1.5 mt-0.5">
+<h2 class="font-headline-md text-[18px] leading-[24px] text-on-surface">
+                        Push Notifications
+                    </h2>
+<p class="font-body-md text-[14px] leading-[20px] text-on-surface-variant">
+                        Allows us to instantly alert you about speed traps, sudden traffic jams, or severe weather warnings nearby.
+                    </p>
+</div>
+</div>
+</div>
+<!-- Actions (Anchored to bottom on mobile via flex-1 on main, but naturally flows here) -->
+<div class="mt-auto flex flex-col gap-3 pb-[env(safe-area-inset-bottom,16px)]">
+<button class="w-full bg-primary text-on-primary font-label-lg text-label-lg py-4 px-6 rounded-full shadow-sm hover:shadow-md hover:bg-primary/90 active:scale-[0.98] transition-all duration-200 text-center">
+                Enable Permissions
+            </button>
+<button class="w-full text-primary font-label-lg text-label-lg py-4 px-6 rounded-full hover:bg-surface-container-low active:bg-surface-container transition-colors duration-200 text-center">
+                Maybe Later
+            </button>
+</div>
+</main>
+</body></html>

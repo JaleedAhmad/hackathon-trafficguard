@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Upload Incident Media</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "surface": "#f9f9ff",
+                            "surface-container-low": "#f0f3ff",
+                            "on-secondary": "#ffffff",
+                            "inverse-surface": "#263143",
+                            "surface-container": "#e7eeff",
+                            "on-tertiary-fixed-variant": "#7d2d00",
+                            "on-secondary-fixed-variant": "#38485d",
+                            "tertiary-fixed": "#ffdbcd",
+                            "tertiary": "#943700",
+                            "outline": "#737686",
+                            "on-background": "#111c2d",
+                            "primary-fixed": "#dbe1ff",
+                            "on-surface-variant": "#434655",
+                            "on-surface": "#111c2d",
+                            "on-primary-fixed-variant": "#003ea8",
+                            "tertiary-fixed-dim": "#ffb596",
+                            "on-tertiary-container": "#ffede6",
+                            "surface-bright": "#f9f9ff",
+                            "secondary": "#505f76",
+                            "inverse-on-surface": "#ecf1ff",
+                            "on-primary-container": "#eeefff",
+                            "error": "#ba1a1a",
+                            "surface-dim": "#cfdaf2",
+                            "on-tertiary-fixed": "#360f00",
+                            "background": "#f9f9ff",
+                            "surface-container-lowest": "#ffffff",
+                            "on-secondary-fixed": "#0b1c30",
+                            "secondary-container": "#d0e1fb",
+                            "primary-fixed-dim": "#b4c5ff",
+                            "on-error-container": "#93000a",
+                            "on-primary": "#ffffff",
+                            "primary": "#004ac6",
+                            "on-secondary-container": "#54647a",
+                            "surface-container-high": "#dee8ff",
+                            "primary-container": "#2563eb",
+                            "surface-container-highest": "#d8e3fb",
+                            "on-tertiary": "#ffffff",
+                            "error-container": "#ffdad6",
+                            "secondary-fixed": "#d3e4fe",
+                            "outline-variant": "#c3c6d7",
+                            "surface-variant": "#d8e3fb",
+                            "on-error": "#ffffff",
+                            "tertiary-container": "#bc4800",
+                            "inverse-primary": "#b4c5ff",
+                            "secondary-fixed-dim": "#b7c8e1",
+                            "surface-tint": "#0053db",
+                            "on-primary-fixed": "#00174b"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.25rem",
+                            "lg": "0.5rem",
+                            "xl": "0.75rem",
+                            "full": "9999px"
+                    },
+                    "spacing": {
+                            "margin-mobile": "16px",
+                            "columns-mobile": "4",
+                            "unit": "8px",
+                            "safe-area-bottom": "34px",
+                            "gutter-mobile": "16px"
+                    },
+                    "fontFamily": {
+                            "label-sm": ["Inter"],
+                            "headline-lg-mobile": ["Hanken Grotesk"],
+                            "headline-lg": ["Hanken Grotesk"],
+                            "display-lg": ["Hanken Grotesk"],
+                            "label-lg": ["Inter"],
+                            "headline-md": ["Hanken Grotesk"],
+                            "body-md": ["Inter"],
+                            "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                            "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                            "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                            "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                            "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                            "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                            "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Custom scrollbar hiding utility */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-sans antialiased">
+<!-- TopAppBar (from JSON) -->
+<header class="bg-surface dark:bg-surface-dim text-primary dark:text-primary-fixed-dim w-full top-0 sticky shadow-sm flex justify-between items-center h-16 px-4 z-40">
+<button class="p-2 rounded-full hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors active:scale-95 duration-150 ease-in-out flex items-center justify-center text-on-surface-variant dark:text-outline-variant">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="font-headline-md text-headline-md text-on-surface truncate px-2">
+            App Shell
+        </div>
+<button class="p-2 rounded-full hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors active:scale-95 duration-150 ease-in-out flex items-center justify-center text-on-surface-variant dark:text-outline-variant">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col pb-safe-area-bottom">
+<!-- Header Section -->
+<section class="px-margin-mobile pt-6 pb-4">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Upload Media</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">Document the incident thoroughly. Providing multiple angles helps us review your case faster.</p>
+</section>
+<!-- Tips Card -->
+<section class="px-margin-mobile mb-6">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex gap-4 shadow-sm relative overflow-hidden">
+<!-- Decorative left border for alert style -->
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="flex-shrink-0 pt-1">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
+</div>
+<div class="flex-1">
+<h2 class="font-label-lg text-label-lg text-on-surface mb-1">Photo Guidelines</h2>
+<ul class="font-body-md text-body-md text-on-surface-variant list-disc pl-4 space-y-1">
+<li>Ensure the area is well-lit.</li>
+<li>Take close-ups of specific details.</li>
+<li>Include a wide shot of the surrounding area.</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- Action Buttons (Bento Layout) -->
+<section class="px-margin-mobile mb-8">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Primary Action: Take Photo -->
+<button class="bg-primary text-on-primary rounded-xl p-8 flex flex-col items-center justify-center gap-4 shadow-[0px_4px_10px_rgba(0,74,198,0.2)] hover:bg-primary/95 transition-all active:scale-[0.98]">
+<span class="material-symbols-outlined text-[48px]" style="font-variation-settings: 'FILL' 1;">photo_camera</span>
+<span class="font-headline-md text-headline-md">Take Photo</span>
+</button>
+<!-- Secondary Action: Upload from Gallery -->
+<button class="bg-surface-container hover:bg-surface-container-high border-2 border-transparent hover:border-primary/10 text-on-surface rounded-xl p-6 flex flex-col items-center justify-center gap-3 transition-all active:scale-[0.98]">
+<span class="material-symbols-outlined text-[32px] text-primary">photo_library</span>
+<span class="font-label-lg text-label-lg">Upload from Gallery</span>
+</button>
+</div>
+</section>
+<!-- Preview Rail -->
+<section class="px-margin-mobile mb-6 flex-1 flex flex-col">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-headline-md text-headline-md text-on-surface">Captured Media</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container-high px-2 py-1 rounded-full">3 Items</span>
+</div>
+<div class="flex overflow-x-auto gap-4 pb-4 scrollbar-hide snap-x">
+<!-- Preview Item 1 -->
+<div class="snap-start shrink-0 relative w-32 h-32 rounded-xl overflow-hidden border border-outline-variant shadow-sm group">
+<div class="absolute inset-0 bg-surface-variant bg-cover bg-center" data-alt="A close-up documentary-style photograph showing a deep scratch and dent on the side panel of a modern silver car. The image is brightly lit with natural daylight to clearly highlight the texture of the damage against the metallic surface. This image serves as functional placeholder content within a sleek, modern corporate app interface characterized by a clean white background and blue accents. The visual aesthetic is highly realistic, objective, and clear, prioritizing informational clarity for an incident report." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBuorkGDGQX2wTLy-vkywbpn9mKlf-V3t6aeGaTwYn_yfJWD8e8nxVzYcjyA-IELZAyHnQmz9KDoO1Gt-DJoxepNrI_78cqNuuk28M-phC2bPIJdz_CKwjveoe1gQ3sAJ8AUqSpQMDTg1OQJVZMykG9bzp4GCCjW1UY6mBQeT7IBvshiiHZ2aR0lqR4XEdSiWr0gnyimpplt02D0hcjW5fMzg191l6mzL9FlJjGuVQalhgnv9Lw1ICb6EiDpE5EHOyrL3oNjaT2Zg');"></div>
+<!-- Remove Button overlay -->
+<button class="absolute top-2 right-2 bg-inverse-surface/80 text-inverse-on-surface rounded-full p-1 shadow-sm opacity-90 hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+<span class="material-symbols-outlined text-[16px]">close</span>
+</button>
+</div>
+<!-- Preview Item 2 -->
+<div class="snap-start shrink-0 relative w-32 h-32 rounded-xl overflow-hidden border border-outline-variant shadow-sm group">
+<div class="absolute inset-0 bg-surface-variant bg-cover bg-center" data-alt="A photograph taken from a medium distance showing a broken taillight on a vehicle, with shattered red plastic fragments scattered on the asphalt below. The lighting is slightly overcast, creating soft, even shadows that emphasize the sharp edges of the broken pieces. Embedded in a minimal, high-utility user interface with a crisp light-mode aesthetic, the image acts as essential evidence. The overall tone is practical and serious, aligning with a structured incident documentation workflow." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDPHRINn2yk9exlLm1mCnm74LV7y1Tgpo0ntppXEkUdWpo_NTrBZYPaWd3lFyid1Vr0c5XhRKxb4L_I0ic5gpComqWsHHjoxdkK9OfAsQsmvUH4O3pYUvc9Es01zPgvRDKUIAexF0IYd9H2h5F7piJPRBrlxBG3vdTAT-fLELfJBCrUP8VHnILEsJmM6QiGT0yFp-ANAuPP54x8nqc2JHdx9G-HgYetyKE5_3Ss1c6KyUG5KRivPFc5n7-qnbN-qi46AHbhaOumrg');"></div>
+<button class="absolute top-2 right-2 bg-inverse-surface/80 text-inverse-on-surface rounded-full p-1 shadow-sm opacity-90 hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+<span class="material-symbols-outlined text-[16px]">close</span>
+</button>
+</div>
+<!-- Preview Item 3 -->
+<div class="snap-start shrink-0 relative w-32 h-32 rounded-xl overflow-hidden border border-outline-variant shadow-sm group">
+<div class="absolute inset-0 bg-surface-variant bg-cover bg-center" data-alt="A wide-angle shot capturing the overall scene of a minor fender bender in an empty parking lot on a clear day. Two cars are positioned closely together, and the environment is neatly structured with clear white parking lines on dark gray tarmac. This contextual placeholder image sits within a sophisticated mobile application design utilizing a pristine 'surface' color palette with subtle drop shadows. The image quality is sharp and high-resolution, intended to provide complete situational awareness." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDrkbbej2_2ym16JLsX9KpOvofG25jnc8I33ZitsOQLjBdF2kgtD-Oi6YW5JTK7SVT-1PcClA2_AJ1aqET7j4TmuVT1t88Ri_WtN1ParwaHSyJ0_i520iOJxIHZ4L5zjxBoq7JwDzHtU7OGGA8m4z4iWdjaeqYJbqnpu0f82z32G77UteoJhIWC2E_eiy8oTV0I4T1_R1eQie30AbvRhuIAth78qYSrUGui5zG9Hv6t3VLDhQNqrfYhNLT_zlNijLyv_Q-GacW2lw');"></div>
+<button class="absolute top-2 right-2 bg-inverse-surface/80 text-inverse-on-surface rounded-full p-1 shadow-sm opacity-90 hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+<span class="material-symbols-outlined text-[16px]">close</span>
+</button>
+</div>
+<!-- Add More Placeholders indicator -->
+<button class="snap-start shrink-0 w-32 h-32 rounded-xl border-2 border-dashed border-outline-variant hover:border-primary hover:bg-primary-fixed/20 transition-colors flex flex-col items-center justify-center text-outline group">
+<span class="material-symbols-outlined text-[32px] group-hover:text-primary transition-colors">add</span>
+</button>
+</div>
+</section>
+<!-- Submit/Continue Area -->
+<section class="px-margin-mobile mt-auto pt-4 pb-4">
+<button class="w-full bg-surface-container-high text-on-surface-variant rounded-lg py-3 font-label-lg text-label-lg font-medium hover:bg-surface-variant transition-colors flex justify-center items-center gap-2">
+                Continue to Next Step
+                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</section>
+</main>
+</body></html>

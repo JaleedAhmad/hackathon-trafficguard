@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Driving Mode - Traffic Guard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary-fixed": "#360f00",
+                      "on-primary": "#ffffff",
+                      "on-error": "#ffffff",
+                      "surface-tint": "#0053db",
+                      "secondary": "#505f76",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "surface-container-highest": "#d8e3fb",
+                      "error-container": "#ffdad6",
+                      "primary-fixed": "#dbe1ff",
+                      "on-secondary-fixed": "#0b1c30",
+                      "on-tertiary-fixed-variant": "#7d2d00",
+                      "on-secondary": "#ffffff",
+                      "tertiary": "#943700",
+                      "inverse-surface": "#263143",
+                      "error": "#ba1a1a",
+                      "outline": "#737686",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "surface-container-high": "#dee8ff",
+                      "on-primary-container": "#eeefff",
+                      "tertiary-fixed-dim": "#ffb596",
+                      "secondary-container": "#d0e1fb",
+                      "on-surface": "#111c2d",
+                      "on-secondary-fixed-variant": "#38485d",
+                      "background": "#f9f9ff",
+                      "surface": "#f9f9ff",
+                      "outline-variant": "#c3c6d7",
+                      "on-secondary-container": "#54647a",
+                      "on-surface-variant": "#434655",
+                      "tertiary-container": "#bc4800",
+                      "on-error-container": "#93000a",
+                      "on-background": "#111c2d",
+                      "on-primary-fixed": "#00174b",
+                      "surface-variant": "#d8e3fb",
+                      "surface-container": "#e7eeff",
+                      "inverse-primary": "#b4c5ff",
+                      "surface-dim": "#cfdaf2",
+                      "tertiary-fixed": "#ffdbcd",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-low": "#f0f3ff",
+                      "secondary-fixed": "#d3e4fe",
+                      "on-tertiary-container": "#ffede6",
+                      "on-tertiary": "#ffffff",
+                      "primary-container": "#2563eb",
+                      "inverse-on-surface": "#ecf1ff",
+                      "primary": "#004ac6",
+                      "secondary-fixed-dim": "#b7c8e1",
+                      "surface-bright": "#f9f9ff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "safe-area-bottom": "34px",
+                      "gutter-mobile": "16px",
+                      "margin-mobile": "16px",
+                      "columns-mobile": "4",
+                      "unit": "8px"
+              },
+              "fontFamily": {
+                      "display-lg": ["Hanken Grotesk"],
+                      "headline-lg-mobile": ["Hanken Grotesk"],
+                      "label-sm": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-md": ["Hanken Grotesk"],
+                      "headline-lg": ["Hanken Grotesk"]
+              },
+              "fontSize": {
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background h-screen overflow-hidden flex flex-col font-body-md">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-4 h-16 bg-surface/90 backdrop-blur-md shadow-sm">
+<button class="text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200 active:scale-95 p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<div class="font-headline-md text-headline-md font-bold text-primary flex-1 text-center">
+            Traffic Guard
+        </div>
+<button class="text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200 active:scale-95 p-1 rounded-full flex items-center justify-center">
+<img alt="User avatar" class="w-8 h-8 rounded-full border border-outline-variant" data-alt="A close up portrait of a professional looking individual smiling warmly. The photo is well lit with soft, natural lighting, suitable for a user profile picture in a modern application. The background is blurred and neutral." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrx8goGm7qPerxVt9Fl43CvZOj5-yCZKjBfX9zInJJ_gZ2_q2Lm2ozrmz86lwX0IC7T8EyCUj0F8sxd3VerO9W0l_xHJT1xss3OUXor5Px-ues4RWog1cyrIJQmLlo7qACIoYgwwB5WszPxadq3sNwY-hWtbNT8T-Zr0TwOiZ6TmTNK46WE-GIbjjPDOhWP0gezXeVUmtsuAFXSbdIXuUxYG_IUmuN4M_6lFN_kvwSQVbnVU_-feKDmHkltLYhqfSq8xQhaRXVTg"/>
+</button>
+</header>
+<!-- Main Content Canvas - Distraction Free Driving Mode -->
+<main class="flex-1 mt-16 pb-[calc(72px+34px)] relative overflow-hidden flex flex-col">
+<!-- Background Map (Secondary) -->
+<div class="absolute inset-0 z-0">
+<img alt="Map View" class="w-full h-full object-cover opacity-50 grayscale" data-alt="A stylized, light-themed map interface showing city streets. The map uses a muted, grayscale palette with soft blues and grays, adhering to a modern, corporate design aesthetic. It serves as a subtle background element, not the primary focus, conveying a sense of location and navigation without visual clutter." data-location="San Francisco" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBoYWdKjMBdNTO5uQdQaqMVWYZjI7ozv9i-fxjhJLLZWgLALdnMe8Pb2CSo6IcJoeu-wtPJw0Xa48Z-8gtaKlSG1hDWstQheTrmncvclrm-tWAd_3m4vdb5Z7gWaNgL0uRTXGKUAwJv2P1vCAOwN8LQhOYKzfuoQGh64VMqw13OoU0arUXt7ytdnv8ndcAiHqU3x1T2ReViKmRolEd2Ro84kphnJ2zqVhmbHMd5ACiwCelQ1tXySGPkHiTqrsM94wc9ryzhlJJaEQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface via-surface/60 to-transparent"></div>
+</div>
+<!-- Driving Dashboard Overlay -->
+<div class="relative z-10 flex-1 flex flex-col p-4 gap-4 h-full">
+<!-- Current Status / Top Info -->
+<div class="flex justify-between items-start">
+<div class="bg-surface-container/90 backdrop-blur-sm rounded-2xl p-4 shadow-sm border border-outline-variant/30 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[32px]" data-icon="navigation" data-weight="fill" style="font-variation-settings: 'FILL' 1;">navigation</span>
+<div>
+<div class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">45 mph</div>
+<div class="font-label-lg text-label-lg text-on-surface-variant">Speed Limit: 55</div>
+</div>
+</div>
+<div class="bg-primary-container/90 backdrop-blur-sm rounded-2xl p-4 shadow-sm border border-primary/20 flex flex-col items-end">
+<div class="font-headline-md text-headline-md text-on-primary-container font-bold">12 min</div>
+<div class="font-label-lg text-label-lg text-primary">to Home</div>
+</div>
+</div>
+<!-- Spacer -->
+<div class="flex-1"></div>
+<!-- Large Action Buttons (Grid) -->
+<div class="grid grid-cols-2 gap-4 mb-4">
+<!-- Music Button -->
+<button class="bg-surface-container-high hover:bg-surface-container-highest transition-all duration-200 active:scale-95 rounded-3xl p-6 flex flex-col items-center justify-center gap-4 shadow-sm border border-outline-variant/20 h-40">
+<div class="bg-primary/10 p-4 rounded-full">
+<span class="material-symbols-outlined text-primary text-[48px]" data-icon="music_note" data-weight="fill" style="font-variation-settings: 'FILL' 1;">music_note</span>
+</div>
+<span class="font-headline-md text-headline-md text-on-surface font-semibold">Music</span>
+</button>
+<!-- Calls Button -->
+<button class="bg-surface-container-high hover:bg-surface-container-highest transition-all duration-200 active:scale-95 rounded-3xl p-6 flex flex-col items-center justify-center gap-4 shadow-sm border border-outline-variant/20 h-40">
+<div class="bg-tertiary/10 p-4 rounded-full">
+<span class="material-symbols-outlined text-tertiary text-[48px]" data-icon="call" data-weight="fill" style="font-variation-settings: 'FILL' 1;">call</span>
+</div>
+<span class="font-headline-md text-headline-md text-on-surface font-semibold">Calls</span>
+</button>
+<!-- Voice Assistant (Full Width) -->
+<button class="col-span-2 bg-primary hover:bg-primary/90 transition-all duration-200 active:scale-95 rounded-3xl p-6 flex items-center justify-center gap-6 shadow-md h-32">
+<span class="material-symbols-outlined text-on-primary text-[48px]" data-icon="mic">mic</span>
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-on-primary font-bold">Voice Assistant</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Suppressed for this focused driving state as per rules, but included if it's considered a top-level destination. Based on the prompt, it's a specific 'mode', but usually reached from a main nav. Given the prompt asks for a distraction-free driving mode, standard bottom nav might be hidden in reality, but following the 'Go' active state logic). -->
+<!-- Assuming "Go" is the active state for a Driving Mode destination -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 pb-safe-area-bottom pt-2 bg-surface-container dark:bg-surface-container-low rounded-t-xl shadow-[0_-4px_12px_rgba(0,0,0,0.05)] md:hidden">
+<button class="flex flex-col items-center justify-center bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-full px-5 py-1 transition-transform duration-300 ease-out active:scale-90 w-[80px]">
+<span class="material-symbols-outlined text-[24px]" data-icon="directions_car" data-weight="fill" style="font-variation-settings: 'FILL' 1;">directions_car</span>
+<span class="font-label-sm text-label-sm mt-1">Go</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline transition-transform duration-300 ease-out active:scale-90 hover:bg-surface-container-high dark:hover:bg-surface-container-highest rounded-full px-5 py-1 w-[80px]">
+<span class="material-symbols-outlined text-[24px]" data-icon="warning">warning</span>
+<span class="font-label-sm text-label-sm mt-1">Alerts</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline transition-transform duration-300 ease-out active:scale-90 hover:bg-surface-container-high dark:hover:bg-surface-container-highest rounded-full px-5 py-1 w-[80px]">
+<span class="material-symbols-outlined text-[24px]" data-icon="add_location_alt">add_location_alt</span>
+<span class="font-label-sm text-label-sm mt-1">Reports</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline transition-transform duration-300 ease-out active:scale-90 hover:bg-surface-container-high dark:hover:bg-surface-container-highest rounded-full px-5 py-1 w-[80px]">
+<span class="material-symbols-outlined text-[24px]" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm mt-1">Profile</span>
+</button>
+</nav>
+</body></html>
