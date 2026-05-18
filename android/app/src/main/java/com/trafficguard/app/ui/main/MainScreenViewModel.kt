@@ -1,9 +1,9 @@
-package com.example.android.ui.main
+package com.trafficguard.app.ui.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.android.data.DataRepository
-import com.example.android.ui.main.MainScreenUiState.Success
+import com.trafficguard.app.data.DataRepository
+import com.trafficguard.app.ui.main.MainScreenUiState.Success
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch

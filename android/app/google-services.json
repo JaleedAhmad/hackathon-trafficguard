@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "289218709697",
+    "firebase_url": "https://hackathon-trafficguard-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "hackathon-trafficguard",
+    "storage_bucket": "hackathon-trafficguard.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:289218709697:android:7de2988aa8c285faf9ec40",
+        "android_client_info": {
+          "package_name": "com.trafficguard.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOIbbf1Jd_YWnpeSabAB9UyYWYTQ8WWOw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

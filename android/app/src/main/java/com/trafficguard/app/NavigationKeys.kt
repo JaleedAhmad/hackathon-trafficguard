@@ -1,4 +1,4 @@
-package com.example.android
+package com.trafficguard.app
 
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable

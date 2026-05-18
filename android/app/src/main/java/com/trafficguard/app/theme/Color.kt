@@ -1,4 +1,4 @@
-package com.example.android.theme
+package com.trafficguard.app.theme
 
 import androidx.compose.ui.graphics.Color
 

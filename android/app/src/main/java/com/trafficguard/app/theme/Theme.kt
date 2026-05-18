@@ -1,4 +1,4 @@
-package com.example.android.theme
+package com.trafficguard.app.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
