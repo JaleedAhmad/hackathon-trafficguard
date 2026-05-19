@@ -119,3 +119,53 @@ def verify_token(id_token: str) -> dict:
         logger.error(f"Failed to verify ID token: {e}")
         raise e
 
+def save_report(report_data: dict) -> bool:
+    try:
+        if FIREBASE_ENABLED:
+            db_client.collection("reports").document(report_data["report_id"]).set(report_data)
+            return True
+        else:
+            logger.warning(f"MOCK FIREBASE: Saved report {report_data}")
+            return True
+    except Exception as e:
+        logger.warning(f"Firebase write failed, continuing without save: {e}")
+        return False
+
+def get_all_reports() -> list:
+    try:
+        if FIREBASE_ENABLED:
+            docs = db_client.collection("reports").stream()
+            reports = []
+            for doc in docs:
+                reports.append(doc.to_dict())
+            return reports
+        else:
+            logger.warning("MOCK FIREBASE: Reading all reports (returning empty)")
+            return []
+    except Exception as e:
+        logger.warning(f"Firebase read failed: {e}")
+    return []
+
+def get_current_crisis_rtdb() -> dict:
+    try:
+        if FIREBASE_ENABLED:
+            return rtdb_client.child("crisis/current").get()
+        else:
+            logger.warning("MOCK FIREBASE: Reading RTDB crisis/current (returning mock data)")
+            return {
+                "crisis_id": "c001",
+                "location": "Canal Road, Karachi",
+                "lat": 24.8607,
+                "lng": 67.0011,
+                "type": "FLOODING",
+                "status": "active",
+                "severity": "HIGH",
+                "timestamp": "2026-05-19T00:00:00Z",
+                "description": "Severe urban flooding reported near Canal Road. Roads submerged, traffic halted.",
+                "affected_areas": ["Canal Road", "Shahrah-e-Faisal", "Gulshan-e-Iqbal"],
+                "alternate_route": "Use Karsaz Road or University Road instead."
+            }
+    except Exception as e:
+        logger.warning(f"Firebase read failed: {e}")
+    return {}
+

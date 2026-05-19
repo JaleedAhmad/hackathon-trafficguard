@@ -13,7 +13,7 @@ from agents.ingestion_agent import IngestionAgent
 from agents.trust_detection_agent import TrustDetectionAgent
 from agents.situation_planning_agent import SituationPlanningAgent
 from agents.execution_agent import ExecutionAgent
-from services.firebase_service import get_latest_trace
+from services.firebase_service import get_latest_trace, save_report, get_all_reports, get_current_crisis_rtdb
 from auth import create_auth_router, get_current_user, FirebaseUser
 
 app = FastAPI(title="TrafficGuard AI Backend")
@@ -48,8 +48,6 @@ class AgentLogCaptureHandler(logging.Handler):
 agent_log_handler = AgentLogCaptureHandler()
 logging.getLogger("agent_events").addHandler(agent_log_handler)
 
-submitted_reports = []
-
 class DuplicateCheckRequest(BaseModel):
     category: str
     lat: float
@@ -72,17 +70,18 @@ def calculate_distance_m(lat1: float, lng1: float, lat2: float, lng2: float) -> 
 @app.post("/report/check-duplicate")
 def check_duplicate(req: DuplicateCheckRequest):
     matches = []
-    for rep in submitted_reports:
-        dist = calculate_distance_m(req.lat, req.lng, rep["lat"], rep["lng"])
+    reports = get_all_reports()
+    for rep in reports:
+        dist = calculate_distance_m(req.lat, req.lng, rep.get("lat", 0.0), rep.get("lng", 0.0))
         # Match category (case-insensitive) and within 100 meters
-        if rep["type"].upper() == req.category.upper() and dist <= 100.0:
+        if rep.get("type", "").upper() == req.category.upper() and dist <= 100.0:
             matches.append({
-                "alert_id": rep["report_id"],
-                "type": rep["type"],
-                "message": rep["message"],
+                "alert_id": rep.get("report_id", ""),
+                "type": rep.get("type", ""),
+                "message": rep.get("message", ""),
                 "distance_km": dist / 1000.0,
-                "severity": rep["severity"],
-                "timestamp": rep["timestamp"]
+                "severity": rep.get("severity", "High"),
+                "timestamp": rep.get("timestamp", "")
             })
     return {"duplicates": matches}
 
@@ -92,7 +91,7 @@ async def receive_report(signal: RawSignal, current_user: FirebaseUser = Depends
     
     results = await ingestion_agent.run([signal])
 
-    print(f"results: {results}")
+    print(f"ingestion results: {results}")
     print(f"signal: {signal}")
     
     if not results:
@@ -100,7 +99,10 @@ async def receive_report(signal: RawSignal, current_user: FirebaseUser = Depends
         
     ingestion_result = results[0]
     trust_result = await trust_agent.run(results)
+    print(f"trust_result: {trust_result}")
+
     situation_result = await situation_agent.run(trust_result)
+    print(f"situation_result: {situation_result}")
     
     ingestion_dict = ingestion_result.model_dump() if hasattr(ingestion_result, 'model_dump') else ingestion_result.dict()
     execution_result = await execution_agent.run(
@@ -110,9 +112,10 @@ async def receive_report(signal: RawSignal, current_user: FirebaseUser = Depends
         agent_log_handler.logs
     )
     
+    print(f"execution_result: {execution_result}")
+
     report_id = f"rep_{int(time.time())}"
     
-    # Store it in our dynamic global list
     category = "TRAFFIC"
     if "flood" in signal.text.lower():
         category = "FLOOD"
@@ -121,7 +124,7 @@ async def receive_report(signal: RawSignal, current_user: FirebaseUser = Depends
     elif "weather" in signal.text.lower():
         category = "WEATHER"
         
-    submitted_reports.append({
+    report_doc = {
         "report_id": report_id,
         "type": category,
         "message": signal.text,
@@ -129,7 +132,8 @@ async def receive_report(signal: RawSignal, current_user: FirebaseUser = Depends
         "lat": signal.lat,
         "lng": signal.lng,
         "timestamp": signal.timestamp
-    })
+    }
+    save_report(report_doc)
     
     return {
         "report_id": report_id,
@@ -144,6 +148,9 @@ async def receive_report(signal: RawSignal, current_user: FirebaseUser = Depends
 
 @app.get("/crisis/current")
 async def get_current_crisis():
+    rtdb_crisis = get_current_crisis_rtdb()
+    if rtdb_crisis:
+        return rtdb_crisis
     return {
       "crisis_id": "c001",
       "location": "Canal Road, Karachi",
@@ -262,18 +269,19 @@ async def get_baseline_compare():
 @app.get("/alerts/nearby")
 def get_nearby_alerts(lat: float = 24.8607, lng: float = 67.0011):
     alerts = []
-    # Dynamic search inside the live submitted reports list within 5 km
-    for rep in submitted_reports:
-        dist = calculate_distance_m(lat, lng, rep["lat"], rep["lng"])
+    # Dynamic search inside the live submitted reports in Firestore within 5 km
+    reports = get_all_reports()
+    for rep in reports:
+        dist = calculate_distance_m(lat, lng, rep.get("lat", 0.0), rep.get("lng", 0.0))
         if dist <= 5000.0:
             alerts.append({
-                "alert_id": rep["report_id"],
-                "type": rep["type"].lower(),
-                "message": rep["message"],
+                "alert_id": rep.get("report_id", ""),
+                "type": rep.get("type", "TRAFFIC").lower(),
+                "message": rep.get("message", ""),
                 "message_urdu": "",
                 "distance_km": dist / 1000.0,
-                "severity": rep["severity"],
-                "timestamp": rep["timestamp"],
+                "severity": rep.get("severity", "High"),
+                "timestamp": rep.get("timestamp", ""),
                 "alternate_route": ""
             })
     return {"alerts": alerts}
