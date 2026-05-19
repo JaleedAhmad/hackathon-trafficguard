@@ -34,6 +34,16 @@ import com.traffic_guard.ai.ui.showcase.ErrorShowcaseScreen
 import com.traffic_guard.ai.ui.showcase.ShowcaseScreen
 import com.traffic_guard.ai.ui.splash.SplashScreen
 import com.traffic_guard.ai.ui.splash.SplashViewModel
+import androidx.compose.ui.platform.LocalContext
+import com.traffic_guard.ai.ui.home.HomeScreen
+import com.traffic_guard.ai.ui.home.HomeViewModel
+import com.traffic_guard.ai.ui.mapnavigation.MapNavigationScreen
+import com.traffic_guard.ai.ui.mapnavigation.NavigationViewModel
+import com.traffic_guard.ai.ui.mapnavigation.AiRerouteViewModel
+import com.traffic_guard.ai.ui.drivingmode.DrivingModeScreen
+import com.traffic_guard.ai.ui.drivingmode.VoiceGuidanceViewModel
+import com.traffic_guard.ai.data.LocationRepositoryImpl
+import com.traffic_guard.ai.data.NavigationRepositoryImpl
 
 @Composable
 fun MainNavigation(
@@ -256,11 +266,76 @@ fun MainNavigation(
             }
 
             entry<Main> {
-                MainScreen(
-                    onItemClick = { navKey -> backStack.add(navKey) },
-                    modifier = Modifier.safeDrawingPadding().padding(16.dp)
+                val context = LocalContext.current
+                val homeViewModel: HomeViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            val locationRepo = LocationRepositoryImpl(context.applicationContext)
+                            return HomeViewModel(locationRepo) as T
+                        }
+                    }
+                )
+                HomeScreen(
+                    onNavigateToMap = { backStack.add(MapNavigation) },
+                    onNavigateToReport = { /* Batch 4 Report Screen */ },
+                    viewModel = homeViewModel
+                )
+            }
+
+            entry<Home> {
+                val context = LocalContext.current
+                val homeViewModel: HomeViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            val locationRepo = LocationRepositoryImpl(context.applicationContext)
+                            return HomeViewModel(locationRepo) as T
+                        }
+                    }
+                )
+                HomeScreen(
+                    onNavigateToMap = { backStack.add(MapNavigation) },
+                    onNavigateToReport = { /* Batch 4 Report Screen */ },
+                    viewModel = homeViewModel
+                )
+            }
+
+            entry<MapNavigation> {
+                val context = LocalContext.current
+                val navigationViewModel: NavigationViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            val locationRepo = LocationRepositoryImpl(context.applicationContext)
+                            val navRepo = NavigationRepositoryImpl()
+                            return NavigationViewModel(navRepo, locationRepo) as T
+                        }
+                    }
+                )
+                MapNavigationScreen(
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNavigateToDrivingMode = { backStack.add(DrivingMode) },
+                    viewModel = navigationViewModel
+                )
+            }
+
+            entry<DrivingMode> {
+                val context = LocalContext.current
+                val voiceViewModel: VoiceGuidanceViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            return VoiceGuidanceViewModel(context.applicationContext as android.app.Application) as T
+                        }
+                    }
+                )
+                DrivingModeScreen(
+                    onExitDriving = { backStack.removeLastOrNull() },
+                    viewModel = voiceViewModel
                 )
             }
         }
+
     )
 }

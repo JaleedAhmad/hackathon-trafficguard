@@ -41,3 +41,12 @@ data object AuthSuccess : NavKey
 
 @Serializable
 data object Main : NavKey
+
+@Serializable
+data object Home : NavKey
+
+@Serializable
+data object MapNavigation : NavKey
+
+@Serializable
+data object DrivingMode : NavKey
