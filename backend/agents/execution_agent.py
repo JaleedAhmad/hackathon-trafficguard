@@ -2,7 +2,7 @@ import uuid
 import datetime
 import json
 import logging
-from services.firebase_service import save_simulation, save_notifications, save_ticket, update_current_crisis, save_agent_trace
+from services.firebase_service import FIREBASE_ENABLED, get_db, save_notifications, update_current_crisis, save_agent_trace
 from services.llm_service import call_llm
 from services.logger import log_agent_event
 
@@ -38,7 +38,13 @@ class ExecutionAgent:
             "after_state": after_state,
             "timestamp": datetime.datetime.utcnow().isoformat()
         }
-        save_simulation(simulation_data)
+        if FIREBASE_ENABLED:
+            try:
+                get_db().collection("simulations").add(simulation_data)
+            except Exception as e:
+                logger.error(f"Failed to save simulation to Firestore: {e}")
+        else:
+            logger.warning(f"MOCK FIREBASE: Saved simulation {simulation_data}")
         log_agent_event("EXECUTION_SIMULATION", {"step": "Traffic rerouting simulation saved"})
 
         # TASK 2: Notification Dispatch
@@ -85,7 +91,6 @@ class ExecutionAgent:
         save_notifications(notifications)
         log_agent_event("EXECUTION_NOTIFICATIONS", {"step": "Notifications dispatched and saved"})
 
-        # TASK 3: Emergency Ticket
         ticket = {
             "ticket_id": "TG-2891",
             "priority": "CRITICAL" if severity in ["High", "Critical"] else "HIGH",
@@ -96,10 +101,16 @@ class ExecutionAgent:
             "status": "OPEN",
             "estimated_response_mins": 12
         }
-        save_ticket(ticket)
+        if FIREBASE_ENABLED:
+            try:
+                get_db().collection("tickets").document(ticket["ticket_id"]).set(ticket)
+            except Exception as e:
+                logger.error(f"Failed to save ticket to Firestore: {e}")
+        else:
+            logger.warning(f"MOCK FIREBASE: ticket {ticket['ticket_id']}")
         log_agent_event("EXECUTION_TICKET", {"step": "Emergency ticket created", "ticket_id": ticket["ticket_id"]})
 
-        # TASK 4: Update Realtime DB
+        # TASK 4: Update Firestore Crisis Status
         current_crisis = {
             "crisis_id": ticket["ticket_id"],
             "location": ticket["location"],
@@ -110,7 +121,7 @@ class ExecutionAgent:
             "last_updated": now_ts
         }
         update_current_crisis(current_crisis)
-        log_agent_event("EXECUTION_REALTIME", {"step": "Live crisis status updated in RTDB"})
+        log_agent_event("EXECUTION_FIRESTORE", {"step": "Live crisis status updated in Firestore"})
 
         # TASK 5: Compile Agent Trace
         trace_id = f"trace_{uuid.uuid4().hex[:6]}"
