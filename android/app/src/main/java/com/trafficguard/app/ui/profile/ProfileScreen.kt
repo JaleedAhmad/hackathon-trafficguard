@@ -44,6 +44,7 @@ fun ProfileScreen(
     viewModel: ProfileViewModel,
     onNavigateBack: () -> Unit,
     onNavigateToSettings: () -> Unit,
+    onLogOut: () -> Unit,
     isNested: Boolean = false,
     modifier: Modifier = Modifier
 ) {
@@ -202,6 +203,16 @@ fun ProfileScreen(
                         }
                     }
                 }
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                // Log Out Option
+                AppButton(
+                    text = "Log Out",
+                    onClick = onLogOut,
+                    variant = ButtonVariant.DANGER,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         }
     }

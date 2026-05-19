@@ -169,6 +169,12 @@ fun MainDashboardScreen(
                             viewModel = profileViewModel,
                             onNavigateBack = { selectedTab = 0 },
                             onNavigateToSettings = onNavigateToSettings,
+                            onLogOut = {
+                                scope.launch {
+                                    authRepository.signOut()
+                                    onNavigateToAuth()
+                                }
+                            },
                             isNested = true
                         )
                     }

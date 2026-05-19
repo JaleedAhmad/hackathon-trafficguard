@@ -34,6 +34,7 @@ import com.traffic_guard.ai.ui.showcase.ShowcaseScreen
 import com.traffic_guard.ai.ui.splash.SplashScreen
 import com.traffic_guard.ai.ui.splash.SplashViewModel
 import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.launch
 import com.traffic_guard.ai.ui.home.HomeScreen
 import com.traffic_guard.ai.ui.home.HomeViewModel
 import com.traffic_guard.ai.ui.mapnavigation.MapNavigationScreen
@@ -82,6 +83,7 @@ fun MainNavigation(
     onThemeModeChanged: (ThemeMode) -> Unit
 ) {
     val backStack = rememberNavBackStack(Splash)
+    val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
 
     NavDisplay(
         backStack = backStack,
@@ -596,7 +598,14 @@ fun MainNavigation(
                 ProfileScreen(
                     viewModel = profileVM,
                     onNavigateBack = { backStack.removeLastOrNull() },
-                    onNavigateToSettings = { backStack.add(SettingsHub) }
+                    onNavigateToSettings = { backStack.add(SettingsHub) },
+                    onLogOut = {
+                        coroutineScope.launch {
+                            authRepository.signOut()
+                            backStack.clear()
+                            backStack.add(Welcome)
+                        }
+                    }
                 )
             }
 

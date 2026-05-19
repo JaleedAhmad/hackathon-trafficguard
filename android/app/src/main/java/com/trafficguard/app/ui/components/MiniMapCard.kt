@@ -32,17 +32,23 @@ import com.traffic_guard.ai.theme.DarkBorder
 import com.traffic_guard.ai.theme.LightBgCard
 import com.traffic_guard.ai.theme.LightBorder
 
+import androidx.compose.runtime.LaunchedEffect
+
 @Composable
 fun MiniMapCard(
     latitude: Double,
     longitude: Double,
-    onClick: () -> Unit,
+    onLocationChanged: (Double, Double) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val isDark = MaterialTheme.colorScheme.background.value == 0xFF0F172A.toULong()
     val pinPos = LatLng(latitude, longitude)
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(pinPos, 15f)
+    }
+
+    LaunchedEffect(latitude, longitude) {
+        cameraPositionState.position = CameraPosition.fromLatLngZoom(LatLng(latitude, longitude), 15f)
     }
 
     Card(
@@ -53,18 +59,20 @@ fun MiniMapCard(
         border = BorderStroke(1.dp, if (isDark) DarkBorder else LightBorder),
         modifier = modifier
             .fillMaxWidth()
-            .height(180.dp)
-            .clickable { onClick() }
+            .height(220.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
                 cameraPositionState = cameraPositionState,
+                onMapClick = { latLng ->
+                    onLocationChanged(latLng.latitude, latLng.longitude)
+                },
                 uiSettings = MapUiSettings(
-                    zoomControlsEnabled = false,
-                    myLocationButtonEnabled = false,
-                    scrollGesturesEnabled = false,
-                    zoomGesturesEnabled = false
+                    zoomControlsEnabled = true,
+                    myLocationButtonEnabled = true,
+                    scrollGesturesEnabled = true,
+                    zoomGesturesEnabled = true
                 )
             ) {
                 Marker(
@@ -82,7 +90,7 @@ fun MiniMapCard(
                     .padding(8.dp)
             ) {
                 Text(
-                    text = "Tap to pin or change location",
+                    text = "Tap anywhere on map to pin or change location",
                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
                     color = Color.White,
                     modifier = Modifier.align(Alignment.Center)
