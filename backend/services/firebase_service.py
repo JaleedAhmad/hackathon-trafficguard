@@ -1,7 +1,7 @@
 import os
 import logging
 import firebase_admin
-from firebase_admin import credentials, firestore, auth
+from firebase_admin import credentials, firestore, auth, storage
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -34,7 +34,9 @@ try:
 
         if not firebase_admin._apps:
             cred = credentials.Certificate(cred_path)
-            firebase_admin.initialize_app(cred)
+            firebase_admin.initialize_app(cred, {
+                "storageBucket": "poetic-fact-496519-k2.firebasestorage.app"
+            })
 
         db_client = firestore.client()
         FIREBASE_ENABLED = True
@@ -293,11 +295,22 @@ def get_user_rank_firestore(uid: str) -> dict:
 def add_comment(report_id: str, uid: str, display_name: str, text: str) -> dict:
     import time
     comment_id = f"comment_{int(time.time())}_{uid[:4]}"
+    
+    resolved_name = display_name or "Anonymous Driver"
+    try:
+        if FIREBASE_ENABLED:
+            user_doc = get_db().collection("users").document(uid).get()
+            if user_doc.exists:
+                d = user_doc.to_dict()
+                resolved_name = d.get("displayName") or d.get("display_name") or resolved_name
+    except Exception as e:
+        logger.warning(f"Failed to lookup display name for comment: {e}")
+
     comment_data = {
         "comment_id": comment_id,
         "report_id": report_id,
         "uid": uid,
-        "displayName": display_name or "Anonymous Driver",
+        "displayName": resolved_name,
         "text": text,
         "timestamp": int(time.time() * 1000)
     }
@@ -319,30 +332,24 @@ def get_comments(report_id: str) -> list:
                 get_db()
                 .collection("comments")
                 .where("report_id", "==", report_id)
-                .order_by("timestamp", direction=firestore.Query.ASCENDING)
                 .stream()
             )
-            return [doc.to_dict() for doc in docs]
+            comments = []
+            for doc in docs:
+                d = doc.to_dict()
+                disp = d.get("displayName")
+                uid = d.get("uid", "unknown")
+                if not disp or disp == "Anonymous Driver":
+                    disp = f"anon_{uid}"
+                comments.append({
+                    **d,
+                    "displayName": disp
+                })
+            comments.sort(key=lambda x: x.get("timestamp", 0), reverse=True)
+            return comments
     except Exception as e:
         logger.error(f"get_comments failed: {e}")
-    return [
-        {
-            "comment_id": "c1",
-            "report_id": report_id,
-            "uid": "mock_1",
-            "displayName": "Ali",
-            "text": "Still flooded, avoid this route.",
-            "timestamp": int(time.time() * 1000) - 100000
-        },
-        {
-            "comment_id": "c2",
-            "report_id": report_id,
-            "uid": "mock_2",
-            "displayName": "Sara",
-            "text": "Police has arrived.",
-            "timestamp": int(time.time() * 1000) - 50000
-        }
-    ]
+    return []
 
 # ─────────────────────────────────────────────
 # VOTES
@@ -384,3 +391,66 @@ def get_vote_stats(report_id: str) -> dict:
     except Exception as e:
         logger.error(f"get_vote_stats failed: {e}")
     return {"upvotes": 12, "downvotes": 2}
+
+
+# ─────────────────────────────────────────────
+# SOS ALERTS
+# ─────────────────────────────────────────────
+
+def save_sos(sos_data: dict) -> bool:
+    try:
+        if FIREBASE_ENABLED:
+            get_db().collection("sos_alerts").document(
+                sos_data["sos_id"]
+            ).set(sos_data)
+        else:
+            logger.warning(f"MOCK SOS saved: {sos_data}")
+        return True
+    except Exception as e:
+        logger.error(f"save_sos failed: {e}")
+        return False
+
+
+def get_all_sos() -> list:
+    try:
+        if FIREBASE_ENABLED:
+            return [
+                doc.to_dict()
+                for doc in get_db().collection("sos_alerts").stream()
+            ]
+    except Exception as e:
+        logger.error(f"get_all_sos failed: {e}")
+    return []
+
+
+# ─────────────────────────────────────────────
+# USER PROFILE & PICTURES
+# ─────────────────────────────────────────────
+
+def upload_profile_picture(uid: str, file_bytes: bytes, content_type: str) -> str:
+    try:
+        if FIREBASE_ENABLED:
+            bucket = storage.bucket("poetic-fact-496519-k2.firebasestorage.app")
+            blob = bucket.blob(f"profiles/{uid}.jpg")
+            blob.upload_from_string(file_bytes, content_type=content_type)
+            try:
+                blob.make_public()
+                return blob.public_url
+            except Exception as pe:
+                logger.warning(f"make_public failed: {pe}. Returning direct URL.")
+                return f"https://storage.googleapis.com/poetic-fact-496519-k2.firebasestorage.app/profiles/{uid}.jpg"
+    except Exception as e:
+        logger.error(f"upload_profile_picture failed: {e}")
+    return ""
+
+
+def count_user_reports(uid: str) -> int:
+    try:
+        if FIREBASE_ENABLED:
+            reports_ref = get_db().collection("reports")
+            query = reports_ref.where("user_id", "==", uid)
+            docs = query.stream()
+            return sum(1 for _ in docs)
+    except Exception as e:
+        logger.error(f"count_user_reports failed: {e}")
+    return 0

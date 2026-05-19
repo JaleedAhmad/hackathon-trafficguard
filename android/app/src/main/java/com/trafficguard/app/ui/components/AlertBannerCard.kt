@@ -38,7 +38,7 @@ fun AlertBannerCard(
     severity: Int,
     modifier: Modifier = Modifier
 ) {
-    val isDark = MaterialTheme.colorScheme.background.value == 0xFF0F172A.toULong()
+    val isDark = MaterialTheme.colorScheme.background == androidx.compose.ui.graphics.Color(0xFF0F172A)
     val badgeColor = when (severity) {
         5 -> AccentRed
         4 -> Color(0xFFF97316) // Orange

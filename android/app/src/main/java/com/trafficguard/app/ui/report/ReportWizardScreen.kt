@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -32,7 +33,6 @@ import com.traffic_guard.ai.ui.components.AppTextField
 import com.traffic_guard.ai.ui.components.AppTopBar
 import com.traffic_guard.ai.ui.components.ButtonVariant
 import com.traffic_guard.ai.ui.components.MiniMapCard
-import com.traffic_guard.ai.ui.components.VoiceNoteRecorderWidget
 
 @Composable
 fun ReportWizardScreen(
@@ -46,7 +46,7 @@ fun ReportWizardScreen(
 ) {
     val state by viewModel.formState.collectAsState()
     val mediaState by mediaViewModel.uiState.collectAsState()
-    val isDark = MaterialTheme.colorScheme.background.value == 0xFF0F172A.toULong()
+    val isDark = MaterialTheme.colorScheme.background == androidx.compose.ui.graphics.Color(0xFF0F172A)
     val context = LocalContext.current
 
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -85,15 +85,16 @@ fun ReportWizardScreen(
             Spacer(modifier = Modifier.height(8.dp))
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
             ) {
-                listOf("FLOOD", "TRAFFIC", "ACCIDENT", "WEATHER").forEach { category ->
+                listOf("FLOOD", "TRAFFIC", "ACCIDENT", "WEATHER", "OTHER").forEach { category ->
                     val isSelected = state.category == category
                     AppButton(
                         text = category,
                         onClick = { viewModel.updateCategory(category) },
-                        variant = if (isSelected) ButtonVariant.SOLID else ButtonVariant.OUTLINED,
-                        modifier = Modifier.weight(1f)
+                        variant = if (isSelected) ButtonVariant.SOLID else ButtonVariant.OUTLINED
                     )
                 }
             }
@@ -156,49 +157,12 @@ fun ReportWizardScreen(
                 }
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // Voice Note Recorder Panel
-            VoiceNoteRecorderWidget(
-                isRecording = mediaState.isRecording,
-                recordDurationSeconds = mediaState.recordDurationSeconds,
-                voiceFilePath = mediaState.voiceFilePath ?: state.voiceFilePath,
-                onStartRecord = {
-                    val audioPermission = android.Manifest.permission.RECORD_AUDIO
-                    val hasPermission = ContextCompat.checkSelfPermission(
-                        context,
-                        audioPermission
-                    ) == android.content.pm.PackageManager.PERMISSION_GRANTED
-
-                    if (hasPermission) {
-                        mediaViewModel.startVoiceRecording()
-                    } else {
-                        permissionLauncher.launch(audioPermission)
-                    }
-                },
-                onStopRecord = {
-                    mediaViewModel.stopVoiceRecording()
-                    mediaViewModel.uiState.value.voiceFilePath?.let { path ->
-                        viewModel.updateVoicePath(path)
-                    }
-                },
-                onDeleteRecord = {
-                    mediaViewModel.deleteVoiceRecording()
-                    viewModel.updateVoicePath(null)
-                }
-            )
-
             Spacer(modifier = Modifier.height(32.dp))
 
             // Form Submission Trigger
             AppButton(
                 text = "Verify & Submit",
                 onClick = {
-                    // Enforce coordinates mock setting if not initialized yet
-                    if (state.latitude == 0.0) {
-                        viewModel.updateLocation(33.6844, 73.0479)
-                    }
-
                     // Run AI Duplicate Checker
                     duplicateViewModel.checkForDuplicates(
                         lat = if (state.latitude == 0.0) 33.6844 else state.latitude,

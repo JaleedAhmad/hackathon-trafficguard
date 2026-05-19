@@ -30,9 +30,13 @@ fun GoogleMapsView(
     userLocation: MapLatLng?,
     incidents: List<Incident>,
     activeRoute: RoutePath?,
+    alternateRoutes: List<RoutePath> = emptyList(),
     showHeatmap: Boolean,
     showFloodPolygons: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    mapFocusLocation: MapLatLng? = null,
+    sosAlertLocation: MapLatLng? = null,
+    sosAlertMessage: String? = null
 ) {
     val defaultPos = LatLng(33.6844, 73.0479) // Default Islamabad coordinate
     val cameraPositionState = rememberCameraPositionState {
@@ -44,6 +48,26 @@ fun GoogleMapsView(
         userLocation?.let {
             cameraPositionState.animate(
                 CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 14.5f),
+                1000
+            )
+        }
+    }
+
+    // Centering camera when mapFocusLocation changes
+    LaunchedEffect(mapFocusLocation) {
+        mapFocusLocation?.let {
+            cameraPositionState.animate(
+                CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 15.5f),
+                1000
+            )
+        }
+    }
+
+    // Centering camera on start point when active route changes
+    LaunchedEffect(activeRoute) {
+        activeRoute?.points?.firstOrNull()?.let { startPoint ->
+            cameraPositionState.animate(
+                CameraUpdateFactory.newLatLngZoom(LatLng(startPoint.latitude, startPoint.longitude), 15f),
                 1000
             )
         }
@@ -79,12 +103,12 @@ fun GoogleMapsView(
         uiSettings = mapUiSettings,
         properties = mapProperties
     ) {
-        // Draw User Location marker
-        userLocation?.let {
+        // Draw SOS alert marker
+        sosAlertLocation?.let { sosLoc ->
             Marker(
-                state = MarkerState(position = LatLng(it.latitude, it.longitude)),
-                title = "Aap Ki Location (You)",
-                snippet = "Live Position Telemetry"
+                state = MarkerState(position = LatLng(sosLoc.latitude, sosLoc.longitude)),
+                title = "SOS Emergency Alert",
+                snippet = sosAlertMessage ?: "Emergency broadcast"
             )
         }
 
@@ -108,13 +132,24 @@ fun GoogleMapsView(
             }
         }
 
-        // Draw active route polyline path
+        // Draw alternate routes in grey
+        alternateRoutes.forEach { altRoute ->
+            val routePoints = altRoute.points.map { LatLng(it.latitude, it.longitude) }
+            Polyline(
+                points = routePoints,
+                color = Color.Gray.copy(alpha = 0.7f),
+                width = 12f
+            )
+        }
+
+        // Draw active route polyline path on top
         activeRoute?.let { route ->
             val routePoints = route.points.map { LatLng(it.latitude, it.longitude) }
             Polyline(
                 points = routePoints,
                 color = if (route.isHazardSegment) AccentRed else AccentBlue,
-                width = 12f
+                width = 16f,
+                zIndex = 1f
             )
         }
 

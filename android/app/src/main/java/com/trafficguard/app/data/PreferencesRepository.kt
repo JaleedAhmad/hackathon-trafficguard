@@ -16,10 +16,8 @@ enum class ThemeMode {
 
 interface PreferencesRepository {
     val themeMode: Flow<ThemeMode>
-    val preferredLanguage: Flow<String?>
     val isOnboardingCompleted: Flow<Boolean>
     suspend fun setThemeMode(mode: ThemeMode)
-    suspend fun setPreferredLanguage(language: String)
     suspend fun setOnboardingCompleted(completed: Boolean)
 }
 
@@ -29,7 +27,6 @@ class PreferencesRepositoryImpl(private val context: Context) : PreferencesRepos
 
     private object Keys {
         val THEME_MODE = stringPreferencesKey("theme_mode")
-        val PREFERRED_LANGUAGE = stringPreferencesKey("preferred_language")
         val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
     }
 
@@ -42,10 +39,6 @@ class PreferencesRepositoryImpl(private val context: Context) : PreferencesRepos
         }
     }
 
-    override val preferredLanguage: Flow<String?> = context.dataStore.data.map { preferences ->
-        preferences[Keys.PREFERRED_LANGUAGE]
-    }
-
     override val isOnboardingCompleted: Flow<Boolean> = context.dataStore.data.map { preferences ->
         preferences[Keys.ONBOARDING_COMPLETED] ?: false
     }
@@ -53,12 +46,6 @@ class PreferencesRepositoryImpl(private val context: Context) : PreferencesRepos
     override suspend fun setThemeMode(mode: ThemeMode) {
         context.dataStore.edit { preferences ->
             preferences[Keys.THEME_MODE] = mode.name
-        }
-    }
-
-    override suspend fun setPreferredLanguage(language: String) {
-        context.dataStore.edit { preferences ->
-            preferences[Keys.PREFERRED_LANGUAGE] = language
         }
     }
 

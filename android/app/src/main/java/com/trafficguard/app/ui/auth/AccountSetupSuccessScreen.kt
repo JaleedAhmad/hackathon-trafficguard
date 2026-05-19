@@ -39,7 +39,7 @@ fun AccountSetupSuccessScreen(
     onNavigateToMain: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isDark = MaterialTheme.colorScheme.background.value == 0xFF0F172A.toULong()
+    val isDark = MaterialTheme.colorScheme.background == androidx.compose.ui.graphics.Color(0xFF0F172A)
 
     // Bouncy scale scaleIn checkmark tick
     val scale = remember { Animatable(0f) }

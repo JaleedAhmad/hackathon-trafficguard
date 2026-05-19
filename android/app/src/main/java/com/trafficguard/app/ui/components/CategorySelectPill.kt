@@ -39,7 +39,7 @@ fun CategorySelectPill(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isDark = MaterialTheme.colorScheme.background.value == 0xFF0F172A.toULong()
+    val isDark = MaterialTheme.colorScheme.background == androidx.compose.ui.graphics.Color(0xFF0F172A)
 
     val borderCol = if (isSelected) AccentBlue else (if (isDark) DarkBorder else LightBorder)
     val containerCol = if (isSelected) {

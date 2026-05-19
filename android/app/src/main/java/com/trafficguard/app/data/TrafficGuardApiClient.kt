@@ -12,7 +12,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
@@ -31,7 +33,9 @@ data class RawSignalRequest(
     @SerializedName("lat") val lat: Double,
     @SerializedName("lng") val lng: Double,
     @SerializedName("timestamp") val timestamp: String,
-    @SerializedName("language") val language: String? = null
+    @SerializedName("language") val language: String? = null,
+    @SerializedName("category") val category: String? = null,
+    @SerializedName("severity") val severity: String? = null
 )
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -129,7 +133,8 @@ data class NearbyAlert(
     @SerializedName("timestamp") val timestamp: String,
     @SerializedName("alternate_route") val alternateRoute: String?,
     @SerializedName("lat") val lat: Double? = null,
-    @SerializedName("lng") val lng: Double? = null
+    @SerializedName("lng") val lng: Double? = null,
+    @SerializedName("confirmations") val confirmations: Int? = 0
 )
 
 data class NearbyAlertsResponse(
@@ -211,7 +216,9 @@ interface TrafficGuardApiService {
     @GET("alerts/nearby")
     suspend fun getNearbyAlerts(
         @Query("lat") lat: Double = 24.8607,
-        @Query("lng") lng: Double = 67.0011
+        @Query("lng") lng: Double = 67.0011,
+        @Query("title") title: String? = null,
+        @Query("date") date: String? = null
     ): NearbyAlertsResponse
 
     // ── 4. Agent Trace — GET /agents/trace ────────────────────────────────────
@@ -259,7 +266,9 @@ interface TrafficGuardApiService {
 
     @GET("report/{report_id}/comments")
     suspend fun getComments(
-        @Path("report_id") reportId: String
+        @Path("report_id") reportId: String,
+        @Query("limit") limit: Int = 100,
+        @Query("offset") offset: Int = 0
     ): CommentsListResponse
 
     // ── 8. Gamification ──────────────────────────────────────────────────────
@@ -268,6 +277,41 @@ interface TrafficGuardApiService {
 
     @GET("user/rank")
     suspend fun getUserRank(): ApiUserRank
+
+    @GET("user/profile")
+    suspend fun getUserProfile(): ApiUserProfile
+
+    @POST("user/profile")
+    suspend fun updateUserProfile(
+        @Body request: UpdateProfileRequest
+    ): GenericStatusResponse
+
+    @Multipart
+    @POST("user/profile/picture")
+    suspend fun uploadProfilePicture(
+        @Part file: okhttp3.MultipartBody.Part
+    ): UploadPictureResponse
+
+    @GET("user/reports")
+    suspend fun getUserReports(): NearbyAlertsResponse
+
+    // ── 9. Routing ──────────────────────────────────────────────────────────
+    @POST("navigation/route")
+    suspend fun getRoute(
+        @Body request: ApiRouteRequest
+    ): ApiNavigationRouteResponse
+
+    // ── 10. SOS Broadcast ───────────────────────────────────────────────────
+    @POST("sos/broadcast")
+    suspend fun broadcastSos(
+        @Body request: ApiSosBroadcastRequest
+    ): GenericStatusResponse
+
+    // ── 11. Places Autocomplete ──────────────────────────────────────────────
+    @GET("navigation/places")
+    suspend fun getPlacesAutocomplete(
+        @Query("query") query: String
+    ): ApiPlacesResponse
 }
 
 // ─────────────────────────────────────────────
@@ -319,6 +363,53 @@ data class ApiUserRank(
 
 data class LeaderboardResponse(
     @SerializedName("leaderboard") val leaderboard: List<ApiUserRank>
+)
+
+// ─────────────────────────────────────────────
+// NEW RETROFIT SCHEMAS FOR NAVIGATION AND SOS
+// ─────────────────────────────────────────────
+
+data class ApiRoutePoint(
+    @SerializedName("latitude") val latitude: Double,
+    @SerializedName("longitude") val longitude: Double
+)
+
+data class ApiRoutePath(
+    @SerializedName("points") val points: List<ApiRoutePoint>,
+    @SerializedName("distance_meters") val distanceMeters: Int,
+    @SerializedName("duration_seconds") val durationSeconds: Int,
+    @SerializedName("is_hazard_segment") val isHazardSegment: Boolean,
+    @SerializedName("summary") val summary: String,
+    @SerializedName("pros") val pros: String,
+    @SerializedName("cons") val cons: String
+)
+
+data class ApiNavigationRouteResponse(
+    @SerializedName("active_route") val activeRoute: ApiRoutePath,
+    @SerializedName("alternate_routes") val alternateRoutes: List<ApiRoutePath>
+)
+
+data class ApiRouteRequest(
+    @SerializedName("source_lat") val sourceLat: Double,
+    @SerializedName("source_lng") val sourceLng: Double,
+    @SerializedName("dest_lat") val destLat: Double,
+    @SerializedName("dest_lng") val destLng: Double
+)
+
+data class ApiSosBroadcastRequest(
+    @SerializedName("lat") val lat: Double,
+    @SerializedName("lng") val lng: Double,
+    @SerializedName("problem") val problem: String
+)
+
+data class PlaceSuggestion(
+    @SerializedName("description") val description: String,
+    @SerializedName("latitude") val latitude: Double,
+    @SerializedName("longitude") val longitude: Double
+)
+
+data class ApiPlacesResponse(
+    @SerializedName("predictions") val predictions: List<PlaceSuggestion>
 )
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -378,3 +469,24 @@ object TrafficGuardApiClient {
             .create(TrafficGuardApiService::class.java)
     }
 }
+
+data class ApiUserProfile(
+    @SerializedName("uid") val uid: String,
+    @SerializedName("displayName") val displayName: String,
+    @SerializedName("age") val age: Int,
+    @SerializedName("gender") val gender: String,
+    @SerializedName("photoUrl") val photoUrl: String,
+    @SerializedName("totalReports") val totalReports: Int
+)
+
+data class UpdateProfileRequest(
+    @SerializedName("displayName") val displayName: String,
+    @SerializedName("age") val age: Int,
+    @SerializedName("gender") val gender: String,
+    @SerializedName("photoUrl") val photoUrl: String
+)
+
+data class UploadPictureResponse(
+    @SerializedName("status") val status: String,
+    @SerializedName("photoUrl") val photoUrl: String
+)

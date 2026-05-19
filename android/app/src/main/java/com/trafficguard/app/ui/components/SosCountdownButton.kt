@@ -27,7 +27,7 @@ import com.traffic_guard.ai.theme.AccentRed
 
 @Composable
 fun SosCountdownButton(
-    countdownValue: Int,
+    tapsRemaining: Int,
     isBroadcasting: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -74,8 +74,8 @@ fun SosCountdownButton(
                 .clickable { onClick() }
         ) {
             Text(
-                text = if (isBroadcasting) "SOS\nACTIVE" else if (countdownValue > 0) "$countdownValue" else "SOS",
-                style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.Black),
+                text = if (isBroadcasting) "SOS\nACTIVE" else "TAP\n$tapsRemaining",
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Black, fontSize = androidx.compose.ui.unit.TextUnit.Unspecified),
                 color = Color.White,
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center
             )

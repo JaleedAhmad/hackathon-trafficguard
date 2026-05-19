@@ -8,7 +8,13 @@ sealed class CommunityResult<out T> {
 }
 
 interface CommunityRepository {
-    suspend fun getAlertsFeed(limit: Int = 10, offset: Int = 0, filter: String = "ALL"): CommunityResult<List<Incident>>
+    suspend fun getAlertsFeed(
+        limit: Int = 10,
+        offset: Int = 0,
+        filter: String = "ALL",
+        title: String? = null,
+        date: String? = null
+    ): CommunityResult<List<Incident>>
     suspend fun getIncidentDetails(incidentId: String): CommunityResult<Incident>
     
     // Voting
@@ -16,7 +22,8 @@ interface CommunityRepository {
     suspend fun getIncidentVoteStats(incidentId: String): CommunityResult<Pair<Int, VoteType>>
     
     // Comments
-    fun getCommentsStream(incidentId: String): Flow<List<Comment>>
+    fun getCommentsLiveStream(incidentId: String): Flow<Comment>
+    suspend fun getCommentsPage(incidentId: String, limit: Int = 100, offset: Int = 0): CommunityResult<List<Comment>>
     suspend fun addComment(incidentId: String, text: String): CommunityResult<Unit>
     
     // Reputation

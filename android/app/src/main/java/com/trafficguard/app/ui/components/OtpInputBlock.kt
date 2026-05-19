@@ -36,7 +36,7 @@ fun OtpInputBlock(
     length: Int = 6,
     isError: Boolean = false
 ) {
-    val isDark = MaterialTheme.colorScheme.background.value == 0xFF0F172A.toULong()
+    val isDark = MaterialTheme.colorScheme.background == androidx.compose.ui.graphics.Color(0xFF0F172A)
     
     // We create focus requesters to manage focus traversal
     val focusRequesters = remember { List(length) { FocusRequester() } }

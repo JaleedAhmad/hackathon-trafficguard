@@ -61,7 +61,9 @@ class ReportRepositoryImpl(private val context: Context) : ReportRepository {
             lat = report.latitude,
             lng = report.longitude,
             timestamp = isoTimestamp,
-            language = "en"
+            language = "en",
+            category = report.category,
+            severity = report.severity.name
         )
 
         return try {
@@ -118,7 +120,9 @@ class ReportRepositoryImpl(private val context: Context) : ReportRepository {
                     source = "community_report",
                     lat = queued.latitude,
                     lng = queued.longitude,
-                    timestamp = isoFromMillis(queued.timestamp)
+                    timestamp = isoFromMillis(queued.timestamp),
+                    category = queued.category,
+                    severity = queued.severity
                 )
                 api.submitReport(rawSignal)
                 dbHelper.markReportSynced(queued.id)
@@ -151,14 +155,7 @@ class ReportRepositoryImpl(private val context: Context) : ReportRepository {
     }
 
     private fun buildReportText(report: ReportFormState): String {
-        return buildString {
-            append(report.category)
-            if (report.description.isNotBlank()) {
-                append(": ")
-                append(report.description)
-            }
-            append(" [Severity: ${report.severity.name}]")
-        }
+        return report.description
     }
 
     private fun isoNow(): String {

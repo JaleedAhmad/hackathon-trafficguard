@@ -11,7 +11,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+import com.traffic_guard.ai.data.LocationRepository
+
 data class EmergencyRouteUiState(
+    val userLocation: MapLatLng? = null,
     val closestCenters: List<EmergencyCenter> = emptyList(),
     val selectedCenter: EmergencyCenter? = null,
     val isLoading: Boolean = true,
@@ -19,7 +22,8 @@ data class EmergencyRouteUiState(
 )
 
 class EmergencyRoutingViewModel(
-    private val emergencyRepository: EmergencyRepository
+    private val emergencyRepository: EmergencyRepository,
+    private val locationRepository: LocationRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(EmergencyRouteUiState())
@@ -29,7 +33,8 @@ class EmergencyRoutingViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             
-            val location = MapLatLng(33.0, 73.0) // Mock location
+            val location = locationRepository.currentLocation ?: MapLatLng(33.7220, 73.0580)
+            _uiState.update { it.copy(userLocation = location, isLoading = true, error = null) }
             val result = emergencyRepository.getNearbyEmergencyCenters(location)
             
             if (result is com.traffic_guard.ai.data.AppResult.Success) {

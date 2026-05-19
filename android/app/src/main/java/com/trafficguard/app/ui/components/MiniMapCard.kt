@@ -41,7 +41,7 @@ fun MiniMapCard(
     onLocationChanged: (Double, Double) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isDark = MaterialTheme.colorScheme.background.value == 0xFF0F172A.toULong()
+    val isDark = MaterialTheme.colorScheme.background == androidx.compose.ui.graphics.Color(0xFF0F172A)
     val pinPos = LatLng(latitude, longitude)
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(pinPos, 15f)
@@ -59,7 +59,7 @@ fun MiniMapCard(
         border = BorderStroke(1.dp, if (isDark) DarkBorder else LightBorder),
         modifier = modifier
             .fillMaxWidth()
-            .height(220.dp)
+            .height(350.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             GoogleMap(

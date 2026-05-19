@@ -10,6 +10,9 @@ Responsibilities:
 
 from __future__ import annotations
 
+from dotenv import load_dotenv
+load_dotenv()
+
 import logging
 from datetime import datetime, timezone
 from functools import lru_cache
@@ -33,8 +36,11 @@ def _init_firebase() -> None:
         import os
         cred_path = os.getenv("FIREBASE_CREDENTIALS_PATH", "./firebase_credentials.json")
         cred = credentials.Certificate(cred_path)
-        firebase_admin.initialize_app(cred)
-        logger.info("Firebase Admin SDK initialized.")
+        bucket_name = os.getenv("FIREBASE_STORAGE_BUCKET") or "poetic-fact-496519-k2.firebasestorage.app"
+        firebase_admin.initialize_app(cred, {
+            "storageBucket": bucket_name
+        })
+        logger.info(f"Firebase Admin SDK initialized with Storage support: {bucket_name}")
 
 
 @lru_cache(maxsize=1)

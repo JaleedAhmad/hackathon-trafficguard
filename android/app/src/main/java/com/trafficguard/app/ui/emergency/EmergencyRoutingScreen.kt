@@ -22,12 +22,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.traffic_guard.ai.data.MapLatLng
 import com.traffic_guard.ai.theme.AccentRed
 import com.traffic_guard.ai.theme.DarkBgDeep
 import com.traffic_guard.ai.ui.components.AppButton
 import com.traffic_guard.ai.ui.components.AppTopBar
 import com.traffic_guard.ai.ui.components.ButtonVariant
 import com.traffic_guard.ai.ui.components.EmergencyRouteCard
+
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.CameraUpdateFactory
 
 @Composable
 fun EmergencyRoutingScreen(
@@ -37,8 +46,33 @@ fun EmergencyRoutingScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
 
+    val cameraPositionState = rememberCameraPositionState {
+        val initialLoc = state.userLocation ?: MapLatLng(33.7220, 73.0580)
+        position = CameraPosition.fromLatLngZoom(LatLng(initialLoc.latitude, initialLoc.longitude), 14f)
+    }
+
     LaunchedEffect(Unit) {
         viewModel.loadNearbyCenters()
+    }
+
+    LaunchedEffect(state.userLocation) {
+        state.userLocation?.let { userLoc ->
+            if (state.selectedCenter == null) {
+                cameraPositionState.animate(
+                    CameraUpdateFactory.newLatLngZoom(LatLng(userLoc.latitude, userLoc.longitude), 14.5f),
+                    1000
+                )
+            }
+        }
+    }
+
+    LaunchedEffect(state.selectedCenter) {
+        state.selectedCenter?.let { selected ->
+            cameraPositionState.animate(
+                CameraUpdateFactory.newLatLngZoom(LatLng(selected.location.latitude, selected.location.longitude), 15.5f),
+                1000
+            )
+        }
     }
 
     Column(
@@ -55,15 +89,27 @@ fun EmergencyRoutingScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .background(Color(0xFF1E293B)) // Placeholder for Map
         ) {
-            Text(
-                text = "Map view highlights safe shelter and hospital overlays here.",
-                color = Color.LightGray,
-                modifier = Modifier.align(Alignment.Center)
-            )
-            
-            // Map markers would go here
+            GoogleMap(
+                modifier = Modifier.fillMaxSize(),
+                cameraPositionState = cameraPositionState
+            ) {
+                // User current location marker
+                val userLatLng = state.userLocation ?: MapLatLng(33.7220, 73.0580)
+                Marker(
+                    state = MarkerState(position = LatLng(userLatLng.latitude, userLatLng.longitude)),
+                    title = "Your Location"
+                )
+
+                // Safe zones markers
+                state.closestCenters.forEach { center ->
+                    Marker(
+                        state = MarkerState(position = LatLng(center.location.latitude, center.location.longitude)),
+                        title = center.name,
+                        snippet = "${center.type}: ${center.address}"
+                    )
+                }
+            }
         }
 
         Box(
@@ -93,17 +139,6 @@ fun EmergencyRoutingScreen(
                                 modifier = Modifier.padding(bottom = 8.dp)
                             )
                         }
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    if (state.selectedCenter != null) {
-                        AppButton(
-                            text = "Start Navigation to ${state.selectedCenter?.name}",
-                            onClick = { /* Start real navigation */ },
-                            variant = ButtonVariant.SOLID,
-                            modifier = Modifier.fillMaxWidth()
-                        )
                     }
                 }
             }

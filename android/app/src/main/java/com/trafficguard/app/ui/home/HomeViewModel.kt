@@ -38,16 +38,23 @@ class HomeViewModel(
             }
         }
 
-        // Fetch live alerts from the backend instead of static Islamabad mock incidents
+        // Fetch and load initial incidents
+        refreshIncidents(showLoading = true)
+    }
+
+    fun refreshIncidents(showLoading: Boolean = false) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            when (val result = communityRepository.getAlertsFeed(limit = 50, offset = 0, filter = "ALL")) {
+            if (showLoading) {
+                _uiState.update { it.copy(isLoading = true) }
+            }
+            when (val result = communityRepository.getAlertsFeed(limit = 100, offset = 0, filter = "ALL")) {
                 is com.traffic_guard.ai.data.CommunityResult.Success -> {
-                    val realIncidents = result.data
+                    val cutoff = System.currentTimeMillis() - (24 * 60 * 60 * 1000) // 24 hours ago
+                    val filtered = result.data.filter { it.timestamp >= cutoff }
                     _uiState.update { state ->
                         state.copy(
-                            nearbyIncidents = realIncidents,
-                            activeAlertCount = realIncidents.size,
+                            nearbyIncidents = filtered,
+                            activeAlertCount = filtered.size,
                             isLoading = false
                         )
                     }

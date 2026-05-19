@@ -9,6 +9,8 @@ class RawSignal(BaseModel):
     lng: float
     timestamp: str
     language: Optional[str] = None
+    category: Optional[str] = None
+    severity: Optional[str] = None
 
 class SignalObject(BaseModel):
     signal_id: str
@@ -44,3 +46,19 @@ class SituationPlanResult(BaseModel):
     escalation_probability: str
     actions: List[ActionItem]
     ai_reasoning: str
+
+
+class UserProfileResponse(BaseModel):
+    uid: str
+    displayName: str
+    age: int
+    gender: str
+    photoUrl: str
+    totalReports: int
+
+
+class UpdateProfileRequest(BaseModel):
+    displayName: str
+    age: int
+    gender: str
+    photoUrl: str

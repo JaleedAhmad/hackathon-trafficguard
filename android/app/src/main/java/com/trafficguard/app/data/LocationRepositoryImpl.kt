@@ -86,6 +86,26 @@ class LocationRepositoryImpl(private val context: Context) : LocationRepository 
         }
     }
 
+    override val currentLocation: MapLatLng?
+        get() = _locationFlow.value
+
+    override fun isLocationEnabled(): Boolean {
+        val hasFine = androidx.core.content.ContextCompat.checkSelfPermission(
+            context,
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        val hasCoarse = androidx.core.content.ContextCompat.checkSelfPermission(
+            context,
+            android.Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        if (!hasFine && !hasCoarse) return false
+
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as android.location.LocationManager
+        val isGpsEnabled = locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)
+        val isNetworkEnabled = locationManager.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER)
+        return isGpsEnabled || isNetworkEnabled
+    }
+
     override fun stopLocationUpdates() {
         locationCallback?.let {
             fusedLocationClient.removeLocationUpdates(it)
@@ -94,22 +114,6 @@ class LocationRepositoryImpl(private val context: Context) : LocationRepository 
     }
 
     private fun mockLocationStream() {
-        // Start streaming Islamabad coordinates for premium simulation demo
-        val mockPoints = listOf(
-            MapLatLng(33.6844, 73.0479),
-            MapLatLng(33.6855, 73.0490),
-            MapLatLng(33.6870, 73.0515),
-            MapLatLng(33.6895, 73.0540),
-            MapLatLng(33.6910, 73.0565)
-        )
-        Thread {
-            var i = 0
-            while (locationCallback != null) {
-                _locationFlow.value = mockPoints[i % mockPoints.size]
-                _speedFlow.value = 12.5f
-                i++
-                try { Thread.sleep(3000) } catch (e: InterruptedException) { break }
-            }
-        }.start()
+        // Mock stream removed. Relying strictly on real GPS location from FusedLocationProviderClient.
     }
 }

@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.CarCrash
 import androidx.compose.material.icons.filled.Traffic
 import androidx.compose.material.icons.filled.Water
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -56,13 +57,14 @@ fun QuickReportModal(
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.formState.collectAsState()
-    val isDark = MaterialTheme.colorScheme.background.value == 0xFF0F172A.toULong()
+    val isDark = MaterialTheme.colorScheme.background == androidx.compose.ui.graphics.Color(0xFF0F172A)
 
     val categories = listOf(
         CategoryItem("FLOOD", Icons.Default.Water),
         CategoryItem("TRAFFIC", Icons.Default.Traffic),
         CategoryItem("ACCIDENT", Icons.Default.CarCrash),
-        CategoryItem("WEATHER", Icons.Default.Cloud)
+        CategoryItem("WEATHER", Icons.Default.Cloud),
+        CategoryItem("OTHER", Icons.Default.Info)
     )
 
     ModalBottomSheet(
@@ -98,7 +100,7 @@ fun QuickReportModal(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(180.dp)
+                    .height(260.dp)
             ) {
                 items(categories) { item ->
                     CategorySelectPill(

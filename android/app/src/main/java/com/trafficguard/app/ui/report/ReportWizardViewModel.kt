@@ -1,16 +1,36 @@
 package com.traffic_guard.ai.ui.report
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.traffic_guard.ai.data.LocationRepository
 import com.traffic_guard.ai.data.ReportFormState
 import com.traffic_guard.ai.data.Severity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
-class ReportWizardViewModel : ViewModel() {
+class ReportWizardViewModel(
+    private val locationRepository: LocationRepository
+) : ViewModel() {
 
     private val _formState = MutableStateFlow(ReportFormState())
     val formState: StateFlow<ReportFormState> = _formState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            locationRepository.startLocationUpdates()
+            locationRepository.locationFlow.collectLatest { latLng ->
+                if (_formState.value.latitude == 0.0 && _formState.value.longitude == 0.0) {
+                    _formState.value = _formState.value.copy(
+                        latitude = latLng.latitude,
+                        longitude = latLng.longitude
+                    )
+                }
+            }
+        }
+    }
 
     fun updateCategory(category: String) {
         _formState.value = _formState.value.copy(category = category)

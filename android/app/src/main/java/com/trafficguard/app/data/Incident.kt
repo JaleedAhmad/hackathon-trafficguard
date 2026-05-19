@@ -7,7 +7,8 @@ enum class IncidentType {
     FLOOD,
     TRAFFIC,
     ACCIDENT,
-    WEATHER
+    WEATHER,
+    OTHER
 }
 
 @Serializable
@@ -24,5 +25,6 @@ data class Incident(
     val location: MapLatLng,
     val severity: Int, // 1 to 5
     val type: IncidentType,
-    val timestamp: Long = System.currentTimeMillis()
+    val timestamp: Long = System.currentTimeMillis(),
+    val confirmations: Int = 0
 )

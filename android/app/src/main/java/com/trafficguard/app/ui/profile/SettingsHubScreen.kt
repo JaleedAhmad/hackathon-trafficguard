@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -30,7 +31,7 @@ fun SettingsHubScreen(
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
-    val isDark = MaterialTheme.colorScheme.background.value == 0xFF0F172A.toULong()
+    val isDark = MaterialTheme.colorScheme.background == androidx.compose.ui.graphics.Color(0xFF0F172A)
 
     Column(
         modifier = modifier
@@ -65,27 +66,41 @@ fun SettingsHubScreen(
             HorizontalDivider(color = if (isDark) Color.DarkGray else Color.LightGray)
 
             SettingsToggleRow(
+                title = "Location Services",
+                subtitle = "Enable exact location reporting to route around hazard zones in real time.",
+                isChecked = state.locationEnabled,
+                onCheckedChange = { viewModel.toggleLocation(it) }
+            )
+
+            HorizontalDivider(color = if (isDark) Color.DarkGray else Color.LightGray)
+
+            SettingsToggleRow(
                 title = "Push Notifications",
                 subtitle = "Receive alerts for nearby hazards.",
                 isChecked = state.alertsEnabled,
                 onCheckedChange = { viewModel.toggleAlerts(it) }
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            HorizontalDivider(color = if (isDark) Color.DarkGray else Color.LightGray)
 
-            Text(
-                text = "Accessibility",
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                color = AccentBlue,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            SettingsToggleRow(
+                title = "Dark Mode",
+                subtitle = "Enable dark theme for the entire app.",
+                isChecked = state.theme == com.traffic_guard.ai.data.ThemeType.DARK,
+                onCheckedChange = { isDarkTheme ->
+                    viewModel.toggleTheme(if (isDarkTheme) com.traffic_guard.ai.data.ThemeType.DARK else com.traffic_guard.ai.data.ThemeType.LIGHT)
+                }
             )
-            
-            // Add other accessibility settings later (e.g. font slider)
-            Text(
-                text = "Font scale and custom themes can be adjusted here.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = if (isDark) Color.LightGray else Color.DarkGray,
-                modifier = Modifier.padding(horizontal = 16.dp)
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            com.traffic_guard.ai.ui.components.AppButton(
+                text = "Save Changes",
+                onClick = onNavigateBack,
+                variant = com.traffic_guard.ai.ui.components.ButtonVariant.SOLID,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 24.dp)
             )
         }
     }

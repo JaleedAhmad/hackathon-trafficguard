@@ -12,7 +12,6 @@ import kotlinx.coroutines.launch
 
 sealed interface SplashState {
     object Initializing : SplashState
-    object NavigateToLanguageSelection : SplashState
     object NavigateToOnboarding : SplashState
     object NavigateToWelcome : SplashState
     object NavigateToMain : SplashState
@@ -30,13 +29,10 @@ class SplashViewModel(
             // Emulate bootstrap checks (2 seconds)
             delay(2000)
             
-            val language = preferencesRepository.preferredLanguage.first()
             val onboardingCompleted = preferencesRepository.isOnboardingCompleted.first()
             val firebaseUser = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
 
-            if (language == null) {
-                _uiState.value = SplashState.NavigateToLanguageSelection
-            } else if (!onboardingCompleted) {
+            if (!onboardingCompleted) {
                 _uiState.value = SplashState.NavigateToOnboarding
             } else if (firebaseUser != null) {
                 _uiState.value = SplashState.NavigateToMain

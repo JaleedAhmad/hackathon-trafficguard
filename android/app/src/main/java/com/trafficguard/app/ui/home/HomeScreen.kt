@@ -28,6 +28,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -54,7 +55,11 @@ fun HomeScreen(
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
-    val isDark = MaterialTheme.colorScheme.background.value == 0xFF0F172A.toULong()
+    val isDark = MaterialTheme.colorScheme.background == androidx.compose.ui.graphics.Color(0xFF0F172A)
+
+    LaunchedEffect(Unit) {
+        viewModel.refreshIncidents(showLoading = false)
+    }
 
     Box(
         modifier = modifier
@@ -77,31 +82,6 @@ fun HomeScreen(
             )
         }
 
-        // Top Header Alert Banner HUD
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.TopCenter)
-                .padding(top = 16.dp)
-        ) {
-            if (state.nearbyIncidents.isNotEmpty()) {
-                LazyRow(
-                    contentPadding = PaddingValues(horizontal = 16.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    items(state.nearbyIncidents) { incident ->
-                        AlertBannerCard(
-                            title = incident.title,
-                            description = incident.description,
-                            severity = incident.severity,
-                            modifier = Modifier
-                                .fillParentMaxWidth(0.9f)
-                                .padding(end = 8.dp)
-                        )
-                    }
-                }
-            }
-        }
 
         // Bottom Dashboard Controller HUD
         Card(

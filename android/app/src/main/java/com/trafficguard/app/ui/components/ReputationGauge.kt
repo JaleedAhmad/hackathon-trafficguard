@@ -25,7 +25,7 @@ fun ReputationGauge(
     rankClass: String,
     modifier: Modifier = Modifier
 ) {
-    val isDark = MaterialTheme.colorScheme.background.value == 0xFF0F172A.toULong()
+    val isDark = MaterialTheme.colorScheme.background == androidx.compose.ui.graphics.Color(0xFF0F172A)
     val progress = (score.toFloat() / maxScore.toFloat()).coerceIn(0f, 1f)
 
     val gaugeColor = when (rankClass) {

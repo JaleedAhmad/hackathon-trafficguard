@@ -38,6 +38,11 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Initialize the Places SDK
+        if (!com.google.android.libraries.places.api.Places.isInitialized()) {
+            com.google.android.libraries.places.api.Places.initialize(applicationContext, "AIzaSyBGPletDxQfCYv9zilk_HR9ScM96A5cwss")
+        }
 
         enableEdgeToEdge()
         setContent {

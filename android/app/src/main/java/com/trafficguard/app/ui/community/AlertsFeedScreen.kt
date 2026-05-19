@@ -30,12 +30,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.traffic_guard.ai.theme.AccentBlue
 import com.traffic_guard.ai.theme.DarkBgDeep
 import com.traffic_guard.ai.theme.LightBgDeep
 import com.traffic_guard.ai.ui.components.AppTopBar
 import com.traffic_guard.ai.ui.components.IncidentAlertFeedCard
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlertsFeedScreen(
     viewModel: AlertsFeedViewModel,
@@ -45,7 +59,7 @@ fun AlertsFeedScreen(
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
-    val isDark = MaterialTheme.colorScheme.background.value == 0xFF0F172A.toULong()
+    val isDark = MaterialTheme.colorScheme.background == androidx.compose.ui.graphics.Color(0xFF0F172A)
 
     val listState = rememberLazyListState()
 
@@ -64,6 +78,10 @@ fun AlertsFeedScreen(
         }
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.loadFeed(refresh = true)
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -73,6 +91,102 @@ fun AlertsFeedScreen(
             title = "Community Alerts Feed",
             onBackClick = onNavigateBack
         )
+
+        // Search Filters Card/Container
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+        ) {
+            // Title Filter
+            OutlinedTextField(
+                value = state.titleQuery,
+                onValueChange = { viewModel.setTitleQuery(it) },
+                placeholder = { Text("Search by title or description...", color = Color.Gray) },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Search",
+                        tint = if (isDark) Color.LightGray else Color.DarkGray
+                    )
+                },
+                singleLine = true,
+                shape = RoundedCornerShape(12.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = if (isDark) Color.White else Color.Black,
+                    unfocusedTextColor = if (isDark) Color.LightGray else Color.DarkGray,
+                    focusedBorderColor = AccentBlue,
+                    unfocusedBorderColor = if (isDark) Color.DarkGray else Color.LightGray
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp)
+            )
+
+            // Date Filter
+            var showDatePicker by remember { mutableStateOf(false) }
+            val datePickerState = rememberDatePickerState()
+
+            if (showDatePicker) {
+                DatePickerDialog(
+                    onDismissRequest = { showDatePicker = false },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            val selectedDate = datePickerState.selectedDateMillis?.let {
+                                java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(java.util.Date(it))
+                            }
+                            if (selectedDate != null) {
+                                viewModel.setDateQuery(selectedDate)
+                            }
+                            showDatePicker = false
+                        }) {
+                            Text("OK", color = AccentBlue)
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = {
+                            viewModel.setDateQuery("") // Clear filter
+                            showDatePicker = false
+                        }) {
+                            Text("Clear", color = Color.Gray)
+                        }
+                    }
+                ) {
+                    DatePicker(state = datePickerState)
+                }
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp)
+                    .clickable { showDatePicker = true }
+            ) {
+                OutlinedTextField(
+                    value = if (state.dateQuery.isEmpty()) "" else "Date: ${state.dateQuery}",
+                    onValueChange = {},
+                    placeholder = { Text("Select Date from Calendar...", color = Color.Gray) },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.DateRange,
+                            contentDescription = "Date",
+                            tint = if (isDark) Color.LightGray else Color.DarkGray
+                        )
+                    },
+                    singleLine = true,
+                    readOnly = true,
+                    enabled = false,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        disabledTextColor = if (isDark) Color.White else Color.Black,
+                        disabledBorderColor = if (isDark) Color.DarkGray else Color.LightGray,
+                        disabledPlaceholderColor = Color.Gray,
+                        disabledLeadingIconColor = if (isDark) Color.LightGray else Color.DarkGray
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
 
         // Filters
         LazyRow(

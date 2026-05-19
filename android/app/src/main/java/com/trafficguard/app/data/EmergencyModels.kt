@@ -40,5 +40,6 @@ data class SettingsState(
     val theme: ThemeType = ThemeType.SYSTEM,
     val dataSaverEnabled: Boolean = false,
     val alertsEnabled: Boolean = true,
+    val locationEnabled: Boolean = true,
     val fontSizeFactor: Float = 1.0f
 )

@@ -11,51 +11,63 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+import com.traffic_guard.ai.data.LocationRepository
+
 data class SosUiState(
-    val countdownValue: Int = 3,
+    val tapsRemaining: Int = 3,
     val isBroadcasting: Boolean = false,
     val contactsAlerted: Boolean = false,
     val emergencyActive: Boolean = false,
+    val locationNotEnabled: Boolean = false,
     val error: String? = null
 )
 
 class SosViewModel(
-    private val emergencyRepository: EmergencyRepository
+    private val emergencyRepository: EmergencyRepository,
+    private val locationRepository: LocationRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SosUiState())
     val uiState: StateFlow<SosUiState> = _uiState.asStateFlow()
 
-    private var countdownJob: kotlinx.coroutines.Job? = null
+    init {
+        locationRepository.startLocationUpdates()
+    }
 
-    fun startSosCountdown() {
-        if (_uiState.value.isBroadcasting || countdownJob?.isActive == true) return
+    fun registerSosTap(problem: String) {
+        if (_uiState.value.isBroadcasting) return
 
-        _uiState.update { it.copy(countdownValue = 3, error = null) }
+        if (!locationRepository.isLocationEnabled()) {
+            _uiState.update { it.copy(locationNotEnabled = true) }
+            return
+        }
 
-        countdownJob = viewModelScope.launch {
-            for (i in 3 downTo 1) {
-                _uiState.update { it.copy(countdownValue = i) }
-                delay(1000)
-            }
-            triggerEmergency()
+        val remaining = _uiState.value.tapsRemaining
+        if (remaining <= 1) {
+            _uiState.update { it.copy(tapsRemaining = 0) }
+            triggerEmergency(problem)
+        } else {
+            _uiState.update { it.copy(tapsRemaining = remaining - 1) }
         }
     }
 
     fun abortSos() {
-        countdownJob?.cancel()
-        _uiState.update { it.copy(countdownValue = 3, isBroadcasting = false, emergencyActive = false) }
+        _uiState.update { it.copy(tapsRemaining = 3, isBroadcasting = false, emergencyActive = false, locationNotEnabled = false) }
         viewModelScope.launch {
             emergencyRepository.cancelSos()
         }
     }
 
-    private fun triggerEmergency() {
-        _uiState.update { it.copy(isBroadcasting = true, countdownValue = 0) }
+    fun resetSosState() {
+        _uiState.update { it.copy(tapsRemaining = 3, isBroadcasting = false, contactsAlerted = false, emergencyActive = false, locationNotEnabled = false) }
+    }
+
+    private fun triggerEmergency(problem: String) {
+        _uiState.update { it.copy(isBroadcasting = true) }
 
         viewModelScope.launch {
-            val location = MapLatLng(33.0, 73.0) // Mock current location
-            val result = emergencyRepository.triggerSos(location, true)
+            val location = locationRepository.currentLocation ?: MapLatLng(33.7220, 73.0580)
+            val result = emergencyRepository.triggerSos(location, problem, true)
 
             if (result is com.traffic_guard.ai.data.AppResult.Success) {
                 _uiState.update {
@@ -68,6 +80,7 @@ class SosViewModel(
                 _uiState.update {
                     it.copy(
                         isBroadcasting = false,
+                        tapsRemaining = 3,
                         error = "Failed to broadcast SOS. Ensure SMS permissions are enabled for offline fallback."
                     )
                 }
@@ -75,3 +88,4 @@ class SosViewModel(
         }
     }
 }
+

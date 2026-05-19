@@ -1,6 +1,7 @@
 package com.traffic_guard.ai.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,9 +33,10 @@ import com.traffic_guard.ai.theme.LightTextSecondary
 fun RouteAlternativeItem(
     route: RoutePath,
     onClick: () -> Unit,
+    isRecommended: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    val isDark = MaterialTheme.colorScheme.background.value == 0xFF0F172A.toULong()
+    val isDark = MaterialTheme.colorScheme.background == androidx.compose.ui.graphics.Color(0xFF0F172A)
 
     val formattedDuration = "${route.durationSeconds / 60} min"
     val formattedDist = if (route.distanceMeters >= 1000) {
@@ -46,11 +48,21 @@ fun RouteAlternativeItem(
     Card(
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (isDark) DarkBgCard else LightBgCard
+            containerColor = if (isRecommended) {
+                if (isDark) Color(0xFF1E293B) else Color(0xFFEFF6FF)
+            } else {
+                if (isDark) DarkBgCard else LightBgCard
+            }
         ),
         border = BorderStroke(
-            1.dp,
-            if (route.isHazardSegment) AccentRed else (if (isDark) DarkBorder else LightBorder)
+            width = if (isRecommended) 2.dp else 1.dp,
+            color = if (isRecommended) {
+                Color(0xFF3B82F6) // Neon Blue
+            } else if (route.isHazardSegment) {
+                AccentRed
+            } else {
+                if (isDark) DarkBorder else LightBorder
+            }
         ),
         modifier = modifier
             .fillMaxWidth()
@@ -63,11 +75,24 @@ fun RouteAlternativeItem(
                 .padding(16.dp)
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = route.summary,
-                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                    color = if (isDark) Color.White else Color.Black
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = route.summary,
+                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                        color = if (isDark) Color.White else Color.Black
+                    )
+                    if (isRecommended) {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "RECOMMENDED",
+                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                            color = Color.White,
+                            modifier = Modifier
+                                .background(Color(0xFF3B82F6), RoundedCornerShape(4.dp))
+                                .padding(horizontal = 6.dp, vertical = 2.dp)
+                        )
+                    }
+                }
                 Text(
                     text = "$formattedDuration • $formattedDist",
                     style = MaterialTheme.typography.bodyMedium,

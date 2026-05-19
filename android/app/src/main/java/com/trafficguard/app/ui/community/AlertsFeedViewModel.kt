@@ -13,6 +13,8 @@ import kotlinx.coroutines.launch
 data class FeedUiState(
     val alerts: List<Incident> = emptyList(),
     val activeFilter: String = "ALL",
+    val titleQuery: String = "",
+    val dateQuery: String = "",
     val isRefreshing: Boolean = false,
     val isLoadingMore: Boolean = false,
     val error: String? = null
@@ -39,6 +41,16 @@ class AlertsFeedViewModel(
         }
     }
 
+    fun setTitleQuery(query: String) {
+        _uiState.update { it.copy(titleQuery = query) }
+        loadFeed(refresh = true)
+    }
+
+    fun setDateQuery(query: String) {
+        _uiState.update { it.copy(dateQuery = query) }
+        loadFeed(refresh = true)
+    }
+
     fun loadFeed(refresh: Boolean = false) {
         if (refresh) {
             _uiState.update { it.copy(isRefreshing = true, error = null) }
@@ -49,18 +61,23 @@ class AlertsFeedViewModel(
         }
 
         viewModelScope.launch {
+            val tQuery = _uiState.value.titleQuery.trim().takeIf { it.isNotEmpty() }
+            val dQuery = _uiState.value.dateQuery.trim().takeIf { it.isNotEmpty() }
+            
             when (val result = communityRepository.getAlertsFeed(
                 limit = PAGE_SIZE,
                 offset = currentOffset,
-                filter = _uiState.value.activeFilter
+                filter = _uiState.value.activeFilter,
+                title = tQuery,
+                date = dQuery
             )) {
                 is com.traffic_guard.ai.data.CommunityResult.Success -> {
                     val newAlerts = result.data
                     _uiState.update { state ->
                         state.copy(
-                            alerts = if (refresh) newAlerts else state.alerts + newAlerts,
-                            isRefreshing = false,
-                            isLoadingMore = false
+                             alerts = if (refresh) newAlerts else state.alerts + newAlerts,
+                             isRefreshing = false,
+                             isLoadingMore = false
                         )
                     }
                     currentOffset += newAlerts.size

@@ -3,6 +3,7 @@ package com.traffic_guard.ai
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
@@ -14,8 +15,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.traffic_guard.ai.data.AuthRepository
 import com.traffic_guard.ai.data.PreferencesRepository
 import com.traffic_guard.ai.data.ThemeMode
-import com.traffic_guard.ai.ui.language.LanguageSelectionScreen
-import com.traffic_guard.ai.ui.language.LanguageViewModel
+
 import com.traffic_guard.ai.ui.onboarding.OnboardingScreen
 import com.traffic_guard.ai.ui.onboarding.OnboardingViewModel
 import com.traffic_guard.ai.ui.permissions.PermissionsOnboardingScreen
@@ -85,8 +85,16 @@ fun MainNavigation(
     val backStack = rememberNavBackStack(Splash)
     val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
     val context = LocalContext.current
+    val sharedLocationRepository = remember { LocationRepositoryImpl(context.applicationContext) }
 
-    val sharedReportWizardViewModel: ReportWizardViewModel = viewModel()
+    val sharedReportWizardViewModel: ReportWizardViewModel = viewModel(
+        factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return ReportWizardViewModel(sharedLocationRepository) as T
+            }
+        }
+    )
     val sharedDuplicateCheckViewModel: DuplicateCheckViewModel = viewModel(
         factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
@@ -112,10 +120,6 @@ fun MainNavigation(
                     }
                 )
                 SplashScreen(
-                    onNavigateToLanguageSelection = {
-                        backStack.removeLastOrNull()
-                        backStack.add(LanguageSelection)
-                    },
                     onNavigateToOnboarding = {
                         backStack.removeLastOrNull()
                         backStack.add(Onboarding)
@@ -132,23 +136,7 @@ fun MainNavigation(
                 )
             }
 
-            entry<LanguageSelection> {
-                val langViewModel: LanguageViewModel = viewModel(
-                    factory = object : ViewModelProvider.Factory {
-                        @Suppress("UNCHECKED_CAST")
-                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                            return LanguageViewModel(preferencesRepository) as T
-                        }
-                    }
-                )
-                LanguageSelectionScreen(
-                    onNavigateToOnboarding = {
-                        backStack.removeLastOrNull()
-                        backStack.add(Onboarding)
-                    },
-                    viewModel = langViewModel
-                )
-            }
+
 
             entry<Onboarding> {
                 val onboardingViewModel: OnboardingViewModel = viewModel(
@@ -296,9 +284,8 @@ fun MainNavigation(
                     factory = object : ViewModelProvider.Factory {
                         @Suppress("UNCHECKED_CAST")
                         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                            val locationRepo = LocationRepositoryImpl(context.applicationContext)
                             val communityRepo = CommunityRepositoryImpl()
-                            return HomeViewModel(locationRepo, communityRepo) as T
+                            return HomeViewModel(sharedLocationRepository, communityRepo) as T
                         }
                     }
                 )
@@ -354,9 +341,8 @@ fun MainNavigation(
                     factory = object : ViewModelProvider.Factory {
                         @Suppress("UNCHECKED_CAST")
                         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                            val locationRepo = LocationRepositoryImpl(context.applicationContext)
                             val communityRepo = CommunityRepositoryImpl()
-                            return HomeViewModel(locationRepo, communityRepo) as T
+                            return HomeViewModel(sharedLocationRepository, communityRepo) as T
                         }
                     }
                 )
@@ -374,9 +360,8 @@ fun MainNavigation(
                     factory = object : ViewModelProvider.Factory {
                         @Suppress("UNCHECKED_CAST")
                         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                            val locationRepo = LocationRepositoryImpl(context.applicationContext)
                             val navRepo = NavigationRepositoryImpl()
-                            return NavigationViewModel(navRepo, locationRepo) as T
+                            return NavigationViewModel(navRepo, sharedLocationRepository) as T
                         }
                     }
                 )
@@ -553,12 +538,13 @@ fun MainNavigation(
             }
 
             entry<SosDashboard> {
+                val context = LocalContext.current
                 val sosVM: SosViewModel = viewModel(
                     factory = object : ViewModelProvider.Factory {
                         @Suppress("UNCHECKED_CAST")
                         override fun <T : ViewModel> create(modelClass: Class<T>): T {
                             val repo = EmergencyRepositoryImpl()
-                            return SosViewModel(repo) as T
+                            return SosViewModel(repo, sharedLocationRepository) as T
                         }
                     }
                 )
@@ -570,12 +556,13 @@ fun MainNavigation(
             }
 
             entry<EmergencyRouting> {
+                val context = LocalContext.current
                 val routingVM: EmergencyRoutingViewModel = viewModel(
                     factory = object : ViewModelProvider.Factory {
                         @Suppress("UNCHECKED_CAST")
                         override fun <T : ViewModel> create(modelClass: Class<T>): T {
                             val repo = EmergencyRepositoryImpl()
-                            return EmergencyRoutingViewModel(repo) as T
+                            return EmergencyRoutingViewModel(repo, sharedLocationRepository) as T
                         }
                     }
                 )
@@ -615,7 +602,7 @@ fun MainNavigation(
                         @Suppress("UNCHECKED_CAST")
                         override fun <T : ViewModel> create(modelClass: Class<T>): T {
                             val repo = ProfileRepositoryImpl()
-                            return SettingsViewModel(repo) as T
+                            return SettingsViewModel(repo, preferencesRepository) as T
                         }
                     }
                 )

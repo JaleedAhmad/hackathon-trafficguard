@@ -34,7 +34,6 @@ import com.traffic_guard.ai.theme.DarkBgDeep
 
 @Composable
 fun SplashScreen(
-    onNavigateToLanguageSelection: () -> Unit,
     onNavigateToOnboarding: () -> Unit,
     onNavigateToWelcome: () -> Unit,
     onNavigateToMain: () -> Unit,
@@ -49,7 +48,6 @@ fun SplashScreen(
 
     LaunchedEffect(key1 = uiState) {
         when (uiState) {
-            is SplashState.NavigateToLanguageSelection -> onNavigateToLanguageSelection()
             is SplashState.NavigateToOnboarding -> onNavigateToOnboarding()
             is SplashState.NavigateToWelcome -> onNavigateToWelcome()
             is SplashState.NavigateToMain -> onNavigateToMain()

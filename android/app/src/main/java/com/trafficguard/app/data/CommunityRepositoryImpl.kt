@@ -3,12 +3,22 @@ package com.traffic_guard.ai.data
 import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
+import okhttp3.Response
+import com.google.gson.JsonParser
 import java.util.UUID
 
 class CommunityRepositoryImpl : CommunityRepository {
 
     private val tag = "CommunityRepository"
     private val api = TrafficGuardApiClient.service
+    private val activeSockets = java.util.concurrent.ConcurrentHashMap<String, WebSocket>()
 
     // Local comment store (not yet a backend endpoint)
     private val localComments = mutableListOf(
@@ -22,10 +32,12 @@ class CommunityRepositoryImpl : CommunityRepository {
     override suspend fun getAlertsFeed(
         limit: Int,
         offset: Int,
-        filter: String
+        filter: String,
+        title: String?,
+        date: String?
     ): CommunityResult<List<Incident>> {
         return try {
-            val response = api.getNearbyAlerts()
+            val response = api.getNearbyAlerts(title = title, date = date)
             var incidents = response.alerts.map { it.toIncident() }
 
             if (filter != "ALL") {
@@ -98,29 +110,109 @@ class CommunityRepositoryImpl : CommunityRepository {
 
     // ── 4. Comments — backed by backend Comments API ────────────────────────────
 
-    override fun getCommentsStream(incidentId: String): Flow<List<Comment>> = flow {
-        try {
-            val response = api.getComments(incidentId)
+    override fun getCommentsLiveStream(incidentId: String): Flow<Comment> = callbackFlow {
+        val client = OkHttpClient()
+        val wsUrl = TrafficGuardApiClient.BASE_URL
+            .replace("http://", "ws://")
+            .replace("https://", "wss://") + "ws/discussion/$incidentId"
+
+        val request = Request.Builder()
+            .url(wsUrl)
+            .build()
+
+        val listener = object : WebSocketListener() {
+            override fun onOpen(webSocket: WebSocket, response: Response) {
+                activeSockets[incidentId] = webSocket
+            }
+
+            override fun onMessage(webSocket: WebSocket, text: String) {
+                try {
+                    val json = JsonParser.parseString(text).asJsonObject
+                    if (json.has("comment")) {
+                        val commentObj = json.getAsJsonObject("comment")
+                        val newComment = Comment(
+                            id = commentObj.get("comment_id").asString,
+                            incidentId = commentObj.get("report_id").asString,
+                            userId = if (commentObj.has("user_id")) commentObj.get("user_id").asString else "",
+                            userName = commentObj.get("display_name").asString,
+                            text = commentObj.get("text").asString,
+                            timestamp = commentObj.get("timestamp").asLong
+                        )
+                        trySend(newComment)
+                    }
+                } catch (e: Exception) {
+                    Log.w(tag, "WS json parse error: ${e.message}")
+                }
+            }
+
+            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+                Log.w(tag, "WS connection failure: ${t.message}")
+                activeSockets.remove(incidentId)
+            }
+
+            override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
+                activeSockets.remove(incidentId)
+            }
+        }
+
+        val webSocket = client.newWebSocket(request, listener)
+
+        awaitClose {
+            activeSockets.remove(incidentId)
+            webSocket.close(1000, "Flow closed")
+        }
+    }
+
+    override suspend fun getCommentsPage(incidentId: String, limit: Int, offset: Int): CommunityResult<List<Comment>> {
+        return try {
+            val response = api.getComments(incidentId, limit, offset)
             val mappedComments = response.comments.map { apiComment ->
                 Comment(
                     id = apiComment.commentId,
                     incidentId = apiComment.reportId,
+                    userId = apiComment.uid,
                     userName = apiComment.displayName,
                     text = apiComment.text,
                     timestamp = apiComment.timestamp
                 )
             }.sortedByDescending { it.timestamp }
-            emit(mappedComments)
+            CommunityResult.Success(mappedComments)
         } catch (e: Exception) {
-            Log.w(tag, "getCommentsStream failed: ${e.message}")
-            emit(emptyList())
+            Log.w(tag, "getCommentsPage failed: ${e.message}")
+            CommunityResult.Error(e)
         }
     }
 
     override suspend fun addComment(incidentId: String, text: String): CommunityResult<Unit> {
         return try {
-            api.postComment(incidentId, CommentRequest(text))
-            CommunityResult.Success(Unit)
+            val socket = activeSockets[incidentId]
+            if (socket != null) {
+                var token: String? = null
+                try {
+                    token = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                } catch (e: Exception) {
+                    Log.w(tag, "Failed to get fresh token: ${e.message}")
+                }
+                
+                val payload = com.google.gson.JsonObject().apply {
+                    addProperty("text", text)
+                    addProperty("token", token ?: "")
+                }.toString()
+                
+                val success = socket.send(payload)
+                if (success) {
+                    CommunityResult.Success(Unit)
+                } else {
+                    api.postComment(incidentId, CommentRequest(text))
+                    CommunityResult.Success(Unit)
+                }
+            } else {
+                api.postComment(incidentId, CommentRequest(text))
+                CommunityResult.Success(Unit)
+            }
         } catch (e: Exception) {
             Log.w(tag, "addComment failed: ${e.message}")
             CommunityResult.Error(e)
@@ -185,13 +277,34 @@ class CommunityRepositoryImpl : CommunityRepository {
 
     // ── Mapping helpers ───────────────────────────────────────────────────────
 
+    private fun parseTimestamp(tsString: String?): Long {
+        if (tsString.isNullOrEmpty()) return System.currentTimeMillis()
+        return try {
+            tsString.toLongOrNull() ?: java.time.Instant.parse(tsString).toEpochMilli()
+        } catch (e: Exception) {
+            try {
+                val clean = tsString.replace(" ", "T")
+                val instant = if (clean.endsWith("Z")) {
+                    java.time.Instant.parse(clean)
+                } else {
+                    java.time.LocalDateTime.parse(clean).toInstant(java.time.ZoneOffset.UTC)
+                }
+                instant.toEpochMilli()
+            } catch (e2: Exception) {
+                System.currentTimeMillis()
+            }
+        }
+    }
+
     private fun NearbyAlert.toIncident(): Incident = Incident(
         id = alertId,
         title = type.replace("_", " ").capitalizeWords(),
         description = message,
         location = MapLatLng(lat ?: 24.8607, lng ?: 67.0011),
         severity = severityValue(severity),
-        type = mapIncidentType(type)
+        type = mapIncidentType(type),
+        timestamp = parseTimestamp(timestamp),
+        confirmations = confirmations ?: 0
     )
 
     private fun CurrentCrisisResponse.toIncident(): Incident = Incident(
@@ -214,6 +327,8 @@ class CommunityRepositoryImpl : CommunityRepository {
     private fun mapIncidentType(type: String): IncidentType = when {
         type.contains("flood", ignoreCase = true) -> IncidentType.FLOOD
         type.contains("accident", ignoreCase = true) || type.contains("crash", ignoreCase = true) -> IncidentType.ACCIDENT
+        type.contains("weather", ignoreCase = true) -> IncidentType.WEATHER
+        type.contains("other", ignoreCase = true) -> IncidentType.OTHER
         else -> IncidentType.TRAFFIC
     }
 

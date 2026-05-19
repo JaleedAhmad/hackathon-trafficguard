@@ -43,7 +43,7 @@ private val PremiumLightColorScheme = lightColorScheme(
 @Composable
 fun AndroidTheme(
     themeMode: ThemeMode = ThemeMode.AUTO,
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val darkTheme = when (themeMode) {

@@ -40,7 +40,7 @@ fun PermissionItemCard(
     onToggle: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isDark = MaterialTheme.colorScheme.background.value == 0xFF0F172A.toULong()
+    val isDark = MaterialTheme.colorScheme.background == androidx.compose.ui.graphics.Color(0xFF0F172A)
 
     Card(
         shape = RoundedCornerShape(16.dp),
