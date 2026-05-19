@@ -53,6 +53,17 @@ import com.traffic_guard.ai.ui.report.DuplicateWarningScreen
 import com.traffic_guard.ai.ui.report.AiProcessingViewModel
 import com.traffic_guard.ai.ui.report.AiProcessingScreen
 import com.traffic_guard.ai.ui.report.ReportSuccessScreen
+import com.traffic_guard.ai.data.CommunityRepositoryImpl
+import com.traffic_guard.ai.ui.community.AlertsFeedViewModel
+import com.traffic_guard.ai.ui.community.AlertsFeedScreen
+import com.traffic_guard.ai.ui.community.AlertDetailViewModel
+import com.traffic_guard.ai.ui.community.AlertDetailScreen
+import com.traffic_guard.ai.ui.community.DiscussionViewModel
+import com.traffic_guard.ai.ui.community.IncidentDiscussionScreen
+import com.traffic_guard.ai.ui.community.ReputationViewModel
+import com.traffic_guard.ai.ui.community.LeaderboardScreen
+import com.traffic_guard.ai.ui.community.ContributorProfileScreen
+import com.traffic_guard.ai.ui.community.FalseReportWarningScreen
 
 @Composable
 fun MainNavigation(
@@ -419,6 +430,96 @@ fun MainNavigation(
                     onNavigateHome = {
                         backStack.removeLastOrNull() // Return clean to parent dashboard
                     }
+                )
+            }
+
+            entry<AlertsFeed> {
+                val feedVM: AlertsFeedViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            val repo = CommunityRepositoryImpl()
+                            return AlertsFeedViewModel(repo) as T
+                        }
+                    }
+                )
+                AlertsFeedScreen(
+                    viewModel = feedVM,
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNavigateToDetail = { incidentId -> backStack.add(AlertDetail(incidentId)) }
+                )
+            }
+
+            entry<AlertDetail> { key ->
+                val detailVM: AlertDetailViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            val repo = CommunityRepositoryImpl()
+                            return AlertDetailViewModel(repo) as T
+                        }
+                    }
+                )
+                AlertDetailScreen(
+                    incidentId = key.incidentId,
+                    viewModel = detailVM,
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNavigateToDiscussion = { incidentId -> backStack.add(IncidentDiscussion(incidentId)) }
+                )
+            }
+
+            entry<IncidentDiscussion> { key ->
+                val discussionVM: DiscussionViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            val repo = CommunityRepositoryImpl()
+                            return DiscussionViewModel(repo) as T
+                        }
+                    }
+                )
+                IncidentDiscussionScreen(
+                    incidentId = key.incidentId,
+                    viewModel = discussionVM,
+                    onNavigateBack = { backStack.removeLastOrNull() }
+                )
+            }
+
+            entry<Leaderboard> {
+                val reputationVM: ReputationViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            val repo = CommunityRepositoryImpl()
+                            return ReputationViewModel(repo) as T
+                        }
+                    }
+                )
+                LeaderboardScreen(
+                    viewModel = reputationVM,
+                    onNavigateBack = { backStack.removeLastOrNull() }
+                )
+            }
+
+            entry<ContributorProfile> {
+                val reputationVM: ReputationViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            val repo = CommunityRepositoryImpl()
+                            return ReputationViewModel(repo) as T
+                        }
+                    }
+                )
+                ContributorProfileScreen(
+                    viewModel = reputationVM,
+                    onNavigateBack = { backStack.removeLastOrNull() }
+                )
+            }
+
+            entry<FalseReportWarning> {
+                FalseReportWarningScreen(
+                    onAcknowledge = { backStack.removeLastOrNull() }
                 )
             }
         }

@@ -62,3 +62,21 @@ data object AiProcessing : NavKey
 
 @Serializable
 data class ReportSuccess(val isOffline: Boolean) : NavKey
+
+@Serializable
+data object AlertsFeed : NavKey
+
+@Serializable
+data class AlertDetail(val incidentId: String) : NavKey
+
+@Serializable
+data class IncidentDiscussion(val incidentId: String) : NavKey
+
+@Serializable
+data object Leaderboard : NavKey
+
+@Serializable
+data object ContributorProfile : NavKey
+
+@Serializable
+data object FalseReportWarning : NavKey
