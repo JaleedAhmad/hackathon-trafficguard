@@ -1,18 +1,25 @@
 package com.traffic_guard.ai.data
 
 import android.content.Context
+import android.util.Log
 import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 import java.util.UUID
 
 class ReportRepositoryImpl(private val context: Context) : ReportRepository {
 
+    private val tag = "ReportRepository"
     private val dbHelper = ReportDatabaseHelper(context)
     private val workManager = WorkManager.getInstance(context)
+    private val api = TrafficGuardApiClient.service
 
     private val _syncQueueCountFlow = MutableStateFlow(0)
     override val syncQueueCountFlow: StateFlow<Int> = _syncQueueCountFlow
@@ -21,10 +28,12 @@ class ReportRepositoryImpl(private val context: Context) : ReportRepository {
         updateSyncQueueCount()
     }
 
-    override suspend fun submitReport(report: ReportFormState, forceOffline: Boolean): Result<String> {
+    override suspend fun submitReport(
+        report: ReportFormState,
+        forceOffline: Boolean
+    ): Result<String> {
         val reportId = UUID.randomUUID().toString()
 
-        // Generate report entity to cache locally
         val entity = ReportQueueEntity(
             id = reportId,
             category = report.category,
@@ -36,27 +45,37 @@ class ReportRepositoryImpl(private val context: Context) : ReportRepository {
             imageUrisJson = report.imageUris.joinToString(",")
         )
 
-        // Mock offline fallback check or direct submission based on forced parameters
         if (forceOffline) {
             dbHelper.insertReport(entity)
             updateSyncQueueCount()
             scheduleSyncWorker()
-            return Result.Success(reportId) // Returns successfully with cached status
+            return Result.Success(reportId)
         }
 
-        // Direct submission simulation (simulates network access)
+        // Build the RawSignal matching the backend schema exactly
+        val isoTimestamp = isoNow()
+        val rawSignal = RawSignalRequest(
+            signalId = reportId,
+            text = buildReportText(report),
+            source = "community_report",
+            lat = report.latitude,
+            lng = report.longitude,
+            timestamp = isoTimestamp,
+            language = "en"
+        )
+
         return try {
-            // Simulated network latency
-            kotlinx.coroutines.delay(1500)
-            
-            // Succeed direct online push
-            Result.Success(reportId)
+            val response = api.submitReport(rawSignal)
+            Log.i(tag, "Report submitted OK: ${response.reportId}, status=${response.status}")
+            Result.Success(response.reportId)
         } catch (e: Exception) {
-            // Failure fallback: Cache to local DB
+            Log.w(tag, "Submit failed — caching for retry: ${e.message}")
+            // Cache locally and schedule background retry
             dbHelper.insertReport(entity)
             updateSyncQueueCount()
             scheduleSyncWorker()
-            Result.Success(reportId) // Safe graceful fallback success
+            // Return success so UX is uninterrupted — report will sync later
+            Result.Success(reportId)
         }
     }
 
@@ -65,29 +84,49 @@ class ReportRepositoryImpl(private val context: Context) : ReportRepository {
         lng: Double,
         category: String
     ): Result<List<Incident>> {
-        // Look up active reports matching targeted categories in close vicinity (Islamabad Sector F-7 demo area)
-        val duplicates = mutableListOf<Incident>()
-        if (category.equals("FLOOD", ignoreCase = true)) {
-            duplicates.add(
-                Incident(
-                    id = "dup_1",
-                    title = "Flash Flood",
-                    description = "Confirmed flood water level 2ft deep at Street 4, Sector F-7",
-                    location = MapLatLng(lat + 0.001, lng + 0.001),
-                    severity = 5,
-                    type = IncidentType.FLOOD
-                )
-            )
+        // Local heuristic — uses backend alerts to cross-check
+        return try {
+            val response = api.getNearbyAlerts(lat = lat, lng = lng)
+            val incidents = response.alerts
+                .filter { alert -> matchesCategory(alert.type, category) }
+                .map { alert ->
+                    Incident(
+                        id = alert.alertId,
+                        title = alert.type.replace("_", " ").capitalizeWords(),
+                        description = alert.message,
+                        location = MapLatLng(lat, lng),
+                        severity = severityValue(alert.severity),
+                        type = mapIncidentType(alert.type)
+                    )
+                }
+            Result.Success(incidents)
+        } catch (e: Exception) {
+            Log.w(tag, "Nearby duplicate check failed, using empty: ${e.message}")
+            Result.Success(emptyList())
         }
-        return Result.Success(duplicates)
     }
 
     override suspend fun uploadPendingReports(): Result<Unit> {
         val pending = dbHelper.getAllQueuedReports()
-        for (report in pending) {
-            // Simulated upload loop
-            kotlinx.coroutines.delay(1000)
-            dbHelper.markReportSynced(report.id)
+        if (pending.isEmpty()) return Result.Success(Unit)
+
+        for (queued in pending) {
+            try {
+                val rawSignal = RawSignalRequest(
+                    signalId = queued.id,
+                    text = queued.description,
+                    source = "community_report",
+                    lat = queued.latitude,
+                    lng = queued.longitude,
+                    timestamp = isoFromMillis(queued.timestamp)
+                )
+                api.submitReport(rawSignal)
+                dbHelper.markReportSynced(queued.id)
+                Log.i(tag, "Synced queued report: ${queued.id}")
+            } catch (e: Exception) {
+                Log.w(tag, "Failed to sync ${queued.id}: ${e.message}")
+                // Continue to next report — don't block the whole queue
+            }
         }
         updateSyncQueueCount()
         return Result.Success(Unit)
@@ -105,7 +144,58 @@ class ReportRepositoryImpl(private val context: Context) : ReportRepository {
         workManager.enqueue(syncRequest)
     }
 
+    // ── Helpers ───────────────────────────────────────────────────────────────
+
     private fun updateSyncQueueCount() {
         _syncQueueCountFlow.value = dbHelper.getAllQueuedReports().size
     }
+
+    private fun buildReportText(report: ReportFormState): String {
+        return buildString {
+            append(report.category)
+            if (report.description.isNotBlank()) {
+                append(": ")
+                append(report.description)
+            }
+            append(" [Severity: ${report.severity.name}]")
+        }
+    }
+
+    private fun isoNow(): String {
+        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)
+        sdf.timeZone = TimeZone.getTimeZone("UTC")
+        return sdf.format(Date())
+    }
+
+    private fun isoFromMillis(millis: Long): String {
+        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)
+        sdf.timeZone = TimeZone.getTimeZone("UTC")
+        return sdf.format(Date(millis))
+    }
+
+    private fun matchesCategory(type: String, category: String): Boolean {
+        val t = type.lowercase()
+        val c = category.lowercase()
+        return t.contains(c) || c.contains(t) ||
+            (c == "flood" && t.contains("flood")) ||
+            (c == "accident" && (t.contains("accident") || t.contains("crash"))) ||
+            (c == "traffic" && t.contains("traffic"))
+    }
+
+    private fun severityValue(severity: String): Int = when (severity.lowercase()) {
+        "critical" -> 5
+        "high" -> 4
+        "medium" -> 3
+        "low" -> 2
+        else -> 1
+    }
+
+    private fun mapIncidentType(type: String): IncidentType = when {
+        type.contains("flood", ignoreCase = true) -> IncidentType.FLOOD
+        type.contains("accident", ignoreCase = true) || type.contains("crash", ignoreCase = true) -> IncidentType.ACCIDENT
+        else -> IncidentType.TRAFFIC
+    }
+
+    private fun String.capitalizeWords(): String =
+        split(" ").joinToString(" ") { it.replaceFirstChar { c -> c.uppercase() } }
 }

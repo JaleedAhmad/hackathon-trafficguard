@@ -111,16 +111,156 @@ fun ShowcaseScreen(
                 }
             }
 
-            // Section: Typography Auditing
-            ShowcaseSection(title = "Typography (Outfit Google Font)", isDark = isDark) {
+            // Section: Live Active Crisis from API
+            ShowcaseSection(title = "GET /crisis/current — Live Active Crisis", isDark = isDark) {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text("Display Large", style = MaterialTheme.typography.displayLarge)
-                    Text("Headline Large", style = MaterialTheme.typography.headlineLarge)
-                    Text("Title Large", style = MaterialTheme.typography.titleLarge)
-                    Text("Title Medium", style = MaterialTheme.typography.titleMedium)
-                    Text("Body Large", style = MaterialTheme.typography.bodyLarge)
-                    Text("Body Medium", style = MaterialTheme.typography.bodyMedium)
-                    Text("Label Small", style = MaterialTheme.typography.labelSmall)
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        AppButton(
+                            text = "Fetch Live Crisis",
+                            onClick = { viewModel.onEvent(ShowcaseEvent.LoadCurrentCrisis) },
+                            variant = ButtonVariant.SOLID,
+                            isLoading = state.isLoadingCrisis,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    state.crisisError?.let { err ->
+                        Text("Error: $err", color = AccentRed, style = MaterialTheme.typography.bodyMedium)
+                    }
+
+                    state.currentCrisis?.let { crisis ->
+                        Card(
+                            colors = CardDefaults.cardColors(
+                                containerColor = if (isDark) DarkBgCard.copy(alpha = 0.5f) else LightBgCard.copy(alpha = 0.5f)
+                            ),
+                            shape = RoundedCornerShape(12.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Column(modifier = Modifier.padding(12.dp)) {
+                                Text("Crisis ID: ${crisis.crisisId}", fontWeight = FontWeight.Bold, color = if (isDark) Color.White else Color.Black)
+                                Text("Type: ${crisis.type}", color = AccentOrange, fontWeight = FontWeight.SemiBold)
+                                Text("Location: ${crisis.location}", color = if (isDark) Color.LightGray else Color.DarkGray)
+                                Text("Severity: ${crisis.severity} (Radius: ${crisis.affectedRadiusKm} km)", color = AccentRed)
+                                Text("Confidence Score: ${crisis.confidence}%", color = AccentGreen, fontWeight = FontWeight.Bold)
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text("AI Plan Reasoning: ${crisis.situationPlan?.aiReasoning ?: "N/A"}", style = MaterialTheme.typography.bodySmall, color = if (isDark) Color.White.copy(0.7f) else Color.Black.copy(0.7f))
+                            }
+                        }
+                    } ?: run {
+                        if (!state.isLoadingCrisis) {
+                            Text("No live crisis loaded. Click above to fetch.", style = MaterialTheme.typography.bodyMedium, color = if (isDark) DarkTextSecondary else LightTextSecondary)
+                        }
+                    }
+                }
+            }
+
+            // Section: Live Heuristic vs AI Baseline Comparison
+            ShowcaseSection(title = "GET /baseline/compare — Heuristic vs AI", isDark = isDark) {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    AppButton(
+                        text = "Fetch Baseline Comparison",
+                        onClick = { viewModel.onEvent(ShowcaseEvent.LoadBaselineComparison) },
+                        variant = ButtonVariant.OUTLINED,
+                        isLoading = state.isLoadingBaseline,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    state.baselineError?.let { err ->
+                        Text("Error: $err", color = AccentRed, style = MaterialTheme.typography.bodyMedium)
+                    }
+
+                    state.baselineComparison?.let { comp ->
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text("Raw Input text: \"${comp.rawInputText}\"", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium, color = if (isDark) Color.LightGray else Color.DarkGray)
+                            
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+                                Card(
+                                    modifier = Modifier.weight(1f),
+                                    colors = CardDefaults.cardColors(containerColor = if (isDark) Color(0x203B82F6) else Color(0x103B82F6))
+                                ) {
+                                    Column(modifier = Modifier.padding(12.dp)) {
+                                        Text("Simple Heuristics", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = AccentBlue)
+                                        Text("Crisis Detected: ${comp.heuristicResult?.get("crisis_detected") ?: "false"}", style = MaterialTheme.typography.bodySmall)
+                                        Text("Confidence: ${comp.heuristicResult?.get("confidence_score") ?: "0"}%", style = MaterialTheme.typography.bodySmall)
+                                    }
+                                }
+                                Card(
+                                    modifier = Modifier.weight(1f),
+                                    colors = CardDefaults.cardColors(containerColor = if (isDark) Color(0x2010B981) else Color(0x1010B981))
+                                ) {
+                                    Column(modifier = Modifier.padding(12.dp)) {
+                                        Text("AI Agent Pipeline", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = AccentGreen)
+                                        Text("Crisis Detected: ${comp.agenticResult?.detected ?: "false"}", style = MaterialTheme.typography.bodySmall)
+                                        Text("Type: ${comp.agenticResult?.type ?: "N/A"}", style = MaterialTheme.typography.bodySmall)
+                                        Text("Confidence: ${comp.agenticResult?.confidence ?: "0%"}", style = MaterialTheme.typography.bodySmall)
+                                    }
+                                }
+                            }
+                        }
+                    } ?: run {
+                        if (!state.isLoadingBaseline) {
+                            Text("No comparison data loaded.", style = MaterialTheme.typography.bodyMedium, color = if (isDark) DarkTextSecondary else LightTextSecondary)
+                        }
+                    }
+                }
+            }
+
+            // Section: Live Multi-Agent Pipeline Trace Logger
+            ShowcaseSection(title = "GET /agents/trace — Agent Trace Logs", isDark = isDark) {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    AppButton(
+                        text = "Fetch Multi-Agent Trace logs",
+                        onClick = { viewModel.onEvent(ShowcaseEvent.LoadAgentTrace) },
+                        variant = ButtonVariant.SOLID,
+                        isLoading = state.isLoadingTrace,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    state.traceError?.let { err ->
+                        Text("Error: $err", color = AccentRed, style = MaterialTheme.typography.bodyMedium)
+                    }
+
+                    state.agentTrace?.let { trace ->
+                        listOf(
+                            Triple("Ingestion Agent (1)", 1, AccentBlue),
+                            Triple("Trust Detection Agent (2)", 2, AccentOrange),
+                            Triple("Situation Planning Agent (3)", 3, AccentRed),
+                            Triple("Execution Agent (4)", 4, AccentGreen)
+                        ).forEach { (agentName, id, color) ->
+                            val steps = viewModel.agentSteps(id)
+                            Card(
+                                colors = CardDefaults.cardColors(
+                                    containerColor = if (isDark) DarkBgCard.copy(alpha = 0.5f) else LightBgCard.copy(alpha = 0.5f)
+                                ),
+                                shape = RoundedCornerShape(8.dp),
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
+                            ) {
+                                Column(modifier = Modifier.padding(10.dp)) {
+                                    Text(agentName, fontWeight = FontWeight.Bold, color = color, style = MaterialTheme.typography.bodyMedium)
+                                    if (steps.isEmpty()) {
+                                        Text("No trace steps available for this agent.", style = MaterialTheme.typography.bodySmall, color = if (isDark) Color.Gray else Color.LightGray)
+                                    } else {
+                                        steps.forEach { step ->
+                                            Text("• [${step.type}] ${step.message}", style = MaterialTheme.typography.bodySmall, color = if (isDark) Color.LightGray else Color.DarkGray)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } ?: run {
+                        if (!state.isLoadingTrace) {
+                            Text("No trace logs loaded. Traces log dynamically during POST /report flows.", style = MaterialTheme.typography.bodyMedium, color = if (isDark) DarkTextSecondary else LightTextSecondary)
+                        }
+                    }
                 }
             }
 
