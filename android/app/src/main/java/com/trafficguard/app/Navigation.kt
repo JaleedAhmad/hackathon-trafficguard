@@ -64,6 +64,16 @@ import com.traffic_guard.ai.ui.community.ReputationViewModel
 import com.traffic_guard.ai.ui.community.LeaderboardScreen
 import com.traffic_guard.ai.ui.community.ContributorProfileScreen
 import com.traffic_guard.ai.ui.community.FalseReportWarningScreen
+import com.traffic_guard.ai.data.EmergencyRepositoryImpl
+import com.traffic_guard.ai.ui.emergency.SosViewModel
+import com.traffic_guard.ai.ui.emergency.SosScreen
+import com.traffic_guard.ai.ui.emergency.EmergencyRoutingViewModel
+import com.traffic_guard.ai.ui.emergency.EmergencyRoutingScreen
+import com.traffic_guard.ai.data.ProfileRepositoryImpl
+import com.traffic_guard.ai.ui.profile.ProfileViewModel
+import com.traffic_guard.ai.ui.profile.ProfileScreen
+import com.traffic_guard.ai.ui.profile.SettingsViewModel
+import com.traffic_guard.ai.ui.profile.SettingsHubScreen
 
 @Composable
 fun MainNavigation(
@@ -520,6 +530,72 @@ fun MainNavigation(
             entry<FalseReportWarning> {
                 FalseReportWarningScreen(
                     onAcknowledge = { backStack.removeLastOrNull() }
+                )
+            }
+
+            entry<SosDashboard> {
+                val sosVM: SosViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            val repo = EmergencyRepositoryImpl()
+                            return SosViewModel(repo) as T
+                        }
+                    }
+                )
+                SosScreen(
+                    viewModel = sosVM,
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNavigateToEmergencyRouting = { backStack.add(EmergencyRouting) }
+                )
+            }
+
+            entry<EmergencyRouting> {
+                val routingVM: EmergencyRoutingViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            val repo = EmergencyRepositoryImpl()
+                            return EmergencyRoutingViewModel(repo) as T
+                        }
+                    }
+                )
+                EmergencyRoutingScreen(
+                    viewModel = routingVM,
+                    onNavigateBack = { backStack.removeLastOrNull() }
+                )
+            }
+
+            entry<Profile> {
+                val profileVM: ProfileViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            val repo = ProfileRepositoryImpl()
+                            return ProfileViewModel(repo) as T
+                        }
+                    }
+                )
+                ProfileScreen(
+                    viewModel = profileVM,
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNavigateToSettings = { backStack.add(SettingsHub) }
+                )
+            }
+
+            entry<SettingsHub> {
+                val settingsVM: SettingsViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            val repo = ProfileRepositoryImpl()
+                            return SettingsViewModel(repo) as T
+                        }
+                    }
+                )
+                SettingsHubScreen(
+                    viewModel = settingsVM,
+                    onNavigateBack = { backStack.removeLastOrNull() }
                 )
             }
         }

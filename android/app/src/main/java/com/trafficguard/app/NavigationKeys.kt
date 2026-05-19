@@ -80,3 +80,15 @@ data object ContributorProfile : NavKey
 
 @Serializable
 data object FalseReportWarning : NavKey
+
+@Serializable
+data object SosDashboard : NavKey
+
+@Serializable
+data object EmergencyRouting : NavKey
+
+@Serializable
+data object Profile : NavKey
+
+@Serializable
+data object SettingsHub : NavKey
