@@ -1,62 +1,111 @@
 import json
+import re
+
 from models.schemas import RawSignal, SignalObject
 from services.llm_service import call_llm
 from services.logger import log_agent_event
 
+
 class IngestionAgent:
+
     def __init__(self):
         pass
 
     async def run(self, raw_signals: list) -> list:
-        """
-        Accepts a list of raw signal objects (dicts or RawSignal models).
-        Returns a list of normalized SignalObjects.
-        """
-        normalized_signals = []
-        for signal in raw_signals:
-            if isinstance(signal, dict):
-                signal = RawSignal(**signal)
-                
-            log_agent_event("INGESTION_STEP", {
-                "step": "Input received",
-                "signal_id": signal.signal_id,
-                "source": signal.source,
-                "text": signal.text
-            })
-            
-            prompt = f"""
-            You are a helpful data processing assistant for an urban crisis intelligence system.
-            Analyze the following report and return a JSON object with these exact keys:
-            - "language_detected": one of "English", "Urdu", or "Roman Urdu" (or "Other")
-            - "text_normalized": English translation of the text if it's not English, or a cleaned and normalized version of the English text.
-            - "category_hint": one of "flooding", "accident", "congestion", "blockage", "checkpoint", or "infrastructure" based on the text.
 
-            Text: {signal.text}
-            """
-            
+        normalized_signals = []
+
+        for signal in raw_signals:
+
+            response_text = None
+
             try:
-                log_agent_event("INGESTION_STEP", {"step": "Calling LLM for detection and translation", "signal_id": signal.signal_id})
-                
-                # Ask Gemini to return JSON
-                response_text = await call_llm(prompt, model="gemini-2.5-flash", require_json=True)
-                if response_text.startswith("```json"):
-                    response_text = response_text.split("```json")[1].split("```")[0].strip()
-                elif response_text.startswith("```"):
-                    response_text = response_text.split("```")[1].split("```")[0].strip()
-                result = json.loads(response_text)
-                
-                language_detected = result.get("language_detected", "Unknown")
-                text_normalized = result.get("text_normalized", signal.text)
-                category_hint = result.get("category_hint", "infrastructure")
-                
-                log_agent_event("INGESTION_STEP", {
-                    "step": "LLM processing complete",
-                    "signal_id": signal.signal_id,
-                    "language_detected": language_detected,
-                    "text_normalized": text_normalized,
-                    "category_hint": category_hint
-                })
-                
+
+                if isinstance(signal, dict):
+                    signal = RawSignal(**signal)
+
+                log_agent_event(
+                    "INGESTION_STEP",
+                    {
+                        "step": "Input received",
+                        "signal_id": signal.signal_id,
+                        "source": signal.source,
+                        "text": signal.text
+                    }
+                )
+
+                prompt = f"""
+You are a JSON API for urban crisis intelligence.
+
+Return ONLY valid JSON.
+Do not include markdown.
+Do not include explanations.
+Do not include code fences.
+
+Required schema:
+{{
+  "language_detected": "English",
+  "text_normalized": "normalized text",
+  "category_hint": "flooding"
+}}
+
+Allowed category_hint values:
+- flooding
+- accident
+- congestion
+- blockage
+- checkpoint
+- infrastructure
+
+Text:
+{signal.text}
+"""
+
+                log_agent_event(
+                    "INGESTION_STEP",
+                    {
+                        "step": "Calling LLM",
+                        "signal_id": signal.signal_id
+                    }
+                )
+
+                response_text = await call_llm(
+                    prompt,
+                    model="gemma3:27b",
+                    require_json=True
+                )
+
+                print("\n=== RAW LLM RESPONSE ===")
+                print(response_text)
+                print("========================\n")
+
+                # Extract JSON robustly
+                match = re.search(r'\{.*\}', response_text, re.DOTALL)
+
+                if not match:
+                    raise ValueError(
+                        f"No JSON object found in response: {response_text}"
+                    )
+
+                json_text = match.group(0)
+
+                result = json.loads(json_text)
+
+                language_detected = result.get(
+                    "language_detected",
+                    "Unknown"
+                )
+
+                text_normalized = result.get(
+                    "text_normalized",
+                    signal.text
+                )
+
+                category_hint = result.get(
+                    "category_hint",
+                    "infrastructure"
+                )
+
                 normalized = SignalObject(
                     signal_id=signal.signal_id or "unknown",
                     text_normalized=text_normalized,
@@ -68,14 +117,50 @@ class IngestionAgent:
                     timestamp=signal.timestamp,
                     category_hint=category_hint
                 )
-                normalized_signals.append(normalized)
-            except Exception as e:
-                print(f"\nINGESTION ERROR: {e}\n")
-                print(f"RAW RESPONSE:\n{response_text}\n")
 
-                log_agent_event("INGESTION_ERROR", {
-                    "signal_id": signal.signal_id,
-                    "error": str(e)
-                })
-                
+                normalized_signals.append(normalized)
+
+                log_agent_event(
+                    "INGESTION_STEP",
+                    {
+                        "step": "Normalization complete",
+                        "signal_id": signal.signal_id,
+                        "category_hint": category_hint
+                    }
+                )
+
+            except Exception as e:
+
+                print("\n=== INGESTION ERROR ===")
+                print(e)
+
+                if response_text:
+                    print("\n=== RAW RESPONSE ===")
+                    print(response_text)
+
+                print("========================\n")
+
+                log_agent_event(
+                    "INGESTION_ERROR",
+                    {
+                        "signal_id": signal.signal_id,
+                        "error": str(e)
+                    }
+                )
+
+                # FAILSAFE OBJECT
+                fallback = SignalObject(
+                    signal_id=signal.signal_id or "unknown",
+                    text_normalized=signal.text,
+                    text_original=signal.text,
+                    language_detected="Unknown",
+                    source_type=signal.source,
+                    lat=signal.lat,
+                    lng=signal.lng,
+                    timestamp=signal.timestamp,
+                    category_hint="infrastructure"
+                )
+
+                normalized_signals.append(fallback)
+
         return normalized_signals

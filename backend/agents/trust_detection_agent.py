@@ -154,7 +154,7 @@ class TrustDetectionAgent:
         crisis_type = "unknown"
         try:
             log_agent_event("LLM_CLASSIFICATION", {"step": "Asking Gemini 2.5 Pro for crisis type classification"})
-            response_text = await call_llm(prompt, model="gemini-2.5-pro", require_json=True)
+            response_text = await call_llm(prompt, require_json=True)
             if response_text.startswith("```json"):
                 response_text = response_text.split("```json")[1].split("```")[0].strip()
             elif response_text.startswith("```"):

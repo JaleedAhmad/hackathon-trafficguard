@@ -1,12 +1,15 @@
 import os
 import ollama
 from services.logger import log_agent_event
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 async def call_llm(prompt: str, model: str = "gemma4:31b", require_json: bool = False) -> str:
     try:
-        ollama_host = os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434")
-        ollama_api_key = os.getenv("OLLAMA_API_KEY", "")
+        ollama_host = os.getenv("OLLAMA_URL", "http://127.0.0.1:11434")
+        ollama_api_key = os.getenv("OLLAMA_CLOUD_API_KEY", "")
         
         headers = {}
         if ollama_api_key:

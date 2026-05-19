@@ -49,7 +49,7 @@ class ExecutionAgent:
         message_ur = "کینال روڈ پر شدید سیلاب۔ شاہراہ فیصل استعمال کریں۔" # Fallback
         try:
             log_agent_event("EXECUTION_LLM", {"step": "Calling LLM for Urdu translation"})
-            result = await call_llm(prompt, model="gemini-2.5-flash")
+            result = await call_llm(prompt)
             if result and len(result) > 5:
                 message_ur = result.strip()
             log_agent_event("EXECUTION_LLM", {"step": "Urdu translation complete"})
