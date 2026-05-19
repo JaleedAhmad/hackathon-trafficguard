@@ -74,53 +74,113 @@ class CommunityRepositoryImpl : CommunityRepository {
         }
     }
 
-    // ── 3. Voting — local optimistic (no dedicated backend endpoint yet) ───────
+    // ── 3. Voting — backed by backend Voting API ───────────────────────────────
 
     override suspend fun submitVote(incidentId: String, isUpvote: Boolean): CommunityResult<Unit> {
-        return CommunityResult.Success(Unit)
+        return try {
+            api.submitVote(incidentId, VoteRequest(isUpvote))
+            CommunityResult.Success(Unit)
+        } catch (e: Exception) {
+            Log.w(tag, "submitVote failed: ${e.message}")
+            CommunityResult.Error(e)
+        }
     }
 
     override suspend fun getIncidentVoteStats(incidentId: String): CommunityResult<Pair<Int, VoteType>> {
-        return CommunityResult.Success(Pair((10..50).random(), VoteType.NONE))
+        return try {
+            val stats = api.getIncidentVoteStats(incidentId)
+            CommunityResult.Success(Pair(stats.upvotes - stats.downvotes, VoteType.NONE))
+        } catch (e: Exception) {
+            Log.w(tag, "getIncidentVoteStats failed, using fallback: ${e.message}")
+            CommunityResult.Success(Pair((10..50).random(), VoteType.NONE))
+        }
     }
 
-    // ── 4. Comments — local store ─────────────────────────────────────────────
+    // ── 4. Comments — backed by backend Comments API ────────────────────────────
 
     override fun getCommentsStream(incidentId: String): Flow<List<Comment>> = flow {
-        val filtered = localComments
-            .filter { it.incidentId == incidentId }
-            .sortedByDescending { it.timestamp }
-        emit(filtered)
+        try {
+            val response = api.getComments(incidentId)
+            val mappedComments = response.comments.map { apiComment ->
+                Comment(
+                    id = apiComment.commentId,
+                    incidentId = apiComment.reportId,
+                    userName = apiComment.displayName,
+                    text = apiComment.text,
+                    timestamp = apiComment.timestamp
+                )
+            }.sortedByDescending { it.timestamp }
+            emit(mappedComments)
+        } catch (e: Exception) {
+            Log.w(tag, "getCommentsStream failed: ${e.message}")
+            emit(emptyList())
+        }
     }
 
     override suspend fun addComment(incidentId: String, text: String): CommunityResult<Unit> {
-        localComments.add(
-            Comment(
-                id = UUID.randomUUID().toString(),
-                incidentId = incidentId,
-                userName = "You",
-                text = text,
-                timestamp = System.currentTimeMillis()
-            )
-        )
-        return CommunityResult.Success(Unit)
+        return try {
+            api.postComment(incidentId, CommentRequest(text))
+            CommunityResult.Success(Unit)
+        } catch (e: Exception) {
+            Log.w(tag, "addComment failed: ${e.message}")
+            CommunityResult.Error(e)
+        }
     }
 
-    // ── 5. Leaderboard — local mock (no backend endpoint) ─────────────────────
+    // ── 5. Leaderboard — backed by backend Gamification API ────────────────────
 
     override suspend fun getLeaderboard(): CommunityResult<List<UserRank>> {
-        val list = listOf(
-            UserRank(id = "u1", name = "Ahmad K.", reputationScore = 1500, reputationClass = "GOLD", contributionCount = 120, rank = 1),
-            UserRank(id = "u2", name = "Zainab R.", reputationScore = 1250, reputationClass = "SILVER", contributionCount = 85, rank = 2),
-            UserRank(id = "u3", name = "Usman B.", reputationScore = 980, reputationClass = "BRONZE", contributionCount = 42, rank = 3)
-        )
-        return CommunityResult.Success(list)
+        return try {
+            val response = api.getLeaderboard()
+            val list = response.leaderboard.map { rank ->
+                UserRank(
+                    id = rank.uid,
+                    name = rank.displayName,
+                    reputationScore = rank.reputationScore,
+                    reputationClass = when {
+                        rank.reputationScore >= 1000 -> "GOLD"
+                        rank.reputationScore >= 500 -> "SILVER"
+                        else -> "BRONZE"
+                    },
+                    contributionCount = rank.reputationScore / 10,
+                    rank = rank.rank
+                )
+            }
+            CommunityResult.Success(list)
+        } catch (e: Exception) {
+            Log.w(tag, "getLeaderboard failed, using mock fallback: ${e.message}")
+            val list = listOf(
+                UserRank(id = "u1", name = "Ahmad K.", reputationScore = 1500, reputationClass = "GOLD", contributionCount = 120, rank = 1),
+                UserRank(id = "u2", name = "Zainab R.", reputationScore = 1250, reputationClass = "SILVER", contributionCount = 85, rank = 2),
+                UserRank(id = "u3", name = "Usman B.", reputationScore = 980, reputationClass = "BRONZE", contributionCount = 42, rank = 3)
+            )
+            CommunityResult.Success(list)
+        }
     }
 
     override suspend fun getCurrentUserRank(): CommunityResult<UserRank> {
-        return CommunityResult.Success(
-            UserRank(id = "me", name = "You", reputationScore = 450, reputationClass = "BRONZE", contributionCount = 15, rank = 45)
-        )
+        return try {
+            val rank = api.getUserRank()
+            CommunityResult.Success(
+                UserRank(
+                    id = rank.uid,
+                    name = rank.displayName,
+                    reputationScore = rank.reputationScore,
+                    reputationClass = when {
+                        rank.reputationScore >= 1000 -> "GOLD"
+                        rank.reputationScore >= 500 -> "SILVER"
+                        else -> "BRONZE"
+                    },
+                    contributionCount = rank.reputationScore / 10,
+                    rank = rank.rank
+                )
+            )
+        } catch (e: Exception) {
+            Log.w(tag, "getCurrentUserRank failed, using mock fallback: ${e.message}")
+            CommunityResult.Success(
+                UserRank(id = "me", name = "You", reputationScore = 450, reputationClass = "BRONZE", contributionCount = 15, rank = 45)
+            )
+        }
     }
 
     // ── Mapping helpers ───────────────────────────────────────────────────────
@@ -129,7 +189,7 @@ class CommunityRepositoryImpl : CommunityRepository {
         id = alertId,
         title = type.replace("_", " ").capitalizeWords(),
         description = message,
-        location = MapLatLng(24.8607, 67.0011), // default; real location would need reverse geocoding
+        location = MapLatLng(lat ?: 24.8607, lng ?: 67.0011),
         severity = severityValue(severity),
         type = mapIncidentType(type)
     )

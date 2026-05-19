@@ -13,6 +13,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
@@ -126,7 +127,9 @@ data class NearbyAlert(
     @SerializedName("distance_km") val distanceKm: Double,
     @SerializedName("severity") val severity: String,
     @SerializedName("timestamp") val timestamp: String,
-    @SerializedName("alternate_route") val alternateRoute: String?
+    @SerializedName("alternate_route") val alternateRoute: String?,
+    @SerializedName("lat") val lat: Double? = null,
+    @SerializedName("lng") val lng: Double? = null
 )
 
 data class NearbyAlertsResponse(
@@ -234,7 +237,89 @@ interface TrafficGuardApiService {
     suspend fun logout(
         @Header("Authorization") bearerToken: String
     ): LogoutResponse
+
+    // ── 6. Incident Voting ──────────────────────────────────────────────────
+    @POST("report/{report_id}/vote")
+    suspend fun submitVote(
+        @Path("report_id") reportId: String,
+        @Body request: VoteRequest
+    ): GenericStatusResponse
+
+    @GET("report/{report_id}/votes")
+    suspend fun getIncidentVoteStats(
+        @Path("report_id") reportId: String
+    ): VoteStatsResponse
+
+    // ── 7. Incident Comments ────────────────────────────────────────────────
+    @POST("report/{report_id}/comment")
+    suspend fun postComment(
+        @Path("report_id") reportId: String,
+        @Body request: CommentRequest
+    ): CommentResponse
+
+    @GET("report/{report_id}/comments")
+    suspend fun getComments(
+        @Path("report_id") reportId: String
+    ): CommentsListResponse
+
+    // ── 8. Gamification ──────────────────────────────────────────────────────
+    @GET("leaderboard")
+    suspend fun getLeaderboard(): LeaderboardResponse
+
+    @GET("user/rank")
+    suspend fun getUserRank(): ApiUserRank
 }
+
+// ─────────────────────────────────────────────
+// NEW RETROFIT SCHEMAS FOR COMMUNITY FEATURES
+// ─────────────────────────────────────────────
+
+data class GenericStatusResponse(
+    @SerializedName("status") val status: String,
+    @SerializedName("message") val message: String
+)
+
+data class VoteRequest(
+    @SerializedName("is_upvote") val isUpvote: Boolean
+)
+
+data class VoteStatsResponse(
+    @SerializedName("upvotes") val upvotes: Int,
+    @SerializedName("downvotes") val downvotes: Int
+)
+
+data class CommentRequest(
+    @SerializedName("text") val text: String
+)
+
+data class ApiComment(
+    @SerializedName("comment_id") val commentId: String,
+    @SerializedName("report_id") val reportId: String,
+    @SerializedName("uid") val uid: String,
+    @SerializedName("displayName") val displayName: String,
+    @SerializedName("text") val text: String,
+    @SerializedName("timestamp") val timestamp: Long
+)
+
+data class CommentResponse(
+    @SerializedName("status") val status: String,
+    @SerializedName("comment") val comment: ApiComment
+)
+
+data class CommentsListResponse(
+    @SerializedName("comments") val comments: List<ApiComment>
+)
+
+data class ApiUserRank(
+    @SerializedName("uid") val uid: String,
+    @SerializedName("displayName") val displayName: String,
+    @SerializedName("reputationScore") val reputationScore: Int,
+    @SerializedName("rank") val rank: Int
+)
+
+data class LeaderboardResponse(
+    @SerializedName("leaderboard") val leaderboard: List<ApiUserRank>
+)
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // SINGLETON RETROFIT CLIENT
