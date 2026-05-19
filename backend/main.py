@@ -1,10 +1,12 @@
 from dotenv import load_dotenv
 load_dotenv()
 from fastapi import FastAPI
+from pydantic import BaseModel
 import json
 import os
 import logging
 import time
+import math
 from datetime import datetime, timezone
 from models.schemas import RawSignal, SignalObject
 from agents.ingestion_agent import IngestionAgent
@@ -46,6 +48,44 @@ class AgentLogCaptureHandler(logging.Handler):
 agent_log_handler = AgentLogCaptureHandler()
 logging.getLogger("agent_events").addHandler(agent_log_handler)
 
+submitted_reports = []
+
+class DuplicateCheckRequest(BaseModel):
+    category: str
+    lat: float
+    lng: float
+
+def calculate_distance_m(lat1: float, lng1: float, lat2: float, lng2: float) -> float:
+    # Approximate distance in meters using Haversine
+    R = 6371000.0 # Earth radius in meters
+    phi1 = math.radians(lat1)
+    phi2 = math.radians(lat2)
+    delta_phi = math.radians(lat2 - lat1)
+    delta_lambda = math.radians(lng2 - lng1)
+    
+    a = math.sin(delta_phi / 2) * math.sin(delta_phi / 2) + \
+        math.cos(phi1) * math.cos(phi2) * \
+        math.sin(delta_lambda / 2) * math.sin(delta_lambda / 2)
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    return R * c
+
+@app.post("/report/check-duplicate")
+def check_duplicate(req: DuplicateCheckRequest):
+    matches = []
+    for rep in submitted_reports:
+        dist = calculate_distance_m(req.lat, req.lng, rep["lat"], rep["lng"])
+        # Match category (case-insensitive) and within 100 meters
+        if rep["type"].upper() == req.category.upper() and dist <= 100.0:
+            matches.append({
+                "alert_id": rep["report_id"],
+                "type": rep["type"],
+                "message": rep["message"],
+                "distance_km": dist / 1000.0,
+                "severity": rep["severity"],
+                "timestamp": rep["timestamp"]
+            })
+    return {"duplicates": matches}
+
 @app.post("/report")
 async def receive_report(signal: RawSignal):
     agent_log_handler.logs = {"Agent1": [], "Agent2": [], "Agent3": [], "Agent4": []}
@@ -67,8 +107,29 @@ async def receive_report(signal: RawSignal):
         agent_log_handler.logs
     )
     
+    report_id = f"rep_{int(time.time())}"
+    
+    # Store it in our dynamic global list
+    category = "TRAFFIC"
+    if "flood" in signal.text.lower():
+        category = "FLOOD"
+    elif "accident" in signal.text.lower() or "crash" in signal.text.lower():
+        category = "ACCIDENT"
+    elif "weather" in signal.text.lower():
+        category = "WEATHER"
+        
+    submitted_reports.append({
+        "report_id": report_id,
+        "type": category,
+        "message": signal.text,
+        "severity": "High",
+        "lat": signal.lat,
+        "lng": signal.lng,
+        "timestamp": signal.timestamp
+    })
+    
     return {
-        "report_id": f"rep_{int(time.time())}",
+        "report_id": report_id,
         "status": "processed",
         "message": "Report received and processed by full pipeline",
         "estimated_processing_ms": 4500,
@@ -197,17 +258,19 @@ async def get_baseline_compare():
 
 @app.get("/alerts/nearby")
 def get_nearby_alerts(lat: float = 24.8607, lng: float = 67.0011):
-    return {
-        "alerts": [
-            {
-                "alert_id": "alt_001",
-                "type": "urban_flooding",
-                "message": "Heavy flooding detected on Canal Road. Avoid the area.",
-                "message_urdu": "کینال روڈ پر شدید سیلاب۔ اس علاقے سے بچیں۔",
-                "distance_km": 1.3,
-                "severity": "High",
-                "timestamp": "2026-05-16T09:30:00Z",
-                "alternate_route": "Shahrah-e-Faisal"
-            }
-        ]
-    }
+    alerts = []
+    # Dynamic search inside the live submitted reports list within 5 km
+    for rep in submitted_reports:
+        dist = calculate_distance_m(lat, lng, rep["lat"], rep["lng"])
+        if dist <= 5000.0:
+            alerts.append({
+                "alert_id": rep["report_id"],
+                "type": rep["type"].lower(),
+                "message": rep["message"],
+                "message_urdu": "",
+                "distance_km": dist / 1000.0,
+                "severity": rep["severity"],
+                "timestamp": rep["timestamp"],
+                "alternate_route": ""
+            })
+    return {"alerts": alerts}

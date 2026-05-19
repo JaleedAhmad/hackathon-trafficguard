@@ -84,6 +84,18 @@ fun MainNavigation(
 ) {
     val backStack = rememberNavBackStack(Splash)
     val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
+    val context = LocalContext.current
+
+    val sharedReportWizardViewModel: ReportWizardViewModel = viewModel()
+    val sharedDuplicateCheckViewModel: DuplicateCheckViewModel = viewModel(
+        factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                val reportRepo = ReportRepositoryImpl(context.applicationContext)
+                return DuplicateCheckViewModel(reportRepo) as T
+            }
+        }
+    )
 
     NavDisplay(
         backStack = backStack,
@@ -387,7 +399,6 @@ fun MainNavigation(
 
             entry<ReportWizard> {
                 val context = LocalContext.current
-                val wizardVM: ReportWizardViewModel = viewModel()
                 val mediaVM: MediaAttachmentViewModel = viewModel(
                     factory = object : ViewModelProvider.Factory {
                         @Suppress("UNCHECKED_CAST")
@@ -396,41 +407,22 @@ fun MainNavigation(
                         }
                     }
                 )
-                val dupVM: DuplicateCheckViewModel = viewModel(
-                    factory = object : ViewModelProvider.Factory {
-                        @Suppress("UNCHECKED_CAST")
-                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                            val reportRepo = ReportRepositoryImpl(context.applicationContext)
-                            return DuplicateCheckViewModel(reportRepo) as T
-                        }
-                    }
-                )
                 ReportWizardScreen(
                     onNavigateBack = { backStack.removeLastOrNull() },
                     onNavigateToAiProcessing = { backStack.add(AiProcessing) },
                     onNavigateToDuplicateCheck = { backStack.add(DuplicateWarning) },
-                    viewModel = wizardVM,
+                    viewModel = sharedReportWizardViewModel,
                     mediaViewModel = mediaVM,
-                    duplicateViewModel = dupVM
+                    duplicateViewModel = sharedDuplicateCheckViewModel
                 )
             }
 
             entry<DuplicateWarning> {
-                val context = LocalContext.current
-                val dupVM: DuplicateCheckViewModel = viewModel(
-                    factory = object : ViewModelProvider.Factory {
-                        @Suppress("UNCHECKED_CAST")
-                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                            val reportRepo = ReportRepositoryImpl(context.applicationContext)
-                            return DuplicateCheckViewModel(reportRepo) as T
-                        }
-                    }
-                )
                 DuplicateWarningScreen(
                     onNavigateBack = { backStack.removeLastOrNull() },
                     onNavigateToAiProcessing = { backStack.add(AiProcessing) },
                     onNavigateToSuccess = { backStack.add(ReportSuccess(isOffline = false)) },
-                    viewModel = dupVM
+                    viewModel = sharedDuplicateCheckViewModel
                 )
             }
 
@@ -445,11 +437,10 @@ fun MainNavigation(
                         }
                     }
                 )
-                val wizardVM: ReportWizardViewModel = viewModel()
                 AiProcessingScreen(
                     onNavigateToSuccess = { isOffline -> backStack.add(ReportSuccess(isOffline = isOffline)) },
                     viewModel = processingVM,
-                    formState = wizardVM.formState.value
+                    formState = sharedReportWizardViewModel.formState.value
                 )
             }
 
@@ -457,6 +448,8 @@ fun MainNavigation(
                 ReportSuccessScreen(
                     isOffline = key.isOffline,
                     onNavigateHome = {
+                        sharedReportWizardViewModel.clearForm()
+                        sharedDuplicateCheckViewModel.resetState()
                         backStack.clear()
                         backStack.add(Main)
                     }
