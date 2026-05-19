@@ -13,7 +13,7 @@ from agents.ingestion_agent import IngestionAgent
 from agents.trust_detection_agent import TrustDetectionAgent
 from agents.situation_planning_agent import SituationPlanningAgent
 from agents.execution_agent import ExecutionAgent
-from services.firebase_service import get_latest_trace, save_report, get_all_reports, get_current_crisis_rtdb
+from services.firebase_service import get_latest_trace, save_report, get_all_reports, get_current_crisis_firestore
 from auth import create_auth_router, get_current_user, FirebaseUser
 
 app = FastAPI(title="TrafficGuard AI Backend")
@@ -148,9 +148,9 @@ async def receive_report(signal: RawSignal, current_user: FirebaseUser = Depends
 
 @app.get("/crisis/current")
 async def get_current_crisis():
-    rtdb_crisis = get_current_crisis_rtdb()
-    if rtdb_crisis:
-        return rtdb_crisis
+    firestore_crisis = get_current_crisis_firestore()
+    if firestore_crisis:
+        return firestore_crisis
     return {
       "crisis_id": "c001",
       "location": "Canal Road, Karachi",
