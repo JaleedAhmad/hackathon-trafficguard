@@ -24,9 +24,12 @@
         <!-- <meta-data
             android:name="BACKEND_BASE_URL"
             android:value="http://10.0.2.2:8000/" /> -->
+        <!-- <meta-data
+            android:name="BACKEND_BASE_URL"
+            android:value="http://127.0.0.1:8000/" /> -->
         <meta-data
             android:name="BACKEND_BASE_URL"
-            android:value="http://127.0.0.1:8000/" />
+            android:value="https://backend-777173229835.europe-west1.run.app/" />
 
         <activity
             android:name="com.traffic_guard.ai.MainActivity"
