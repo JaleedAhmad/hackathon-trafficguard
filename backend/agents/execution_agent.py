@@ -130,6 +130,17 @@ class ExecutionAgent:
         full_trace = {
             "trace_id": trace_id,
             "crisis_id": "c001",
+            "signal_id": ingestion_result.get("signal_id", "unknown"),
+            "raw_text": ingestion_result.get("text_original", ""),
+            "source": ingestion_result.get("source_type", "community"),
+            "language": ingestion_result.get("language_detected", "en"),
+            "confidence_score": trust_result.get("confidence_score", 0),
+            "crisis_detected": trust_result.get("crisis_detected", False),
+            "crisis_type": trust_result.get("crisis_type", "unknown"),
+            "reasoning_short": trust_result.get("reasoning", ""),
+            "rerouting_reasoning": situation_result.get("actions", [{}])[0].get("description", "") if situation_result.get("actions") else "",
+            "execution_outcome": "Dispatched emergency notifications & updated live status.",
+            "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
             "agents": [
                 {"agent_name": "IngestionAgent", "steps": agent_logs.get("Agent1", [])},
                 {"agent_name": "TrustDetectionAgent", "steps": agent_logs.get("Agent2", [])},

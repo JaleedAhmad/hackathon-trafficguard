@@ -11,9 +11,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,6 +39,7 @@ import com.traffic_guard.ai.ui.components.AppTopBar
 @Composable
 fun AiProcessingScreen(
     onNavigateToSuccess: (Boolean) -> Unit,
+    onNavigateBack: () -> Unit,
     viewModel: AiProcessingViewModel,
     formState: com.traffic_guard.ai.data.ReportFormState,
     modifier: Modifier = Modifier
@@ -64,7 +71,7 @@ fun AiProcessingScreen(
     ) {
         AppTopBar(
             title = "AI Preprocessing",
-            onBackClick = {}
+            onBackClick = onNavigateBack
         )
 
         Column(
@@ -73,54 +80,128 @@ fun AiProcessingScreen(
                 .fillMaxSize()
                 .padding(24.dp)
         ) {
-            Spacer(modifier = Modifier.height(48.dp))
+            if (state.error != null) {
+                Spacer(modifier = Modifier.height(48.dp))
 
-            CircularProgressIndicator(
-                color = AccentBlue,
-                strokeWidth = 6.dp,
-                modifier = Modifier.size(80.dp)
-            )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(80.dp)
+                        .background(Color(0xFFFFECEF), shape = RoundedCornerShape(40.dp))
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Warning,
+                        contentDescription = "Error",
+                        tint = Color.Red,
+                        modifier = Modifier.size(40.dp)
+                    )
+                }
 
-            Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
-            Text(
-                text = "AI Credibility Verification",
-                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Black),
-                color = if (isDark) Color.White else Color.Black
-            )
+                Text(
+                    text = "Submission Failed",
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Black),
+                    color = if (isDark) Color.White else Color.Black
+                )
 
-            Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-            Text(
-                text = state.currentVerificationStep,
-                style = MaterialTheme.typography.bodyLarge,
-                color = if (isDark) Color.LightGray else Color.DarkGray,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-            )
+                Text(
+                    text = state.error ?: "An unexpected error occurred while processing the report.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Red,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(48.dp))
 
-            // Premium Stepper Linear Progress
-            LinearProgressIndicator(
-                progress = { animatedProgress },
-                color = AccentBlue,
-                trackColor = if (isDark) Color(0xFF334155) else Color(0xFFE2E8F0),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(8.dp)
-                    .background(Color.Transparent, shape = RoundedCornerShape(4.dp))
-            )
+                Button(
+                    onClick = { viewModel.submitReport(formState, isNetworkAvailable = true) },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = AccentBlue
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(
+                        text = "Try Again",
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        color = Color.White
+                    )
+                }
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Text(
-                text = "${(animatedProgress * 100).toInt()}% Analyzed",
-                style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
-                color = AccentBlue
-            )
+                OutlinedButton(
+                    onClick = onNavigateBack,
+                    border = androidx.compose.foundation.BorderStroke(1.dp, if (isDark) Color.LightGray else Color.DarkGray),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(
+                        text = "Cancel & Go Back",
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        color = if (isDark) Color.White else Color.Black
+                    )
+                }
+
+            } else {
+                Spacer(modifier = Modifier.height(48.dp))
+
+                CircularProgressIndicator(
+                    color = AccentBlue,
+                    strokeWidth = 6.dp,
+                    modifier = Modifier.size(80.dp)
+                )
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                Text(
+                    text = "AI Credibility Verification",
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Black),
+                    color = if (isDark) Color.White else Color.Black
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text(
+                    text = state.currentVerificationStep,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = if (isDark) Color.LightGray else Color.DarkGray,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(60.dp)
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                LinearProgressIndicator(
+                    progress = { animatedProgress },
+                    color = AccentBlue,
+                    trackColor = if (isDark) Color(0xFF334155) else Color(0xFFE2E8F0),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(8.dp)
+                        .background(Color.Transparent, shape = RoundedCornerShape(4.dp))
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "${(animatedProgress * 100).toInt()}% Analyzed",
+                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+                    color = AccentBlue
+                )
+            }
         }
     }
 }

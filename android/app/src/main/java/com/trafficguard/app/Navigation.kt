@@ -430,6 +430,7 @@ fun MainNavigation(
                 )
                 AiProcessingScreen(
                     onNavigateToSuccess = { isOffline -> backStack.add(ReportSuccess(isOffline = isOffline)) },
+                    onNavigateBack = { backStack.removeLastOrNull() },
                     viewModel = processingVM,
                     formState = sharedReportWizardViewModel.formState.value
                 )

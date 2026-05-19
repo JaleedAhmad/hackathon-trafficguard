@@ -27,10 +27,12 @@ class AiProcessingViewModel(
     val uiState: StateFlow<ProcessingUiState> = _uiState.asStateFlow()
 
     private val verificationSteps = listOf(
-        "Scanning coordinates for active duplicate reports...",
-        "Analyzing media metadata and attachments...",
-        "Verifying AI credibility weights and simulation values...",
-        "Pushing structured report entries to Firestore /reports...",
+        "Scanning coordinates for duplicate reports...",
+        "Running AI Ingestion Agent (Phase 1)...",
+        "Running AI Trust Detection Agent (Phase 2)...",
+        "Running Situation Planning Agent (Phase 3)...",
+        "Running Execution & Notification Agent (Phase 4)...",
+        "Pushing structured report entries to backend...",
         "Incident reported successfully!"
     )
 
@@ -40,7 +42,7 @@ class AiProcessingViewModel(
 
             // Dynamic Step-by-Step AI Verification Simulation
             for (i in verificationSteps.indices) {
-                delay(800) // Simulated AI reasoning step latency
+                delay(600) // Simulated reasoning latency
                 val progressVal = (i + 1).toFloat() / verificationSteps.size
                 _uiState.value = _uiState.value.copy(
                     currentVerificationStep = verificationSteps[i],
@@ -62,7 +64,8 @@ class AiProcessingViewModel(
                 }
                 is Result.Error -> {
                     _uiState.value = _uiState.value.copy(
-                        error = "Ghalti! Report upload karne me nakami hui."
+                        error = "Failed to submit report. Please verify connection and try again.",
+                        progress = 0.0f
                     )
                 }
                 else -> {}

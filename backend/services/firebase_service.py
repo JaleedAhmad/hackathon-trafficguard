@@ -15,6 +15,10 @@ logger = logging.getLogger(__name__)
 db_client = None
 FIREBASE_ENABLED = False
 
+_mock_reports = []
+_mock_agent_traces = []
+_mock_sos = []
+
 # ─────────────────────────────────────────────
 # CONFIG
 # ─────────────────────────────────────────────
@@ -71,6 +75,7 @@ def save_report(report_data: dict) -> bool:
             ).set(report_data)
         else:
             logger.warning(f"MOCK report saved: {report_data}")
+            _mock_reports.append(report_data)
 
         return True
 
@@ -86,6 +91,8 @@ def get_all_reports() -> list:
                 doc.to_dict()
                 for doc in get_db().collection("reports").stream()
             ]
+        else:
+            return _mock_reports
     except Exception as e:
         logger.error(f"get_all_reports failed: {e}")
 
@@ -139,6 +146,7 @@ def save_agent_trace(trace: dict) -> bool:
             ).set(trace)
         else:
             logger.warning(f"MOCK trace: {trace['trace_id']}")
+            _mock_agent_traces.append(trace)
 
         return True
 
@@ -160,6 +168,9 @@ def get_latest_trace():
 
             for doc in docs:
                 return doc.to_dict()
+        else:
+            if _mock_agent_traces:
+                return _mock_agent_traces[-1]
 
     except Exception as e:
         logger.error(f"get_latest_trace failed: {e}")
@@ -405,6 +416,7 @@ def save_sos(sos_data: dict) -> bool:
             ).set(sos_data)
         else:
             logger.warning(f"MOCK SOS saved: {sos_data}")
+            _mock_sos.append(sos_data)
         return True
     except Exception as e:
         logger.error(f"save_sos failed: {e}")
@@ -418,6 +430,8 @@ def get_all_sos() -> list:
                 doc.to_dict()
                 for doc in get_db().collection("sos_alerts").stream()
             ]
+        else:
+            return _mock_sos
     except Exception as e:
         logger.error(f"get_all_sos failed: {e}")
     return []

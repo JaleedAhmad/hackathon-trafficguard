@@ -14,9 +14,18 @@ from agents.trust_detection_agent import TrustDetectionAgent
 from agents.situation_planning_agent import SituationPlanningAgent
 from agents.execution_agent import ExecutionAgent
 from services.firebase_service import get_latest_trace, save_report, get_all_reports, get_current_crisis_firestore, increment_user_reputation
+from fastapi.middleware.cors import CORSMiddleware
 from auth import create_auth_router, get_current_user, FirebaseUser
 
 app = FastAPI(title="TrafficGuard AI Backend")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Mount production auth routes at /auth
 app.include_router(create_auth_router(), prefix="/auth")
