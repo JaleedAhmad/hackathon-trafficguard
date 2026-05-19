@@ -5,23 +5,262 @@ import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import com.traffic_guard.ai.data.AuthRepository
+import com.traffic_guard.ai.data.PreferencesRepository
+import com.traffic_guard.ai.data.ThemeMode
+import com.traffic_guard.ai.ui.language.LanguageSelectionScreen
+import com.traffic_guard.ai.ui.language.LanguageViewModel
+import com.traffic_guard.ai.ui.onboarding.OnboardingScreen
+import com.traffic_guard.ai.ui.onboarding.OnboardingViewModel
+import com.traffic_guard.ai.ui.permissions.PermissionsOnboardingScreen
+import com.traffic_guard.ai.ui.permissions.PermissionsViewModel
+import com.traffic_guard.ai.ui.auth.WelcomeScreen
+import com.traffic_guard.ai.ui.auth.LoginScreen
+import com.traffic_guard.ai.ui.auth.SignupScreen
+import com.traffic_guard.ai.ui.auth.ForgotPasswordScreen
+import com.traffic_guard.ai.ui.auth.AuthViewModel
+import com.traffic_guard.ai.ui.auth.ForgotPasswordViewModel
+import com.traffic_guard.ai.ui.otp.OtpVerificationScreen
+import com.traffic_guard.ai.ui.otp.OtpViewModel
+import com.traffic_guard.ai.ui.auth.AccountSetupSuccessScreen
 import com.traffic_guard.ai.ui.main.MainScreen
+import com.traffic_guard.ai.ui.showcase.ErrorShowcaseScreen
+import com.traffic_guard.ai.ui.showcase.ShowcaseScreen
+import com.traffic_guard.ai.ui.splash.SplashScreen
+import com.traffic_guard.ai.ui.splash.SplashViewModel
 
 @Composable
-fun MainNavigation() {
-  val backStack = rememberNavBackStack(Main)
+fun MainNavigation(
+    preferencesRepository: PreferencesRepository,
+    authRepository: AuthRepository,
+    currentThemeMode: ThemeMode,
+    onThemeModeChanged: (ThemeMode) -> Unit
+) {
+    val backStack = rememberNavBackStack(Splash)
 
-  NavDisplay(
-    backStack = backStack,
-    onBack = { backStack.removeLastOrNull() },
-    entryProvider =
-      entryProvider {
-        entry<Main> {
-          MainScreen(onItemClick = { navKey -> backStack.add(navKey) }, modifier = Modifier.safeDrawingPadding().padding(16.dp))
+    NavDisplay(
+        backStack = backStack,
+        onBack = { backStack.removeLastOrNull() },
+        entryProvider = entryProvider {
+            
+            entry<Splash> {
+                val splashViewModel: SplashViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            return SplashViewModel(preferencesRepository) as T
+                        }
+                    }
+                )
+                SplashScreen(
+                    onNavigateToLanguageSelection = {
+                        backStack.removeLastOrNull()
+                        backStack.add(LanguageSelection)
+                    },
+                    onNavigateToOnboarding = {
+                        backStack.removeLastOrNull()
+                        backStack.add(Onboarding)
+                    },
+                    onNavigateToWelcome = {
+                        backStack.removeLastOrNull()
+                        backStack.add(Welcome)
+                    },
+                    viewModel = splashViewModel
+                )
+            }
+
+            entry<LanguageSelection> {
+                val langViewModel: LanguageViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            return LanguageViewModel(preferencesRepository) as T
+                        }
+                    }
+                )
+                LanguageSelectionScreen(
+                    onNavigateToOnboarding = {
+                        backStack.removeLastOrNull()
+                        backStack.add(Onboarding)
+                    },
+                    viewModel = langViewModel
+                )
+            }
+
+            entry<Onboarding> {
+                val onboardingViewModel: OnboardingViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            return OnboardingViewModel(preferencesRepository) as T
+                        }
+                    }
+                )
+                OnboardingScreen(
+                    onNavigateToPermissions = {
+                        backStack.removeLastOrNull()
+                        backStack.add(Permissions)
+                    },
+                    viewModel = onboardingViewModel
+                )
+            }
+
+            entry<Permissions> {
+                val permissionsViewModel: PermissionsViewModel = viewModel()
+                PermissionsOnboardingScreen(
+                    onNavigateToWelcome = {
+                        backStack.removeLastOrNull()
+                        backStack.add(Welcome)
+                    },
+                    viewModel = permissionsViewModel
+                )
+            }
+
+            entry<Welcome> {
+                val authViewModel: AuthViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            return AuthViewModel(authRepository) as T
+                        }
+                    }
+                )
+                WelcomeScreen(
+                    onNavigateToLogin = { backStack.add(Login) },
+                    onNavigateToSignup = { backStack.add(Signup) },
+                    onNavigateToMain = {
+                        backStack.removeLastOrNull()
+                        backStack.add(Main)
+                    },
+                    viewModel = authViewModel
+                )
+            }
+
+            entry<Login> {
+                val authViewModel: AuthViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            return AuthViewModel(authRepository) as T
+                        }
+                    }
+                )
+                LoginScreen(
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNavigateToSignup = {
+                        backStack.removeLastOrNull()
+                        backStack.add(Signup)
+                    },
+                    onNavigateToForgotPassword = { backStack.add(ForgotPassword) },
+                    onNavigateToSuccess = {
+                        backStack.removeLastOrNull()
+                        backStack.add(AuthSuccess)
+                    },
+                    viewModel = authViewModel
+                )
+            }
+
+            entry<Signup> {
+                val authViewModel: AuthViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            return AuthViewModel(authRepository) as T
+                        }
+                    }
+                )
+                SignupScreen(
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNavigateToLogin = {
+                        backStack.removeLastOrNull()
+                        backStack.add(Login)
+                    },
+                    onNavigateToOtp = { verificationId, phone ->
+                        backStack.add(OtpVerification(verificationId, phone))
+                    },
+                    onNavigateToSuccess = {
+                        backStack.removeLastOrNull()
+                        backStack.add(AuthSuccess)
+                    },
+                    viewModel = authViewModel
+                )
+            }
+
+            entry<ForgotPassword> {
+                val forgotViewModel: ForgotPasswordViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            return ForgotPasswordViewModel(authRepository) as T
+                        }
+                    }
+                )
+                ForgotPasswordScreen(
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    viewModel = forgotViewModel
+                )
+            }
+
+            entry<OtpVerification> { key ->
+                val otpViewModel: OtpViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            return OtpViewModel(authRepository) as T
+                        }
+                    }
+                )
+                OtpVerificationScreen(
+                    verificationId = key.verificationId,
+                    phoneNumber = key.phoneNumber,
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNavigateToSuccess = {
+                        backStack.removeLastOrNull()
+                        backStack.add(AuthSuccess)
+                    },
+                    viewModel = otpViewModel
+                )
+            }
+
+            entry<AuthSuccess> {
+                AccountSetupSuccessScreen(
+                    onNavigateToMain = {
+                        backStack.removeLastOrNull()
+                        backStack.add(Main)
+                    }
+                )
+            }
+
+            entry<Showcase> {
+                ShowcaseScreen(
+                    onNavigateToErrorShowcase = {
+                        backStack.add(ErrorShowcase)
+                    },
+                    onThemeModeChanged = onThemeModeChanged,
+                    currentThemeMode = currentThemeMode
+                )
+            }
+
+            entry<ErrorShowcase> {
+                ErrorShowcaseScreen(
+                    onBackClick = {
+                        backStack.removeLastOrNull()
+                    }
+                )
+            }
+
+            entry<Main> {
+                MainScreen(
+                    onItemClick = { navKey -> backStack.add(navKey) },
+                    modifier = Modifier.safeDrawingPadding().padding(16.dp)
+                )
+            }
         }
-      },
-  )
+    )
 }

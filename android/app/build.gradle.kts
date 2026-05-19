@@ -81,4 +81,14 @@ dependencies {
   implementation(libs.androidx.navigation3.ui)
   implementation(libs.androidx.navigation3.runtime)
   implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+
+  // DataStore
+  implementation(libs.androidx.datastore.preferences)
+
+  // Google Fonts
+  implementation(libs.androidx.compose.ui.text.google.fonts)
+
+  // Icons
+  implementation(libs.androidx.compose.material.icons.core)
+  implementation(libs.androidx.compose.material.icons.extended)
 }
