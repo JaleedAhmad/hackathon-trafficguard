@@ -6,8 +6,8 @@ steps:
         '-t',
         'asia-south1-docker.pkg.dev/$PROJECT_ID/trafficguard-backend/backend:$COMMIT_SHA',
         '-f',
-        'Dockerfile',
-        '.'
+        'backend/Dockerfile',
+        'backend'
       ]
 
   - name: 'gcr.io/cloud-builders/docker'
@@ -30,17 +30,7 @@ steps:
         'asia-south1',
         '--platform',
         'managed',
-        '--allow-unauthenticated',
-        '--memory',
-        '2Gi',
-        '--cpu',
-        '2',
-        '--timeout',
-        '300',
-        '--concurrency',
-        '80',
-        '--max-instances',
-        '10'
+        '--allow-unauthenticated'
       ]
 
 images:
