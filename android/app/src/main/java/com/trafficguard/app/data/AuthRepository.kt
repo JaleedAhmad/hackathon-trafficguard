@@ -23,7 +23,7 @@ interface AuthRepository {
     suspend fun signInAsGuest(): Result<UserProfile>
 
     suspend fun signInWithEmail(email: String, password: String): Result<UserProfile>
-    suspend fun signUpWithEmail(email: String, password: String): Result<UserProfile>
+    suspend fun signUpWithEmail(email: String, password: String, name: String): Result<UserProfile>
     suspend fun signInWithGoogle(idToken: String): Result<UserProfile>
     suspend fun sendPasswordResetEmail(email: String): Result<Unit>
 
@@ -76,11 +76,19 @@ class AuthRepositoryImpl : AuthRepository {
             profile
         }
 
-    override suspend fun signUpWithEmail(email: String, password: String): Result<UserProfile> =
+    override suspend fun signUpWithEmail(email: String, password: String, name: String): Result<UserProfile> =
         runAuthCatching("email") {
             val result = auth.createUserWithEmailAndPassword(email, password).await()
             val user = result.user!!
-            val profile = user.toUserProfile(provider = "email")
+            
+            // Set the name immediately to the FirebaseUser profile
+            val profileUpdates = com.google.firebase.auth.UserProfileChangeRequest.Builder()
+                .setDisplayName(name)
+                .build()
+            user.updateProfile(profileUpdates).await()
+            
+            // Re-read profile with the new name to save to firestore
+            val profile = user.toUserProfile(provider = "email").copy(displayName = name)
             upsertFirestoreProfile(profile, isNew = true)
             profile
         }

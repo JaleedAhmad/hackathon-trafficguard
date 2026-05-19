@@ -12,7 +12,20 @@
           "package_name": "com.traffic_guard.ai"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "777173229835-utnrvk30j7nkeuagsvddub3t1piadelh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.traffic_guard.ai",
+            "certificate_hash": "0b8fc7fdd916f15e8108bd916bec78ceefee945e"
+          }
+        },
+        {
+          "client_id": "777173229835-q572kphfh24h8sl5j52iu3m4vgrri6f3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCD09t97ueRTQz7cl8bkpGVDqeGmEuRNz8"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "777173229835-q572kphfh24h8sl5j52iu3m4vgrri6f3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

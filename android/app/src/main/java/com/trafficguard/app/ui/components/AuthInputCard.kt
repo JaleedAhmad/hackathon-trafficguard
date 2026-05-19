@@ -6,6 +6,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -21,7 +22,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 
 enum class AuthInputType {
-    EMAIL, PASSWORD, PHONE
+    EMAIL, PASSWORD, PHONE, TEXT
 }
 
 @Composable
@@ -41,6 +42,7 @@ fun AuthInputCard(
         AuthInputType.EMAIL -> Icons.Default.Email
         AuthInputType.PASSWORD -> Icons.Default.Lock
         AuthInputType.PHONE -> Icons.Default.Phone
+        AuthInputType.TEXT -> Icons.Default.Person
     }
 
     val trailingIcon = if (inputType == AuthInputType.PASSWORD) {
@@ -58,6 +60,7 @@ fun AuthInputCard(
             AuthInputType.EMAIL -> KeyboardType.Email
             AuthInputType.PASSWORD -> KeyboardType.Password
             AuthInputType.PHONE -> KeyboardType.Phone
+            AuthInputType.TEXT -> KeyboardType.Text
         },
         imeAction = imeAction
     )

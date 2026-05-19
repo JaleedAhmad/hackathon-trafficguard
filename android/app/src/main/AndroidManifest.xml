@@ -18,6 +18,15 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBGPletDxQfCYv9zilk_HR9ScM96A5cwss" />
+        <meta-data
+            android:name="GOOGLE_WEB_CLIENT_ID"
+            android:value="777173229835-q572kphfh24h8sl5j52iu3m4vgrri6f3.apps.googleusercontent.com" />
+        <!-- <meta-data
+            android:name="BACKEND_BASE_URL"
+            android:value="http://10.0.2.2:8000/" /> -->
+        <meta-data
+            android:name="BACKEND_BASE_URL"
+            android:value="http://127.0.0.1:8000/" />
 
         <activity
             android:name="com.traffic_guard.ai.MainActivity"

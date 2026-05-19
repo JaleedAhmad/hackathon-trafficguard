@@ -44,6 +44,9 @@ class MainActivity : ComponentActivity() {
             com.google.android.libraries.places.api.Places.initialize(applicationContext, "AIzaSyBGPletDxQfCYv9zilk_HR9ScM96A5cwss")
         }
 
+        // Initialize API Client BASE_URL from AndroidManifest
+        com.traffic_guard.ai.data.TrafficGuardApiClient.init(applicationContext)
+
         enableEdgeToEdge()
         setContent {
             val themeMode by viewModel.themeMode.collectAsState()

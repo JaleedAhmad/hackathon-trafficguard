@@ -60,12 +60,12 @@ class GoogleSignInHelper(private val context: Context) {
     }
 }
 
-/**
- * Returns the production Google Web Client ID.
- * Falls back to the developer's client ID if default_web_client_id is not generated.
- */
 fun Context.getGoogleWebClientId(): String {
-    val resId = resources.getIdentifier("default_web_client_id", "string", packageName)
-    return if (resId != 0) getString(resId) else "777173229835-q572kphfh24h8sl5j52iu3m4vgrri6f3.apps.googleusercontent.com"
+    return try {
+        val appInfo = packageManager.getApplicationInfo(packageName, android.content.pm.PackageManager.GET_META_DATA)
+        appInfo.metaData.getString("GOOGLE_WEB_CLIENT_ID") ?: "777173229835-q572kphfh24h8sl5j52iu3m4vgrri6f3.apps.googleusercontent.com"
+    } catch (e: Exception) {
+        "777173229835-q572kphfh24h8sl5j52iu3m4vgrri6f3.apps.googleusercontent.com"
+    }
 }
 

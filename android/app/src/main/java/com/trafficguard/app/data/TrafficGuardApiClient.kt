@@ -423,9 +423,19 @@ object TrafficGuardApiClient {
      * - Emulator → http://10.0.2.2:8000/
      * - Physical device on same LAN → http://<your_machine_ip>:8000/
      */
-    // const val BASE_URL = "http://10.0.2.2:8000/"
-    const val BASE_URL = "http://127.0.0.1:8000/"
+    var BASE_URL = "http://10.0.2.2:8000/"
 
+    fun init(context: android.content.Context) {
+        try {
+            val appInfo = context.packageManager.getApplicationInfo(context.packageName, android.content.pm.PackageManager.GET_META_DATA)
+            val manifestUrl = appInfo.metaData.getString("BACKEND_BASE_URL")
+            if (!manifestUrl.isNullOrBlank()) {
+                BASE_URL = manifestUrl
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("TrafficGuardApiClient", "Failed to load BASE_URL from metadata: ${e.message}")
+        }
+    }
 
     private val loggingInterceptor = HttpLoggingInterceptor { msg ->
         Log.d("OkHttp", msg)

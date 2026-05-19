@@ -92,6 +92,16 @@ fun SignupScreen(
             }
 
             AuthInputCard(
+                value = state.nameInput,
+                onValueChange = { viewModel.onNameChanged(it) },
+                label = "Full Name",
+                inputType = AuthInputType.TEXT,
+                error = state.nameError
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            AuthInputCard(
                 value = state.emailInput,
                 onValueChange = { viewModel.onEmailChanged(it) },
                 label = "Email Address",

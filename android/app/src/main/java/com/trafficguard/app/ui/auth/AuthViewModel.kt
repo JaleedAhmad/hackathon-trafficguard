@@ -11,10 +11,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 data class AuthFormState(
+    val nameInput: String = "",
     val emailInput: String = "",
     val passwordInput: String = "",
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
+    val nameError: String? = null,
     val emailError: String? = null,
     val passwordError: String? = null,
     val authenticatedUser: UserProfile? = null
@@ -28,6 +30,13 @@ class AuthViewModel(
     val uiState: StateFlow<AuthFormState> = _uiState.asStateFlow()
 
     // ── Field Validators ──────────────────────────────────────────────────────
+
+    fun onNameChanged(name: String) {
+        _uiState.value = _uiState.value.copy(
+            nameInput = name,
+            nameError = if (name.isNotBlank()) null else "Name cannot be empty."
+        )
+    }
 
     fun onEmailChanged(email: String) {
         _uiState.value = _uiState.value.copy(
@@ -75,15 +84,15 @@ class AuthViewModel(
 
     fun signupWithEmail(onSuccess: () -> Unit) {
         val state = _uiState.value
-        if (state.emailInput.isBlank() || state.passwordInput.isBlank()) {
-            _uiState.value = _uiState.value.copy(errorMessage = "Email and password cannot be empty.")
+        if (state.nameInput.isBlank() || state.emailInput.isBlank() || state.passwordInput.isBlank()) {
+            _uiState.value = _uiState.value.copy(errorMessage = "Name, email and password cannot be empty.")
             return
         }
-        if (state.emailError != null || state.passwordError != null) return
+        if (state.nameError != null || state.emailError != null || state.passwordError != null) return
 
         _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
         viewModelScope.launch {
-            when (val res = authRepository.signUpWithEmail(state.emailInput, state.passwordInput)) {
+            when (val res = authRepository.signUpWithEmail(state.emailInput, state.passwordInput, state.nameInput)) {
                 is Result.Success -> {
                     _uiState.value = _uiState.value.copy(isLoading = false, authenticatedUser = res.data)
                     onSuccess()
