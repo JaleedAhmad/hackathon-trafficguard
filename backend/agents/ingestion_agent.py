@@ -70,6 +70,9 @@ class IngestionAgent:
                 )
                 normalized_signals.append(normalized)
             except Exception as e:
+                print(f"\nINGESTION ERROR: {e}\n")
+                print(f"RAW RESPONSE:\n{response_text}\n")
+
                 log_agent_event("INGESTION_ERROR", {
                     "signal_id": signal.signal_id,
                     "error": str(e)

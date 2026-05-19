@@ -91,6 +91,9 @@ async def receive_report(signal: RawSignal):
     agent_log_handler.logs = {"Agent1": [], "Agent2": [], "Agent3": [], "Agent4": []}
     
     results = await ingestion_agent.run([signal])
+
+    print(f"results: {results}")
+    print(f"signal: {signal}")
     
     if not results:
         return {"report_id": signal.signal_id, "status": "failed", "message": "Ingestion failed"}
