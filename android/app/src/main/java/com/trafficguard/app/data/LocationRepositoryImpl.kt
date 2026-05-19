@@ -44,6 +44,7 @@ class LocationRepositoryImpl(private val context: Context) : LocationRepository 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
                 for (location in result.locations) {
+                    android.util.Log.i("LocationRepository", "Real-time location updated: ${location.latitude}, ${location.longitude}")
                     _locationFlow.value = MapLatLng(location.latitude, location.longitude)
                     _speedFlow.value = location.speed // in meters per second
                 }
@@ -51,13 +52,36 @@ class LocationRepositoryImpl(private val context: Context) : LocationRepository 
         }
 
         try {
-            fusedLocationClient.requestLocationUpdates(
-                locationRequest,
-                locationCallback!!,
-                Looper.getMainLooper()
-            )
+            val hasFine = androidx.core.content.ContextCompat.checkSelfPermission(
+                context,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+            val hasCoarse = androidx.core.content.ContextCompat.checkSelfPermission(
+                context,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+
+            if (hasFine || hasCoarse) {
+                android.util.Log.i("LocationRepository", "Location permissions verified. Getting last known location...")
+                fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                    location?.let {
+                        android.util.Log.i("LocationRepository", "Last known location found: ${it.latitude}, ${it.longitude}")
+                        _locationFlow.value = MapLatLng(it.latitude, it.longitude)
+                        _speedFlow.value = it.speed
+                    }
+                }
+                
+                fusedLocationClient.requestLocationUpdates(
+                    locationRequest,
+                    locationCallback!!,
+                    Looper.getMainLooper()
+                )
+            } else {
+                android.util.Log.w("LocationRepository", "No location permissions, falling back to mock stream")
+                mockLocationStream()
+            }
         } catch (e: Exception) {
-            // Premium mock fallback if permissions not fully ready yet
+            android.util.Log.e("LocationRepository", "Location updates start failed, using mock: ${e.message}")
             mockLocationStream()
         }
     }

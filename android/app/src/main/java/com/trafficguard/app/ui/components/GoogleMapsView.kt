@@ -57,9 +57,19 @@ fun GoogleMapsView(
         )
     }
 
-    val mapProperties = remember {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val hasFine = androidx.core.content.ContextCompat.checkSelfPermission(
+        context,
+        android.Manifest.permission.ACCESS_FINE_LOCATION
+    ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+    val hasCoarse = androidx.core.content.ContextCompat.checkSelfPermission(
+        context,
+        android.Manifest.permission.ACCESS_COARSE_LOCATION
+    ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+
+    val mapProperties = remember(hasFine, hasCoarse) {
         MapProperties(
-            isMyLocationEnabled = false
+            isMyLocationEnabled = hasFine || hasCoarse
         )
     }
 
