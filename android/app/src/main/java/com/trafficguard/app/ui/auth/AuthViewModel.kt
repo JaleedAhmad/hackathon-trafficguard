@@ -13,12 +13,10 @@ import kotlinx.coroutines.launch
 data class AuthFormState(
     val emailInput: String = "",
     val passwordInput: String = "",
-    val phoneInput: String = "",
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val emailError: String? = null,
     val passwordError: String? = null,
-    val phoneError: String? = null,
     val authenticatedUser: UserProfile? = null
 )
 
@@ -29,31 +27,30 @@ class AuthViewModel(
     private val _uiState = MutableStateFlow(AuthFormState())
     val uiState: StateFlow<AuthFormState> = _uiState.asStateFlow()
 
+    // ── Field Validators ──────────────────────────────────────────────────────
+
     fun onEmailChanged(email: String) {
         _uiState.value = _uiState.value.copy(
             emailInput = email,
-            emailError = if (email.contains("@") || email.isEmpty()) null else "Ghalat email format (Invalid Email)"
+            emailError = if (email.isEmpty() || email.contains("@")) null
+                         else "Invalid email address format."
         )
     }
 
     fun onPasswordChanged(password: String) {
         _uiState.value = _uiState.value.copy(
             passwordInput = password,
-            passwordError = if (password.length >= 8 || password.isEmpty()) null else "Password kam az kam 8 characters hona chahiye (Min 8 chars)"
+            passwordError = if (password.isEmpty() || password.length >= 6) null
+                            else "Password must be at least 6 characters."
         )
     }
 
-    fun onPhoneChanged(phone: String) {
-        _uiState.value = _uiState.value.copy(
-            phoneInput = phone,
-            phoneError = if (phone.all { it.isDigit() } || phone.isEmpty()) null else "Sirf numbers darj karein (Numbers only)"
-        )
-    }
+    // ── Auth Actions ──────────────────────────────────────────────────────────
 
     fun loginWithEmail(onSuccess: () -> Unit) {
         val state = _uiState.value
-        if (state.emailInput.isEmpty() || state.passwordInput.isEmpty()) {
-            _uiState.value = _uiState.value.copy(errorMessage = "Email aur password khali nahi ho sakte (Fields cannot be empty)")
+        if (state.emailInput.isBlank() || state.passwordInput.isBlank()) {
+            _uiState.value = _uiState.value.copy(errorMessage = "Email and password cannot be empty.")
             return
         }
         if (state.emailError != null || state.passwordError != null) return
@@ -66,14 +63,10 @@ class AuthViewModel(
                     onSuccess()
                 }
                 is Result.Error -> {
-                    // Premium Roman Urdu hints mapping standard exception codes
-                    val msg = res.exception.message ?: "Authentication fail ho gayi"
-                    val romanUrduMsg = when {
-                        msg.contains("password", ignoreCase = true) -> "Aap ka darj kiya hua password ghalat hai (Incorrect Password)"
-                        msg.contains("user", ignoreCase = true) -> "Is email ka koi account nahi mila (User not found)"
-                        else -> "Sign in nakam raha. Dobara koshish karein: $msg"
-                    }
-                    _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = romanUrduMsg)
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        errorMessage = res.exception.message
+                    )
                 }
                 else -> {}
             }
@@ -82,8 +75,8 @@ class AuthViewModel(
 
     fun signupWithEmail(onSuccess: () -> Unit) {
         val state = _uiState.value
-        if (state.emailInput.isEmpty() || state.passwordInput.isEmpty()) {
-            _uiState.value = _uiState.value.copy(errorMessage = "Fields khali nahi chor sakte")
+        if (state.emailInput.isBlank() || state.passwordInput.isBlank()) {
+            _uiState.value = _uiState.value.copy(errorMessage = "Email and password cannot be empty.")
             return
         }
         if (state.emailError != null || state.passwordError != null) return
@@ -96,31 +89,9 @@ class AuthViewModel(
                     onSuccess()
                 }
                 is Result.Error -> {
-                    val msg = res.exception.message ?: "Signup fail ho gayi"
-                    val romanUrduMsg = when {
-                        msg.contains("collision", ignoreCase = true) || msg.contains("exists", ignoreCase = true) -> 
-                            "Yeh email pehle se register hai (Email already exists)"
-                        else -> "Registration nakam rahi: $msg"
-                    }
-                    _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = romanUrduMsg)
-                }
-                else -> {}
-            }
-        }
-    }
-
-    fun loginAnonymously(onSuccess: () -> Unit) {
-        _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
-        viewModelScope.launch {
-            when (val res = authRepository.signInAnonymously()) {
-                is Result.Success -> {
-                    _uiState.value = _uiState.value.copy(isLoading = false, authenticatedUser = res.data)
-                    onSuccess()
-                }
-                is Result.Error -> {
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
-                        errorMessage = "Guest access nakam raha. Network check karein."
+                        errorMessage = res.exception.message
                     )
                 }
                 else -> {}
@@ -128,6 +99,9 @@ class AuthViewModel(
         }
     }
 
+    /**
+     * Called after the Credential Manager flow resolves a Google ID token.
+     */
     fun signInWithGoogle(idToken: String, onSuccess: () -> Unit) {
         _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
         viewModelScope.launch {
@@ -139,11 +113,37 @@ class AuthViewModel(
                 is Result.Error -> {
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
-                        errorMessage = "Google login fail ho gaya: ${res.exception.message}"
+                        errorMessage = res.exception.message
                     )
                 }
                 else -> {}
             }
         }
     }
+
+    /**
+     * Browse as Guest — no account required.
+     * Profile and incident-posting features will be restricted.
+     */
+    fun continueAsGuest(onSuccess: () -> Unit) {
+        _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
+        viewModelScope.launch {
+            when (val res = authRepository.signInAsGuest()) {
+                is Result.Success -> {
+                    _uiState.value = _uiState.value.copy(isLoading = false, authenticatedUser = res.data)
+                    onSuccess()
+                }
+                is Result.Error -> {
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        errorMessage = "Failed to start guest session."
+                    )
+                }
+                else -> {}
+            }
+        }
+    }
+
+    // Keep legacy name for backward compat in existing callers
+    fun loginAnonymously(onSuccess: () -> Unit) = continueAsGuest(onSuccess)
 }

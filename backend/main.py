@@ -12,12 +12,18 @@ from agents.trust_detection_agent import TrustDetectionAgent
 from agents.situation_planning_agent import SituationPlanningAgent
 from agents.execution_agent import ExecutionAgent
 from services.firebase_service import get_latest_trace
+from auth import create_auth_router
 
 app = FastAPI(title="TrafficGuard AI Backend")
+
+# Mount production auth routes at /auth
+app.include_router(create_auth_router(), prefix="/auth")
+
 ingestion_agent = IngestionAgent()
 trust_agent = TrustDetectionAgent()
 situation_agent = SituationPlanningAgent()
 execution_agent = ExecutionAgent()
+
 
 class AgentLogCaptureHandler(logging.Handler):
     """Intercepts python logs during a request to compile the Agent Trace export."""

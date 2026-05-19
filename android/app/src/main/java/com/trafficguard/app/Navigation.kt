@@ -312,6 +312,7 @@ fun MainNavigation(
                 )
                 
                 com.traffic_guard.ai.ui.main.MainDashboardScreen(
+                    authRepository = authRepository,
                     homeViewModel = homeViewModel,
                     feedViewModel = feedVM,
                     reputationViewModel = reputationVM,
@@ -320,7 +321,11 @@ fun MainNavigation(
                     onNavigateToReport = { backStack.add(ReportWizard) },
                     onNavigateToAlertDetail = { incidentId -> backStack.add(AlertDetail(incidentId)) },
                     onNavigateToSettings = { backStack.add(SettingsHub) },
-                    onNavigateToSos = { backStack.add(SosDashboard) }
+                    onNavigateToSos = { backStack.add(SosDashboard) },
+                    onNavigateToAuth = {
+                        backStack.removeLastOrNull()
+                        backStack.add(Welcome)
+                    }
                 )
             }
 

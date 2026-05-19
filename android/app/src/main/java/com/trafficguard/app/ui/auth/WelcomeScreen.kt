@@ -164,9 +164,9 @@ fun WelcomeScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 AppButton(
-                    text = "Proceed as Guest (Anonymous)",
+                    text = "Browse App (Restricted Access)",
                     onClick = {
-                        viewModel.loginAnonymously {
+                        viewModel.continueAsGuest {
                             onNavigateToMain()
                         }
                     },
@@ -188,7 +188,7 @@ fun WelcomeScreen(
                     CircularProgressIndicator(color = AccentBlue)
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = "Setting up guest session...",
+                        text = "Starting guest session...",
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.White
                     )

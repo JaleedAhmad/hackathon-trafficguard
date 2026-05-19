@@ -2,6 +2,7 @@ plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.compose.compiler)
   alias(libs.plugins.kotlin.serialization)
+  alias(libs.plugins.google.services)
 }
 
 android {
@@ -99,4 +100,20 @@ dependencies {
 
   // WorkManager offline synchronization
   implementation("androidx.work:work-runtime-ktx:2.9.0")
+
+  // Firebase Auth & Google Sign-In
+  implementation(platform(libs.firebase.bom))
+  implementation(libs.firebase.auth)
+  implementation(libs.firebase.firestore)
+  implementation(libs.firebase.coroutines)
+  implementation(libs.play.services.auth)
+  implementation(libs.androidx.credentials)
+  implementation(libs.androidx.credentials.play.services.auth)
+  implementation(libs.google.identity.googleid)
+
+  // Retrofit + OkHttp for backend communication
+  implementation(libs.retrofit.core)
+  implementation(libs.retrofit.gson)
+  implementation(libs.okhttp.logging)
 }
+

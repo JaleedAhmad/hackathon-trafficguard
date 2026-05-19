@@ -59,7 +59,7 @@ fun GoogleMapsView(
 
     val mapProperties = remember {
         MapProperties(
-            isMyLocationEnabled = userLocation != null
+            isMyLocationEnabled = false
         )
     }
 

@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">android</string>
+    <string name="app_name">TrafficGuard AI</string>
+    <string name="default_web_client_id">777173229835-q572kphfh24h8sl5j52iu3m4vgrri6f3.apps.googleusercontent.com</string>
 </resources>

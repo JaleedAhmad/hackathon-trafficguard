@@ -5,5 +5,7 @@ data class UserProfile(
     val email: String?,
     val phoneNumber: String?,
     val displayName: String?,
-    val isAnonymous: Boolean
+    val photoUrl: String? = null,
+    val authProvider: String = "email",
+    val isAnonymous: Boolean = false
 )

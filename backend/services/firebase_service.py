@@ -1,7 +1,7 @@
 import os
 import logging
 import firebase_admin
-from firebase_admin import credentials, firestore, db
+from firebase_admin import credentials, firestore, db, auth
 from google.cloud import firestore as google_firestore
 
 logger = logging.getLogger(__name__)
@@ -101,3 +101,21 @@ def get_latest_trace():
     except Exception as e:
         logger.warning(f"Firebase read failed: {e}")
     return None
+
+def verify_token(id_token: str) -> dict:
+    """Verifies a Firebase ID token. Returns decoded claims or raises an exception."""
+    try:
+        if FIREBASE_ENABLED:
+            decoded_token = auth.verify_id_token(id_token)
+            return decoded_token
+        else:
+            logger.warning(f"MOCK FIREBASE AUTH: Decoding token {id_token[:15]}...")
+            return {
+                "uid": "mock_firebase_uid",
+                "email": "mockuser@example.com",
+                "name": "Mock Firebase User"
+            }
+    except Exception as e:
+        logger.error(f"Failed to verify ID token: {e}")
+        raise e
+

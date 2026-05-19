@@ -25,21 +25,22 @@ class AuthViewModelTest {
 
     private val mockRepository = object : AuthRepository {
         override val currentUser: Flow<UserProfile?> = emptyFlow()
-        override suspend fun signInAnonymously(): Result<UserProfile> {
-            return Result.Success(UserProfile("anon", null, null, null, true))
+        override suspend fun signInAsGuest(): Result<UserProfile> {
+            return Result.Success(UserProfile("anon", null, null, null, isAnonymous = true))
         }
         override suspend fun signInWithEmail(email: String, password: String): Result<UserProfile> {
-            return Result.Success(UserProfile("user_123", email, null, "Test", false))
+            return Result.Success(UserProfile("user_123", email, null, "Test"))
         }
         override suspend fun signUpWithEmail(email: String, password: String): Result<UserProfile> {
-            return Result.Success(UserProfile("user_123", email, null, "Test", false))
+            return Result.Success(UserProfile("user_123", email, null, "Test"))
         }
         override suspend fun signInWithGoogle(idToken: String): Result<UserProfile> {
-            return Result.Success(UserProfile("google_123", "googleuser@example.com", null, "Google User", false))
+            return Result.Success(UserProfile("google_123", "googleuser@example.com", null, "Google User"))
         }
         override suspend fun sendPasswordResetEmail(email: String): Result<Unit> {
             return Result.Success(Unit)
         }
+        override suspend fun getFreshIdToken(): String? = "mock_id_token"
         override suspend fun signOut() {}
     }
 
@@ -65,7 +66,7 @@ class AuthViewModelTest {
     @Test
     fun testInvalidEmailFormat_setsCorrectRomanUrduErrorMessage() {
         viewModel.onEmailChanged("invalid-email")
-        assertEquals("Ghalat email format (Invalid Email)", viewModel.uiState.value.emailError)
+        assertEquals("Invalid email address format.", viewModel.uiState.value.emailError)
     }
 
     @Test
@@ -78,7 +79,7 @@ class AuthViewModelTest {
     fun testTooShortPasswordLength_setsCorrectRomanUrduErrorMessage() {
         viewModel.onPasswordChanged("123")
         assertEquals(
-            "Password kam az kam 8 characters hona chahiye (Min 8 chars)",
+            "Password must be at least 6 characters.",
             viewModel.uiState.value.passwordError
         )
     }

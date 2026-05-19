@@ -9,6 +9,10 @@
         android:supportsRtl="true"
         android:windowSoftInputMode="adjustResize"
         android:theme="@style/Theme.Android">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBGPletDxQfCYv9zilk_HR9ScM96A5cwss" />
+
         <activity
             android:name="com.traffic_guard.ai.MainActivity"
             android:exported="true">

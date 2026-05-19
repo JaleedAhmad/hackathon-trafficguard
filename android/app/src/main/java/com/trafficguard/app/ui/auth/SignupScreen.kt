@@ -17,12 +17,17 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.traffic_guard.ai.auth.GoogleSignInHelper
+import com.traffic_guard.ai.auth.getGoogleWebClientId
+import kotlinx.coroutines.launch
 import com.traffic_guard.ai.theme.AccentBlue
 import com.traffic_guard.ai.theme.DarkBgDeep
 import com.traffic_guard.ai.theme.LightBgDeep
@@ -43,6 +48,10 @@ fun SignupScreen(
 ) {
     val isDark = MaterialTheme.colorScheme.background.value == 0xFF0F172A.toULong()
     val state by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val googleSignInHelper = GoogleSignInHelper(context)
+    val webClientId = context.getGoogleWebClientId()
 
     Column(
         modifier = modifier
@@ -121,9 +130,11 @@ fun SignupScreen(
                 AppButton(
                     text = "Continue with Google",
                     onClick = {
-                        // Mock Google Sign-In with a dummy token
-                        viewModel.signInWithGoogle("dummy_google_id_token") {
-                            onNavigateToSuccess()
+                        scope.launch {
+                            val idToken = googleSignInHelper.getGoogleIdToken(webClientId)
+                            if (idToken != null) {
+                                viewModel.signInWithGoogle(idToken) { onNavigateToSuccess() }
+                            }
                         }
                     },
                     variant = ButtonVariant.OUTLINED,
