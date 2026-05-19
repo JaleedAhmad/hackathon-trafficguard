@@ -205,3 +205,182 @@ def save_notifications(notifications: list) -> bool:
     except Exception as e:
         logger.error(f"save_notifications failed: {e}")
         return False
+
+# ─────────────────────────────────────────────
+# REPUTATION & LEADERBOARD
+# ─────────────────────────────────────────────
+
+def increment_user_reputation(uid: str, amount: int) -> bool:
+    try:
+        if FIREBASE_ENABLED:
+            ref = get_db().collection("users").document(uid)
+            doc = ref.get()
+            if doc.exists:
+                current = doc.to_dict().get("reputationScore", 0)
+                ref.update({"reputationScore": current + amount})
+            else:
+                ref.set({
+                    "uid": uid,
+                    "reputationScore": amount,
+                    "displayName": "Anonymous Driver"
+                }, merge=True)
+        return True
+    except Exception as e:
+        logger.error(f"increment_user_reputation failed: {e}")
+        return False
+
+
+def get_leaderboard_firestore() -> list:
+    try:
+        if FIREBASE_ENABLED:
+            docs = (
+                get_db()
+                .collection("users")
+                .order_by("reputationScore", direction=firestore.Query.DESCENDING)
+                .limit(10)
+                .stream()
+            )
+            leaderboard = []
+            for idx, doc in enumerate(docs):
+                d = doc.to_dict()
+                leaderboard.append({
+                    "uid": d.get("uid", ""),
+                    "displayName": d.get("displayName") or "Anonymous Driver",
+                    "reputationScore": d.get("reputationScore", 0),
+                    "rank": idx + 1
+                })
+            return leaderboard
+    except Exception as e:
+        logger.error(f"get_leaderboard_firestore failed: {e}")
+    return [
+        {"uid": "u1", "displayName": "Ahmad K.", "reputationScore": 1500, "rank": 1},
+        {"uid": "u2", "displayName": "Zainab R.", "reputationScore": 1250, "rank": 2},
+        {"uid": "u3", "displayName": "Usman B.", "reputationScore": 980, "rank": 3}
+    ]
+
+
+def get_user_rank_firestore(uid: str) -> dict:
+    try:
+        if FIREBASE_ENABLED:
+            docs = (
+                get_db()
+                .collection("users")
+                .order_by("reputationScore", direction=firestore.Query.DESCENDING)
+                .stream()
+            )
+            for idx, doc in enumerate(docs):
+                d = doc.to_dict()
+                if d.get("uid") == uid:
+                    return {
+                        "uid": uid,
+                        "displayName": d.get("displayName") or "You",
+                        "reputationScore": d.get("reputationScore", 0),
+                        "rank": idx + 1
+                    }
+    except Exception as e:
+        logger.error(f"get_user_rank_firestore failed: {e}")
+    return {
+        "uid": uid,
+        "displayName": "You",
+        "reputationScore": 450,
+        "rank": 45
+    }
+
+# ─────────────────────────────────────────────
+# COMMENTS
+# ─────────────────────────────────────────────
+
+def add_comment(report_id: str, uid: str, display_name: str, text: str) -> dict:
+    import time
+    comment_id = f"comment_{int(time.time())}_{uid[:4]}"
+    comment_data = {
+        "comment_id": comment_id,
+        "report_id": report_id,
+        "uid": uid,
+        "displayName": display_name or "Anonymous Driver",
+        "text": text,
+        "timestamp": int(time.time() * 1000)
+    }
+    try:
+        if FIREBASE_ENABLED:
+            get_db().collection("comments").document(comment_id).set(comment_data)
+        else:
+            logger.warning(f"MOCK comment saved: {comment_data}")
+    except Exception as e:
+        logger.error(f"add_comment failed: {e}")
+    return comment_data
+
+
+def get_comments(report_id: str) -> list:
+    import time
+    try:
+        if FIREBASE_ENABLED:
+            docs = (
+                get_db()
+                .collection("comments")
+                .where("report_id", "==", report_id)
+                .order_by("timestamp", direction=firestore.Query.ASCENDING)
+                .stream()
+            )
+            return [doc.to_dict() for doc in docs]
+    except Exception as e:
+        logger.error(f"get_comments failed: {e}")
+    return [
+        {
+            "comment_id": "c1",
+            "report_id": report_id,
+            "uid": "mock_1",
+            "displayName": "Ali",
+            "text": "Still flooded, avoid this route.",
+            "timestamp": int(time.time() * 1000) - 100000
+        },
+        {
+            "comment_id": "c2",
+            "report_id": report_id,
+            "uid": "mock_2",
+            "displayName": "Sara",
+            "text": "Police has arrived.",
+            "timestamp": int(time.time() * 1000) - 50000
+        }
+    ]
+
+# ─────────────────────────────────────────────
+# VOTES
+# ─────────────────────────────────────────────
+
+def save_vote(report_id: str, uid: str, is_upvote: bool) -> bool:
+    import time
+    vote_id = f"{uid}_{report_id}"
+    vote_data = {
+        "vote_id": vote_id,
+        "report_id": report_id,
+        "uid": uid,
+        "is_upvote": is_upvote,
+        "timestamp": int(time.time() * 1000)
+    }
+    try:
+        if FIREBASE_ENABLED:
+            ref = get_db().collection("votes").document(vote_id)
+            ref.set(vote_data)
+            return True
+    except Exception as e:
+        logger.error(f"save_vote failed: {e}")
+    return False
+
+
+def get_vote_stats(report_id: str) -> dict:
+    try:
+        if FIREBASE_ENABLED:
+            docs = (
+                get_db()
+                .collection("votes")
+                .where("report_id", "==", report_id)
+                .stream()
+            )
+            votes = [doc.to_dict() for doc in docs]
+            upvotes = sum(1 for v in votes if v.get("is_upvote", True))
+            downvotes = len(votes) - upvotes
+            return {"upvotes": upvotes, "downvotes": downvotes}
+    except Exception as e:
+        logger.error(f"get_vote_stats failed: {e}")
+    return {"upvotes": 12, "downvotes": 2}

@@ -13,7 +13,7 @@ from agents.ingestion_agent import IngestionAgent
 from agents.trust_detection_agent import TrustDetectionAgent
 from agents.situation_planning_agent import SituationPlanningAgent
 from agents.execution_agent import ExecutionAgent
-from services.firebase_service import get_latest_trace, save_report, get_all_reports, get_current_crisis_firestore
+from services.firebase_service import get_latest_trace, save_report, get_all_reports, get_current_crisis_firestore, increment_user_reputation
 from auth import create_auth_router, get_current_user, FirebaseUser
 
 app = FastAPI(title="TrafficGuard AI Backend")
@@ -131,9 +131,11 @@ async def receive_report(signal: RawSignal, current_user: FirebaseUser = Depends
         "severity": "High",
         "lat": signal.lat,
         "lng": signal.lng,
-        "timestamp": signal.timestamp
+        "timestamp": signal.timestamp,
+        "user_id": current_user.uid
     }
     save_report(report_doc)
+    increment_user_reputation(current_user.uid, 10)
     
     return {
         "report_id": report_id,
@@ -282,6 +284,86 @@ def get_nearby_alerts(lat: float = 24.8607, lng: float = 67.0011):
                 "distance_km": dist / 1000.0,
                 "severity": rep.get("severity", "High"),
                 "timestamp": rep.get("timestamp", ""),
-                "alternate_route": ""
+                "alternate_route": "",
+                "lat": rep.get("lat", 0.0),
+                "lng": rep.get("lng", 0.0)
             })
     return {"alerts": alerts}
+
+# ─────────────────────────────────────────────
+# NEW ENDPOINTS FOR VOTES, COMMENTS, LEADERBOARD
+# ─────────────────────────────────────────────
+
+class VoteRequest(BaseModel):
+    is_upvote: bool
+
+class CommentRequest(BaseModel):
+    text: str
+
+@app.post("/report/{report_id}/vote")
+def post_report_vote(
+    report_id: str,
+    req: VoteRequest,
+    current_user: FirebaseUser = Depends(get_current_user)
+):
+    from services.firebase_service import save_vote, increment_user_reputation, get_all_reports
+    # Save the vote
+    success = save_vote(report_id, current_user.uid, req.is_upvote)
+    if not success:
+        return {"status": "failed", "message": "Failed to save vote"}
+        
+    # Increment voter's reputation by 2 points
+    increment_user_reputation(current_user.uid, 2)
+    
+    # Increment reporter's reputation by 5 points if report is found
+    reports = get_all_reports()
+    reporter_id = None
+    for rep in reports:
+        if rep.get("report_id") == report_id:
+            reporter_id = rep.get("user_id")
+            break
+    if reporter_id and reporter_id != current_user.uid:
+        increment_user_reputation(reporter_id, 5)
+        
+    return {"status": "success", "message": "Vote recorded and reputation updated"}
+
+@app.get("/report/{report_id}/votes")
+def get_report_votes(report_id: str):
+    from services.firebase_service import get_vote_stats
+    stats = get_vote_stats(report_id)
+    return stats
+
+@app.post("/report/{report_id}/comment")
+def post_report_comment(
+    report_id: str,
+    req: CommentRequest,
+    current_user: FirebaseUser = Depends(get_current_user)
+):
+    from services.firebase_service import add_comment, increment_user_reputation
+    comment = add_comment(
+        report_id=report_id,
+        uid=current_user.uid,
+        display_name=current_user.display_name,
+        text=req.text
+    )
+    # Award commenting user 2 reputation points
+    increment_user_reputation(current_user.uid, 2)
+    return {"status": "success", "comment": comment}
+
+@app.get("/report/{report_id}/comments")
+def get_report_comments(report_id: str):
+    from services.firebase_service import get_comments
+    comments = get_comments(report_id)
+    return {"comments": comments}
+
+@app.get("/leaderboard")
+def get_leaderboard_route():
+    from services.firebase_service import get_leaderboard_firestore
+    list_users = get_leaderboard_firestore()
+    return {"leaderboard": list_users}
+
+@app.get("/user/rank")
+def get_user_rank_route(current_user: FirebaseUser = Depends(get_current_user)):
+    from services.firebase_service import get_user_rank_firestore
+    user_rank = get_user_rank_firestore(current_user.uid)
+    return user_rank
