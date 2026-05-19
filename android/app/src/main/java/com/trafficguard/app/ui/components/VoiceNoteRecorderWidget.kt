@@ -48,6 +48,12 @@ import com.traffic_guard.ai.theme.LightBgCard
 import com.traffic_guard.ai.theme.LightBorder
 import com.traffic_guard.ai.theme.LightTextSecondary
 
+import android.media.MediaPlayer
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.DisposableEffect
+
 @Composable
 fun VoiceNoteRecorderWidget(
     isRecording: Boolean,
@@ -59,6 +65,44 @@ fun VoiceNoteRecorderWidget(
     modifier: Modifier = Modifier
 ) {
     val isDark = MaterialTheme.colorScheme.background.value == 0xFF0F172A.toULong()
+
+    var isPlaying by remember { mutableStateOf(false) }
+    var mediaPlayer by remember { mutableStateOf<MediaPlayer?>(null) }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            mediaPlayer?.release()
+            mediaPlayer = null
+        }
+    }
+
+    val playVoice = {
+        if (voiceFilePath != null) {
+            try {
+                if (isPlaying) {
+                    mediaPlayer?.stop()
+                    mediaPlayer?.release()
+                    mediaPlayer = null
+                    isPlaying = false
+                } else {
+                    val mp = MediaPlayer().apply {
+                        setDataSource(voiceFilePath)
+                        prepare()
+                        start()
+                        setOnCompletionListener {
+                            isPlaying = false
+                            release()
+                            mediaPlayer = null
+                        }
+                    }
+                    mediaPlayer = mp
+                    isPlaying = true
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 
     // Pulse micro-animation for active recording state
     val infiniteTransition = rememberInfiniteTransition(label = "pulse")
@@ -153,21 +197,40 @@ fun VoiceNoteRecorderWidget(
                         )
                         .padding(12.dp)
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.PlayArrow,
-                            contentDescription = "Recorded Note",
-                            tint = AccentBlue,
-                            modifier = Modifier.size(28.dp)
-                        )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        IconButton(
+                            onClick = {
+                                playVoice()
+                            }
+                        ) {
+                            Icon(
+                                imageVector = if (isPlaying) Icons.Default.Stop else Icons.Default.PlayArrow,
+                                contentDescription = if (isPlaying) "Stop note" else "Play note",
+                                tint = AccentBlue,
+                                modifier = Modifier.size(28.dp)
+                            )
+                        }
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "Audio Commentary Recorded",
+                            text = if (isPlaying) "Playing Commentary..." else "Audio Commentary Recorded",
                             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
                             color = if (isDark) Color.White else Color.Black
                         )
                     }
-                    IconButton(onClick = onDeleteRecord) {
+                    IconButton(
+                        onClick = {
+                            if (isPlaying) {
+                                mediaPlayer?.stop()
+                                mediaPlayer?.release()
+                                mediaPlayer = null
+                                isPlaying = false
+                            }
+                            onDeleteRecord()
+                        }
+                    ) {
                         Icon(
                             imageVector = Icons.Default.Delete,
                             contentDescription = "Delete",

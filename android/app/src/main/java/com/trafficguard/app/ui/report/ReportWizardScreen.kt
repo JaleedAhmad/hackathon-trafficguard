@@ -76,13 +76,29 @@ fun ReportWizardScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(24.dp)
         ) {
-            // Category & Severity Header Display
+            // Category Selector Section
             Text(
-                text = "${state.category} - ${state.severity.name} SEVERITY",
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Black),
+                text = "Select Hazard Category",
+                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                 color = if (isDark) Color.White else Color.Black
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                listOf("FLOOD", "TRAFFIC", "ACCIDENT", "WEATHER").forEach { category ->
+                    val isSelected = state.category == category
+                    AppButton(
+                        text = category,
+                        onClick = { viewModel.updateCategory(category) },
+                        variant = if (isSelected) ButtonVariant.SOLID else ButtonVariant.OUTLINED,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
 
             // Text Description Input
             Text(
