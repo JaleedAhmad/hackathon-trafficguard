@@ -44,6 +44,15 @@ import com.traffic_guard.ai.ui.drivingmode.DrivingModeScreen
 import com.traffic_guard.ai.ui.drivingmode.VoiceGuidanceViewModel
 import com.traffic_guard.ai.data.LocationRepositoryImpl
 import com.traffic_guard.ai.data.NavigationRepositoryImpl
+import com.traffic_guard.ai.data.ReportRepositoryImpl
+import com.traffic_guard.ai.ui.report.ReportWizardViewModel
+import com.traffic_guard.ai.ui.report.ReportWizardScreen
+import com.traffic_guard.ai.ui.report.MediaAttachmentViewModel
+import com.traffic_guard.ai.ui.report.DuplicateCheckViewModel
+import com.traffic_guard.ai.ui.report.DuplicateWarningScreen
+import com.traffic_guard.ai.ui.report.AiProcessingViewModel
+import com.traffic_guard.ai.ui.report.AiProcessingScreen
+import com.traffic_guard.ai.ui.report.ReportSuccessScreen
 
 @Composable
 fun MainNavigation(
@@ -278,7 +287,7 @@ fun MainNavigation(
                 )
                 HomeScreen(
                     onNavigateToMap = { backStack.add(MapNavigation) },
-                    onNavigateToReport = { /* Batch 4 Report Screen */ },
+                    onNavigateToReport = { backStack.add(ReportWizard) },
                     viewModel = homeViewModel
                 )
             }
@@ -296,7 +305,7 @@ fun MainNavigation(
                 )
                 HomeScreen(
                     onNavigateToMap = { backStack.add(MapNavigation) },
-                    onNavigateToReport = { /* Batch 4 Report Screen */ },
+                    onNavigateToReport = { backStack.add(ReportWizard) },
                     viewModel = homeViewModel
                 )
             }
@@ -335,7 +344,85 @@ fun MainNavigation(
                     viewModel = voiceViewModel
                 )
             }
+
+            entry<ReportWizard> {
+                val context = LocalContext.current
+                val wizardVM: ReportWizardViewModel = viewModel()
+                val mediaVM: MediaAttachmentViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            return MediaAttachmentViewModel(context.applicationContext as android.app.Application) as T
+                        }
+                    }
+                )
+                val dupVM: DuplicateCheckViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            val reportRepo = ReportRepositoryImpl(context.applicationContext)
+                            return DuplicateCheckViewModel(reportRepo) as T
+                        }
+                    }
+                )
+                ReportWizardScreen(
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNavigateToAiProcessing = { backStack.add(AiProcessing) },
+                    onNavigateToDuplicateCheck = { backStack.add(DuplicateWarning) },
+                    viewModel = wizardVM,
+                    mediaViewModel = mediaVM,
+                    duplicateViewModel = dupVM
+                )
+            }
+
+            entry<DuplicateWarning> {
+                val context = LocalContext.current
+                val dupVM: DuplicateCheckViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            val reportRepo = ReportRepositoryImpl(context.applicationContext)
+                            return DuplicateCheckViewModel(reportRepo) as T
+                        }
+                    }
+                )
+                DuplicateWarningScreen(
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNavigateToAiProcessing = { backStack.add(AiProcessing) },
+                    onNavigateToSuccess = { backStack.add(ReportSuccess(isOffline = false)) },
+                    viewModel = dupVM
+                )
+            }
+
+            entry<AiProcessing> {
+                val context = LocalContext.current
+                val processingVM: AiProcessingViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            val reportRepo = ReportRepositoryImpl(context.applicationContext)
+                            return AiProcessingViewModel(reportRepo) as T
+                        }
+                    }
+                )
+                val wizardVM: ReportWizardViewModel = viewModel()
+                AiProcessingScreen(
+                    onNavigateToSuccess = { isOffline -> backStack.add(ReportSuccess(isOffline = isOffline)) },
+                    viewModel = processingVM,
+                    formState = wizardVM.formState.value
+                )
+            }
+
+            entry<ReportSuccess> { key ->
+                ReportSuccessScreen(
+                    isOffline = key.isOffline,
+                    onNavigateHome = {
+                        backStack.removeLastOrNull() // Return clean to parent dashboard
+                    }
+                )
+            }
         }
+
 
     )
 }

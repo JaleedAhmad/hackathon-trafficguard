@@ -50,3 +50,15 @@ data object MapNavigation : NavKey
 
 @Serializable
 data object DrivingMode : NavKey
+
+@Serializable
+data object ReportWizard : NavKey
+
+@Serializable
+data object DuplicateWarning : NavKey
+
+@Serializable
+data object AiProcessing : NavKey
+
+@Serializable
+data class ReportSuccess(val isOffline: Boolean) : NavKey
