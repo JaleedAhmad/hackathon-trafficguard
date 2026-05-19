@@ -297,7 +297,8 @@ fun MainNavigation(
                         @Suppress("UNCHECKED_CAST")
                         override fun <T : ViewModel> create(modelClass: Class<T>): T {
                             val locationRepo = LocationRepositoryImpl(context.applicationContext)
-                            return HomeViewModel(locationRepo) as T
+                            val communityRepo = CommunityRepositoryImpl()
+                            return HomeViewModel(locationRepo, communityRepo) as T
                         }
                     }
                 )
@@ -354,7 +355,8 @@ fun MainNavigation(
                         @Suppress("UNCHECKED_CAST")
                         override fun <T : ViewModel> create(modelClass: Class<T>): T {
                             val locationRepo = LocationRepositoryImpl(context.applicationContext)
-                            return HomeViewModel(locationRepo) as T
+                            val communityRepo = CommunityRepositoryImpl()
+                            return HomeViewModel(locationRepo, communityRepo) as T
                         }
                     }
                 )
