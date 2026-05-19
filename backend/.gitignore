@@ -24,7 +24,6 @@ htmlcov/
 .vscode/
 .idea/
 *.swp
-firebase_credentials.json
 .env
 .env
 ../.env
