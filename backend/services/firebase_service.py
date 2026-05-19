@@ -9,14 +9,20 @@ cred_path = os.getenv("FIREBASE_CREDENTIALS_PATH")
 if cred_path and os.path.exists(cred_path) and cred_path != "path/to/your/firebase/credentials.json":
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = cred_path
     try:
+        import json
+        with open(cred_path, 'r') as f:
+            cred_data = json.load(f)
+        project_id = cred_data.get("project_id", "poetic-fact-496519-k2")
+        db_url = f"https://{project_id}-default-rtdb.asia-southeast1.firebasedatabase.app"
+        
         cred = credentials.Certificate(cred_path)
         firebase_admin.initialize_app(cred, {
-            'databaseURL': 'https://hackathon-trafficguard-default-rtdb.asia-southeast1.firebasedatabase.app'
+            'databaseURL': db_url
         })
         db_client = firestore.client()
         rtdb_client = db.reference()
         FIREBASE_ENABLED = True
-        logger.info("Firebase initialized successfully.")
+        logger.info(f"Firebase initialized successfully for project: {project_id}.")
     except Exception as e:
         logger.warning(f"Error initializing Firebase: {e}. Writes will be mocked.")
         FIREBASE_ENABLED = False
