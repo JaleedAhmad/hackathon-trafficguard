@@ -151,6 +151,7 @@ def _upsert_profile(user: FirebaseUser, is_new: bool = False) -> None:
     }
     if is_new:
         data["createdAt"] = SERVER_TIMESTAMP
+        data["reputationScore"] = 0
 
     ref.set(data, merge=True)
     logger.info("Firestore profile upserted for uid=%s", user.uid)

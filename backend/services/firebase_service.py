@@ -281,7 +281,9 @@ def get_user_rank_firestore(uid: str) -> dict:
                 .order_by("reputationScore", direction=firestore.Query.DESCENDING)
                 .stream()
             )
+            count = 0
             for idx, doc in enumerate(docs):
+                count += 1
                 d = doc.to_dict()
                 if d.get("uid") == uid:
                     return {
@@ -290,6 +292,17 @@ def get_user_rank_firestore(uid: str) -> dict:
                         "reputationScore": d.get("reputationScore", 0),
                         "rank": idx + 1
                     }
+            
+            # If user has no reputationScore, they are excluded from order_by. Fetch their actual doc:
+            user_doc = get_db().collection("users").document(uid).get()
+            if user_doc.exists:
+                d = user_doc.to_dict()
+                return {
+                    "uid": uid,
+                    "displayName": d.get("displayName") or "You",
+                    "reputationScore": d.get("reputationScore", 0),
+                    "rank": count + 1
+                }
     except Exception as e:
         logger.error(f"get_user_rank_firestore failed: {e}")
     return {
