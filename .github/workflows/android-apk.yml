@@ -2,19 +2,14 @@ name: Build Android APK
 
 on:
   push:
-    branches: [ "main" ]
-    paths-ignore:
-      - "backend/**"
-      - "antigravity-logs/**"
-      - "frontend/**"
-      - "*.md"
+    branches: ["main"]
     paths:
       - "android/**"
   pull_request:
     paths:
       - "android/**"
   workflow_dispatch:
-  
+
 jobs:
   build:
     runs-on: ubuntu-latest
