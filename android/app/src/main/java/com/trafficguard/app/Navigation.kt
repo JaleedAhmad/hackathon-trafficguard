@@ -457,7 +457,8 @@ fun MainNavigation(
                 ReportSuccessScreen(
                     isOffline = key.isOffline,
                     onNavigateHome = {
-                        backStack.removeLastOrNull() // Return clean to parent dashboard
+                        backStack.clear()
+                        backStack.add(Main)
                     }
                 )
             }
