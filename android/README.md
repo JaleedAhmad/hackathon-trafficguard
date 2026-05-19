@@ -1,4 +1,4 @@
-# TrafficGuard Android Client
+# TrafficGuard Android
 
 The Android client is the mobile interface for **TrafficGuard**, a real-time, crowd-sourced traffic crisis mitigation and intelligence system. It provides users with live maps, step-by-step incident reporting wizard with AI preprocessing feedback, automated rerouting alerts, a low-distraction Driving Mode, and emergency SOS dispatch.
 
