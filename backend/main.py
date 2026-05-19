@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 load_dotenv()
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from pydantic import BaseModel
 import json
 import os
@@ -14,7 +14,7 @@ from agents.trust_detection_agent import TrustDetectionAgent
 from agents.situation_planning_agent import SituationPlanningAgent
 from agents.execution_agent import ExecutionAgent
 from services.firebase_service import get_latest_trace
-from auth import create_auth_router
+from auth import create_auth_router, get_current_user, FirebaseUser
 
 app = FastAPI(title="TrafficGuard AI Backend")
 
@@ -87,7 +87,7 @@ def check_duplicate(req: DuplicateCheckRequest):
     return {"duplicates": matches}
 
 @app.post("/report")
-async def receive_report(signal: RawSignal):
+async def receive_report(signal: RawSignal, current_user: FirebaseUser = Depends(get_current_user)):
     agent_log_handler.logs = {"Agent1": [], "Agent2": [], "Agent3": [], "Agent4": []}
     
     results = await ingestion_agent.run([signal])

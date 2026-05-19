@@ -37,6 +37,7 @@ fun SplashScreen(
     onNavigateToLanguageSelection: () -> Unit,
     onNavigateToOnboarding: () -> Unit,
     onNavigateToWelcome: () -> Unit,
+    onNavigateToMain: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SplashViewModel = viewModel()
 ) {
@@ -51,6 +52,7 @@ fun SplashScreen(
             is SplashState.NavigateToLanguageSelection -> onNavigateToLanguageSelection()
             is SplashState.NavigateToOnboarding -> onNavigateToOnboarding()
             is SplashState.NavigateToWelcome -> onNavigateToWelcome()
+            is SplashState.NavigateToMain -> onNavigateToMain()
             else -> {}
         }
     }

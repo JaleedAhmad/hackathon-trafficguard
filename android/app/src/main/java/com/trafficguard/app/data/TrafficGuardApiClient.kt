@@ -3,7 +3,10 @@ package com.traffic_guard.ai.data
 import android.util.Log
 import com.google.gson.annotations.SerializedName
 import okhttp3.OkHttpClient
+import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
+import com.google.firebase.auth.FirebaseAuth
+import com.google.android.gms.tasks.Tasks
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
@@ -254,10 +257,30 @@ object TrafficGuardApiClient {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
+    private val authInterceptor = Interceptor { chain ->
+        val original = chain.request()
+        val builder = original.newBuilder()
+        try {
+            val user = FirebaseAuth.getInstance().currentUser
+            if (user != null) {
+                val task = user.getIdToken(false)
+                val tokenResult = Tasks.await(task, 5, TimeUnit.SECONDS)
+                val token = tokenResult.token
+                if (!token.isNullOrEmpty()) {
+                    builder.header("Authorization", "Bearer $token")
+                }
+            }
+        } catch (e: Exception) {
+            Log.w("TrafficGuardApiClient", "Failed to dynamically append ID token: ${e.message}")
+        }
+        chain.proceed(builder.build())
+    }
+
     private val okHttpClient = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(60, TimeUnit.SECONDS) // AI pipeline can take up to ~30s
+        .readTimeout(60, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
+        .addInterceptor(authInterceptor)
         .addInterceptor(loggingInterceptor)
         .build()
 

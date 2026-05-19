@@ -124,6 +124,10 @@ fun MainNavigation(
                         backStack.removeLastOrNull()
                         backStack.add(Welcome)
                     },
+                    onNavigateToMain = {
+                        backStack.removeLastOrNull()
+                        backStack.add(Main)
+                    },
                     viewModel = splashViewModel
                 )
             }
