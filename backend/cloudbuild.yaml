@@ -6,7 +6,7 @@ steps:
         '-t',
         'asia-south1-docker.pkg.dev/$PROJECT_ID/trafficguard-backend/backend:$COMMIT_SHA',
         '-f',
-        'backend/Dockerfile',
+        'Dockerfile',
         '.'
       ]
 
