@@ -44,6 +44,7 @@ fun ProfileScreen(
     viewModel: ProfileViewModel,
     onNavigateBack: () -> Unit,
     onNavigateToSettings: () -> Unit,
+    isNested: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -60,11 +61,20 @@ fun ProfileScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp, vertical = 8.dp)
         ) {
-            AppTopBar(
-                title = "Profile",
-                onBackClick = onNavigateBack,
-                modifier = Modifier.weight(1f)
-            )
+            if (!isNested) {
+                AppTopBar(
+                    title = "Profile",
+                    onBackClick = onNavigateBack,
+                    modifier = Modifier.weight(1f)
+                )
+            } else {
+                Text(
+                    text = "Profile",
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Black),
+                    color = if (isDark) Color.White else Color.Black,
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp).weight(1f)
+                )
+            }
             IconButton(onClick = onNavigateToSettings) {
                 Icon(
                     imageVector = Icons.Default.Settings,

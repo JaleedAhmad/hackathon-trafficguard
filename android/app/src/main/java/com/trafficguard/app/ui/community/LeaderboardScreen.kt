@@ -30,6 +30,7 @@ import com.traffic_guard.ai.ui.components.LeaderboardRowItem
 fun LeaderboardScreen(
     viewModel: ReputationViewModel,
     onNavigateBack: () -> Unit,
+    isNested: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -40,10 +41,20 @@ fun LeaderboardScreen(
             .fillMaxSize()
             .background(if (isDark) DarkBgDeep else LightBgDeep)
     ) {
-        AppTopBar(
-            title = "Community Leaderboard",
-            onBackClick = onNavigateBack
-        )
+        if (!isNested) {
+            AppTopBar(
+                title = "Leaderboard",
+                onBackClick = onNavigateBack
+            )
+        } else {
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Leaderboard",
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Black),
+                color = if (isDark) Color.White else Color.Black,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            )
+        }
 
         if (state.isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

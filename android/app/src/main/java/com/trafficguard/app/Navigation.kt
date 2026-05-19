@@ -29,7 +29,7 @@ import com.traffic_guard.ai.ui.auth.ForgotPasswordViewModel
 import com.traffic_guard.ai.ui.otp.OtpVerificationScreen
 import com.traffic_guard.ai.ui.otp.OtpViewModel
 import com.traffic_guard.ai.ui.auth.AccountSetupSuccessScreen
-import com.traffic_guard.ai.ui.main.MainScreen
+import com.traffic_guard.ai.ui.main.MainDashboardScreen
 import com.traffic_guard.ai.ui.showcase.ErrorShowcaseScreen
 import com.traffic_guard.ai.ui.showcase.ShowcaseScreen
 import com.traffic_guard.ai.ui.splash.SplashScreen
@@ -306,10 +306,44 @@ fun MainNavigation(
                         }
                     }
                 )
-                HomeScreen(
+                val feedVM: AlertsFeedViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            val repo = CommunityRepositoryImpl()
+                            return AlertsFeedViewModel(repo) as T
+                        }
+                    }
+                )
+                val reputationVM: ReputationViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            val repo = CommunityRepositoryImpl()
+                            return ReputationViewModel(repo) as T
+                        }
+                    }
+                )
+                val profileVM: ProfileViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        @Suppress("UNCHECKED_CAST")
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            val repo = ProfileRepositoryImpl()
+                            return ProfileViewModel(repo) as T
+                        }
+                    }
+                )
+                
+                com.traffic_guard.ai.ui.main.MainDashboardScreen(
+                    homeViewModel = homeViewModel,
+                    feedViewModel = feedVM,
+                    reputationViewModel = reputationVM,
+                    profileViewModel = profileVM,
                     onNavigateToMap = { backStack.add(MapNavigation) },
                     onNavigateToReport = { backStack.add(ReportWizard) },
-                    viewModel = homeViewModel
+                    onNavigateToAlertDetail = { incidentId -> backStack.add(AlertDetail(incidentId)) },
+                    onNavigateToSettings = { backStack.add(SettingsHub) },
+                    onNavigateToSos = { backStack.add(SosDashboard) }
                 )
             }
 
@@ -327,6 +361,7 @@ fun MainNavigation(
                 HomeScreen(
                     onNavigateToMap = { backStack.add(MapNavigation) },
                     onNavigateToReport = { backStack.add(ReportWizard) },
+                    onNavigateToSos = { backStack.add(SosDashboard) },
                     viewModel = homeViewModel
                 )
             }

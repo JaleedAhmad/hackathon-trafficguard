@@ -49,6 +49,7 @@ import com.traffic_guard.ai.ui.components.SkeletonShimmer
 fun HomeScreen(
     onNavigateToMap: () -> Unit,
     onNavigateToReport: () -> Unit,
+    onNavigateToSos: () -> Unit,
     viewModel: HomeViewModel,
     modifier: Modifier = Modifier
 ) {
@@ -147,7 +148,7 @@ fun HomeScreen(
             }
         }
 
-        // Floating Action Buttons for quick report reporting
+        // Floating Action Buttons for quick report reporting & SOS
         Column(
             horizontalAlignment = Alignment.End,
             modifier = Modifier
@@ -155,9 +156,24 @@ fun HomeScreen(
                 .padding(bottom = 120.dp, end = 16.dp)
         ) {
             FloatingActionButton(
-                onClick = onNavigateToReport,
+                onClick = onNavigateToSos,
                 shape = CircleShape,
                 containerColor = AccentRed,
+                contentColor = Color.White,
+                elevation = FloatingActionButtonDefaults.elevation(8.dp),
+                modifier = Modifier.padding(bottom = 16.dp)
+            ) {
+                Text(
+                    text = "SOS",
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Black),
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+
+            FloatingActionButton(
+                onClick = onNavigateToReport,
+                shape = CircleShape,
+                containerColor = AccentBlue,
                 contentColor = Color.White,
                 elevation = FloatingActionButtonDefaults.elevation(8.dp)
             ) {

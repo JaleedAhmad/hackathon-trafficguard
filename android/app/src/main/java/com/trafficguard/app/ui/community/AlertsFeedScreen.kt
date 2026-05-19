@@ -41,6 +41,7 @@ fun AlertsFeedScreen(
     viewModel: AlertsFeedViewModel,
     onNavigateBack: () -> Unit,
     onNavigateToDetail: (String) -> Unit,
+    isNested: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()

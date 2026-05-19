@@ -138,7 +138,7 @@ fun LoginScreen(
             ) {
                 TextButton(onClick = onNavigateToSignup) {
                     Text(
-                        text = "Naya account banayein? (Create Account)",
+                        text = "Create Account",
                         style = MaterialTheme.typography.bodyMedium,
                         color = AccentBlue
                     )

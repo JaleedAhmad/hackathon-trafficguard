@@ -69,7 +69,7 @@ fun SignupScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Register using email or mobile SMS validation",
+                text = "Register using email",
                 style = MaterialTheme.typography.bodyLarge,
                 color = if (isDark) Color.White.copy(alpha = 0.7f) else Color.Black.copy(alpha = 0.7f)
             )
@@ -150,7 +150,7 @@ fun SignupScreen(
             ) {
                 TextButton(onClick = onNavigateToLogin) {
                     Text(
-                        text = "Pehle se account hai? (Sign In)",
+                        text = "Sign In",
                         style = MaterialTheme.typography.bodyMedium,
                         color = AccentBlue
                     )
