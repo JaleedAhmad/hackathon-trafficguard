@@ -34,9 +34,6 @@ data object Signup : NavKey
 data object ForgotPassword : NavKey
 
 @Serializable
-data class OtpVerification(val verificationId: String, val phoneNumber: String) : NavKey
-
-@Serializable
 data object AuthSuccess : NavKey
 
 @Serializable

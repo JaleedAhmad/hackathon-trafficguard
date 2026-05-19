@@ -9,8 +9,7 @@ interface AuthRepository {
     suspend fun signInAnonymously(): Result<UserProfile>
     suspend fun signInWithEmail(email: String, password: String): Result<UserProfile>
     suspend fun signUpWithEmail(email: String, password: String): Result<UserProfile>
-    suspend fun sendOtpCode(phoneNumber: String): Result<String>
-    suspend fun verifyOtpCode(verificationId: String, code: String): Result<UserProfile>
+    suspend fun signInWithGoogle(idToken: String): Result<UserProfile>
     suspend fun sendPasswordResetEmail(email: String): Result<Unit>
     suspend fun signOut()
 }
@@ -66,24 +65,13 @@ class AuthRepositoryImpl : AuthRepository {
         return Result.Success(user)
     }
 
-    override suspend fun sendOtpCode(phoneNumber: String): Result<String> {
-        if (phoneNumber.length < 10) {
-            return Result.Error(Exception("Invalid phone number format"))
-        }
-        activeOtpVerificationId = "verify_${System.currentTimeMillis()}"
-        targetPhoneNumber = phoneNumber
-        return Result.Success(activeOtpVerificationId!!)
-    }
-
-    override suspend fun verifyOtpCode(verificationId: String, code: String): Result<UserProfile> {
-        if (code != "123456") { // 123456 represents our standard debug verification code
-            return Result.Error(Exception("Incorrect verification OTP code"))
-        }
+    override suspend fun signInWithGoogle(idToken: String): Result<UserProfile> {
+        // Mock Google sign-in
         val user = UserProfile(
-            uid = "phone_${System.currentTimeMillis()}",
-            email = null,
-            phoneNumber = targetPhoneNumber,
-            displayName = "Mobile User",
+            uid = "google_${idToken.hashCode()}",
+            email = "googleuser@example.com",
+            phoneNumber = null,
+            displayName = "Google User",
             isAnonymous = false
         )
         _currentUser.value = user

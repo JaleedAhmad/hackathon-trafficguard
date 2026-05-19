@@ -26,8 +26,7 @@ import com.traffic_guard.ai.ui.auth.SignupScreen
 import com.traffic_guard.ai.ui.auth.ForgotPasswordScreen
 import com.traffic_guard.ai.ui.auth.AuthViewModel
 import com.traffic_guard.ai.ui.auth.ForgotPasswordViewModel
-import com.traffic_guard.ai.ui.otp.OtpVerificationScreen
-import com.traffic_guard.ai.ui.otp.OtpViewModel
+
 import com.traffic_guard.ai.ui.auth.AccountSetupSuccessScreen
 import com.traffic_guard.ai.ui.main.MainDashboardScreen
 import com.traffic_guard.ai.ui.showcase.ErrorShowcaseScreen
@@ -221,9 +220,6 @@ fun MainNavigation(
                         backStack.removeLastOrNull()
                         backStack.add(Login)
                     },
-                    onNavigateToOtp = { verificationId, phone ->
-                        backStack.add(OtpVerification(verificationId, phone))
-                    },
                     onNavigateToSuccess = {
                         backStack.removeLastOrNull()
                         backStack.add(AuthSuccess)
@@ -247,26 +243,7 @@ fun MainNavigation(
                 )
             }
 
-            entry<OtpVerification> { key ->
-                val otpViewModel: OtpViewModel = viewModel(
-                    factory = object : ViewModelProvider.Factory {
-                        @Suppress("UNCHECKED_CAST")
-                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                            return OtpViewModel(authRepository) as T
-                        }
-                    }
-                )
-                OtpVerificationScreen(
-                    verificationId = key.verificationId,
-                    phoneNumber = key.phoneNumber,
-                    onNavigateBack = { backStack.removeLastOrNull() },
-                    onNavigateToSuccess = {
-                        backStack.removeLastOrNull()
-                        backStack.add(AuthSuccess)
-                    },
-                    viewModel = otpViewModel
-                )
-            }
+
 
             entry<AuthSuccess> {
                 AccountSetupSuccessScreen(

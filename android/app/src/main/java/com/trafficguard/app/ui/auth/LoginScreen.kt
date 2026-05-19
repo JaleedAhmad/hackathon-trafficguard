@@ -1,6 +1,7 @@
 package com.traffic_guard.ai.ui.auth
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -117,17 +118,34 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            AppButton(
-                text = "Sign In",
-                onClick = {
-                    viewModel.loginWithEmail {
-                        onNavigateToSuccess()
-                    }
-                },
-                variant = ButtonVariant.SOLID,
-                isLoading = state.isLoading,
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.fillMaxWidth()
-            )
+            ) {
+                AppButton(
+                    text = "Sign In",
+                    onClick = {
+                        viewModel.loginWithEmail {
+                            onNavigateToSuccess()
+                        }
+                    },
+                    variant = ButtonVariant.SOLID,
+                    isLoading = state.isLoading,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                AppButton(
+                    text = "Continue with Google",
+                    onClick = {
+                        viewModel.signInWithGoogle("dummy_google_id_token") {
+                            onNavigateToSuccess()
+                        }
+                    },
+                    variant = ButtonVariant.OUTLINED,
+                    isLoading = state.isLoading,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             Spacer(modifier = Modifier.weight(1f))
 

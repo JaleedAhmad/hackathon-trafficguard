@@ -34,11 +34,8 @@ class AuthViewModelTest {
         override suspend fun signUpWithEmail(email: String, password: String): Result<UserProfile> {
             return Result.Success(UserProfile("user_123", email, null, "Test", false))
         }
-        override suspend fun sendOtpCode(phoneNumber: String): Result<String> {
-            return Result.Success("verification_id")
-        }
-        override suspend fun verifyOtpCode(verificationId: String, code: String): Result<UserProfile> {
-            return Result.Success(UserProfile("phone_123", null, "+1234567890", "Mobile", false))
+        override suspend fun signInWithGoogle(idToken: String): Result<UserProfile> {
+            return Result.Success(UserProfile("google_123", "googleuser@example.com", null, "Google User", false))
         }
         override suspend fun sendPasswordResetEmail(email: String): Result<Unit> {
             return Result.Success(Unit)
@@ -84,17 +81,5 @@ class AuthViewModelTest {
             "Password kam az kam 8 characters hona chahiye (Min 8 chars)",
             viewModel.uiState.value.passwordError
         )
-    }
-
-    @Test
-    fun testValidPhoneDigits_setsErrorToNull() {
-        viewModel.onPhoneChanged("03001234567")
-        assertNull(viewModel.uiState.value.phoneError)
-    }
-
-    @Test
-    fun testInvalidPhoneDigits_setsCorrectRomanUrduErrorMessage() {
-        viewModel.onPhoneChanged("invalid-phone-digits-letters")
-        assertEquals("Sirf numbers darj karein (Numbers only)", viewModel.uiState.value.phoneError)
     }
 }

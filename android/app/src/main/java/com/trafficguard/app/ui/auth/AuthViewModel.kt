@@ -128,23 +128,18 @@ class AuthViewModel(
         }
     }
 
-    fun sendPhoneOtp(onSuccess: (String) -> Unit) {
-        val phone = _uiState.value.phoneInput
-        if (phone.isEmpty()) {
-            _uiState.value = _uiState.value.copy(errorMessage = "Phone number darj karein")
-            return
-        }
+    fun signInWithGoogle(idToken: String, onSuccess: () -> Unit) {
         _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
         viewModelScope.launch {
-            when (val res = authRepository.sendOtpCode(phone)) {
+            when (val res = authRepository.signInWithGoogle(idToken)) {
                 is Result.Success -> {
-                    _uiState.value = _uiState.value.copy(isLoading = false)
-                    onSuccess(res.data)
+                    _uiState.value = _uiState.value.copy(isLoading = false, authenticatedUser = res.data)
+                    onSuccess()
                 }
                 is Result.Error -> {
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
-                        errorMessage = "OTP bhejna nakam raha: ${res.exception.message}"
+                        errorMessage = "Google login fail ho gaya: ${res.exception.message}"
                     )
                 }
                 else -> {}

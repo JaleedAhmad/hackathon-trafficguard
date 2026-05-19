@@ -37,7 +37,6 @@ import com.traffic_guard.ai.ui.components.ErrorMessage
 fun SignupScreen(
     onNavigateBack: () -> Unit,
     onNavigateToLogin: () -> Unit,
-    onNavigateToOtp: (String, String) -> Unit, // verificationId, phoneNumber
     onNavigateToSuccess: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AuthViewModel = viewModel()
@@ -101,20 +100,10 @@ fun SignupScreen(
                 error = state.passwordError
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
-
-            AuthInputCard(
-                value = state.phoneInput,
-                onValueChange = { viewModel.onPhoneChanged(it) },
-                label = "Phone Number (for SMS Login)",
-                inputType = AuthInputType.PHONE,
-                error = state.phoneError
-            )
-
             Spacer(modifier = Modifier.height(24.dp))
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 AppButton(
@@ -126,19 +115,20 @@ fun SignupScreen(
                     },
                     variant = ButtonVariant.SOLID,
                     isLoading = state.isLoading,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.fillMaxWidth()
                 )
 
                 AppButton(
-                    text = "Send SMS OTP",
+                    text = "Continue with Google",
                     onClick = {
-                        viewModel.sendPhoneOtp { verificationId ->
-                            onNavigateToOtp(verificationId, state.phoneInput)
+                        // Mock Google Sign-In with a dummy token
+                        viewModel.signInWithGoogle("dummy_google_id_token") {
+                            onNavigateToSuccess()
                         }
                     },
                     variant = ButtonVariant.OUTLINED,
                     isLoading = state.isLoading,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
 
