@@ -1,4 +1,4 @@
-# TrafficGuard-AI Backend
+# TrafficGuard AI Backend
 
 This is the backend service for the TrafficGuard AI Navigation application. It is built using FastAPI and runs an agentic pipeline to process community reports, detect crises, plan situations, and execute actions.
 

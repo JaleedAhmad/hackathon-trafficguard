@@ -45,3 +45,6 @@ steps:
 
 images:
   - 'asia-south1-docker.pkg.dev/$PROJECT_ID/trafficguard-backend/backend:$COMMIT_SHA'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
