@@ -1,0 +1,47 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'build',
+        '-t',
+        'asia-south1-docker.pkg.dev/$PROJECT_ID/trafficguard-backend/backend:$COMMIT_SHA',
+        '-f',
+        'backend/Dockerfile',
+        '.'
+      ]
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'push',
+        'asia-south1-docker.pkg.dev/$PROJECT_ID/trafficguard-backend/backend:$COMMIT_SHA'
+      ]
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      [
+        'run',
+        'deploy',
+        'trafficguard-backend',
+        '--image',
+        'asia-south1-docker.pkg.dev/$PROJECT_ID/trafficguard-backend/backend:$COMMIT_SHA',
+        '--region',
+        'asia-south1',
+        '--platform',
+        'managed',
+        '--allow-unauthenticated',
+        '--memory',
+        '2Gi',
+        '--cpu',
+        '2',
+        '--timeout',
+        '300',
+        '--concurrency',
+        '80',
+        '--max-instances',
+        '10'
+      ]
+
+images:
+  - 'asia-south1-docker.pkg.dev/$PROJECT_ID/trafficguard-backend/backend:$COMMIT_SHA'
