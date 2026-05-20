@@ -1,73 +1,71 @@
 # TrafficGuard AI 🛡️
 ### Community-Powered Urban Crisis Intelligence & Smart Mobility Response
 
-TrafficGuard AI is an advanced, AI-driven urban crisis intelligence platform designed for Pakistani cities to detect, analyze, simulate, and mitigate severe urban mobility disruptions like flash flooding, infrastructure failures, and major traffic blockages. Built for the Google Antigravity Hackathon under **Challenge 3: CIRO**.
+TrafficGuard AI is an advanced, AI-driven urban crisis intelligence platform designed for Pakistani cities to detect, analyze, simulate, and mitigate severe urban mobility disruptions like flash flooding, infrastructure failures, and major traffic blockages. Built using Google Antigravity and automated design-to-code pipelines for the Google Hackathon.
 
 ---
 
-## 🤖 System Architecture & 4-Agent Pipeline
+## 🌐 Distributed System Architecture & Connectivity
 
-The core intelligence layer of TrafficGuard AI relies on a highly coordinated 4-agent orchestration engine powered by Gemini 2.5 models embedded into the core asynchronous REST endpoint pipeline (`POST /report`).
+TrafficGuard AI is intentionally divided into three isolated, specialized environments to ensure modular scalability, rapid local prototyping, and highly responsive native rendering.
 
-### 🧠 Deep-Dive Agent Workflow & Capabilities
-1. **Agent 1: Ingestion Agent (Gemini 2.5 Flash)**
-   * **Purpose:** Acts as the entry-point gatekeeper for raw community telemetry. 
-   * **Capabilities:** Ingests unstructured community reports, performs automatic language detection, and leverages Gemini 2.5 Flash to seamlessly translate Urdu or Roman Urdu signals into clear English standard hazard categories without breaking semantic context.
+Why the Ecosystem Modules Exist Separately
+* **`android/` (Native Android Client):** Built as a native mobile client rather than a web application to leverage localized device capabilities, including fine-grained background location gathering (`Google Maps SDK`), multi-tap gesture detection, and hardware alerts.
+* **`backend/` (FastAPI Cloud Engine):** Hosts the heavy 4-Stage AI Agent orchestration layer. Running this asynchronously in Python avoids blocking the mobile thread during heavy token evaluation and geospatial matrix filtering.
+* **`Local Inference Layer` (Ollama + Gemma 4):** Separated into a local container loop to execute offline language analysis, fallback processing heuristics, and cost-optimized parsing boundaries away from primary server resources.
 
-2. **Agent 2: Trust & Detection Agent (Gemini 2.5 Pro)**
-   * **Purpose:** Implements validation mechanics to filter out false data and adversarial noise.
-   * **Capabilities:** Cross-references incoming user signals against simulated external weather and maps telemetry. It applies spatial clustering to build dynamic trust scores. If an anomaly or contradiction is discovered, it routes details to an internal contradictions array, officially determining if a crisis state is `ACTIVE` or rejected.
-
-3. **Agent 3: Situation Planning Agent (Gemini 2.5 Pro)**
-   * **Purpose:** Processes situational context and executes impact mapping.
-   * **Capabilities:** Evaluates localized infrastructure impact by calculating the active incident radius and real-time travel delay metrics (ETA lag). Leverages LLM reasoning to output exactly three human-readable, prioritized operational tasks (e.g., *Immediate Rerouting*, *Emergency Dispatch*, *Local Push Notifications*).
-
-4. **Agent 4: Execution Agent (Gemini 2.5 Pro)**
-   * **Purpose:** Drives the predictive simulation framework and matches live state targets.
-   * **Capabilities:** Models downstream traffic patterns post-mitigation, auto-translates outbound push alerts back into localized Urdu string arrays for nearby field devices, automatically flags emergency response tickets, executes transactional state updates to Firebase, and bundles the complete execution process into an auditable `AgentTrace` object.
+### 2. How the Components Are Connected
+* **Data Flow & REST Actions:** The Android client queries the FastAPI backend via structured JSON REST protocols across an established `pyngrok` tunnel or direct Google Cloud Run HTTP bindings.
+* **Real-Time Data Streaming:** The backend streams immediate crisis states to the **Firebase Realtime Database**. The Android app subscribes to these streams via reactive Kotlin `StateFlow` connections, rendering active incident overlays instantly onto the user map.
+* **AI Tooling Bridge (MCP):** Visual components created inside **Google Stitch** are pulled down into **Google Antigravity** using the **Stitch Model Context Protocol (MCP)**. This lets workspace agents scan design tokens and generate clean, native Material 3 Compose widgets directly.
 
 ---
 
-## 🛠️ Complete Technology Stack
+## 🤖 4-Stage AI Pipeline & Model Orchestration
 
-| Layer | Technology | Operational Purpose / Implementation Details |
-| :--- | :--- | :--- |
-| **Mobile Client** | Native Android (Kotlin) | Implements an modern UI framework using declarative Jetpack Compose with Material 3 styling tokens. |
-| **Architecture** | MVVM Pattern | Isolates business logic from UI elements using Kotlin `StateFlow` streams paired with a clean repository data layer. |
-| **UI Design Pipeline** | Google Stitch → Antigravity | Seamless design-to-component pipeline converting high-fidelity visual layouts directly into design system tokens. |
-| **Backend Core** | FastAPI (Python 3.12-slim) | High-performance asynchronous REST hub hosting the concurrent multi-agent processing routines. |
-| **AI Models** | Gemini 2.5 Pro & Flash | Structured dual-model architecture balancing rapid language normalization with deep analytical reasoning. |
-| **Realtime Sync** | Firebase Realtime DB | Instant telemetry streaming engine designed to push immediate live marker state switches to client map layers. |
-| **Persistent Storage**| Google Cloud Firestore | Handled natively via the `google-cloud-firestore` engine explicitly targeting the `hackathon-trafficguard` workspace. |
-| **Mapping Canvas** | Google Maps SDK for Android | Custom dark-themed layout tracking incident pins, localized radius circles, and optimized routing polylines. |
-| **Container Engine** | Docker / Google Cloud Run | Fully containerized environment exposing high-throughput production ports on fallback port `8080`. |
-| **Secure Tunneling** | Live Ngrok Integration | Embedded background `pyngrok` loop forwarding stable, public HTTPS gateway links to mobile front-end environments. |
+The application utilizes a multi-model approach, balancing cloud-based reasoning models with a local LLM runner for deep inspection:
+* **Cloud Infrastructure:** Powered by **Gemini 3 Flash** inside the Antigravity developer core for workspace logic execution.
+* **Edge Core Inference:** Utilizes **Ollama running Gemma 4** internally to handle text analysis patterns and structural validation metrics.
+
+1. **Agent 1: Ingestion Agent:** Processes text inputs, executes multi-lingual parsing, and normalizes Urdu/Roman Urdu strings into target English categories.
+2. **Agent 2: Trust & Detection Agent:** Cross-checks signals against external maps/weather telemetry and updates spatial cluster metrics to assign confidence metrics.
+3. **Agent 3: Situation Planning Agent:** Gauges active incident impact boundaries and constructs three prioritized, human-readable crisis response tasks.
+4. **Agent 4: Execution Agent:** Drives the predictive simulation engine, structures localized push alert formats, records operational telemetry, and fires Firestore tracking updates.
 
 ---
 
-## 📁 Native Android Project Structure (Jetpack Compose)
+## 🛠️ Google Cloud & Third-Party Integration Stack
 
-The mobile client workspace follows strict clean architecture separation rules inside the target package tree:
+The architecture integrates deeply with Google's Cloud Console ecosystem to deliver location-aware features and fail-safe persistence:
+
+* **Google Cloud Project Console:** Centralized hub managing environment authorization permissions, API usage quotas, and service roles.
+* **Firebase Authentication:** Handles zero-friction, passwordless mobile access loops using Anonymous Auth sessions, keeping personal user information safe.
+* **Firebase Realtime Database:** Handles hot real-time updates, syncing active traffic alerts directly to active drivers.
+* **Google Cloud Firestore API:** Serves as the transactional persistence engine, tracking system settings, historical logs, and raw `AgentTrace` timelines.
+* **Firebase Storage:** Houses multimedia incident uploads, binary assets, and raw telemetry trace exports.
+* **Google Maps SDK (Android):** Renders the native dark-mode canvas on devices, including radius bounds and polyline routes.
+* **Google Maps & Places API:** Resolves live coordinates, geo-hashes, and points-of-interest arrays to identify localized road blockages.
+
+---
+
+## 📁 Project Directory Map
 
 ```text
-android/app/src/main/java/com/trafficguard/app/
-├── MainActivity.kt               # Application entry point & window window orchestration
-├── Navigation.kt                 # Declarative Navigation 3 graph and shared ViewModels
-├── NavigationKeys.kt             # Navigation route keys and screen argument models
-├── auth/                         # Anonymous authentication session management repositories
-├── data/                         # Core Repositories (Location, Report, Emergency, Profile)
-├── theme/                        # Design system curation (HSL color spaces, vector typography)
-└── ui/                           # UI Screens and isolated screen state models
-    ├── auth/                     # Anonymous sign-in and localized initialization screens
-    ├── community/                # Context-aware local incident discussions and regional feeds
-    ├── components/               # Reusable atomic widgets (TopBars, custom error banners, buttons)
-    ├── drivingmode/              # High-visibility HUD with massive typography and voice instruction flags
-    ├── emergency/                # SOS dashboard, multi-tap safety triggers, and safe-zone radar charts
-    ├── home/                     # Central map interface tracking active crises and report triggers
-    ├── mapnavigation/            # Rerouting suggestion matrix sheets and before/after layout views
-    ├── onboarding/               # Onboarding walkthrough wizard
-    ├── permissions/              # Runtime permission control gates for precise location access
-    ├── profile/                  # Contributor score metrics and historical activity logs
-    ├── report/                   # Progress-tracked wizard with step-by-step multi-agent feedback indicators
-    ├── showcase/                 # Live developer/judge telemetry trace inspect screens
-    └── splash/                   # Verification sequence, bootloader, and configuration checker
+trafficguard-root/
+├── android/                      # Native Mobile Application
+│   └── app/src/main/java/com/trafficguard/app/
+│       ├── MainActivity.kt       # Native bootloader window setup
+│       ├── Navigation.kt         # Jetpack Navigation 3 graph & ViewModels
+│       ├── data/                 # Repositories (Location, Report, Firebase Core)
+│       └── ui/                   # Jetpack Compose Screens (Material 3 styling)
+│           ├── home/             # Main dashboard featuring active Google Maps layouts
+│           ├── drivingmode/      # High-visibility HUD layout with custom voice flags
+│           ├── emergency/        # SOS incident dashboard & triple-tap triggers
+│           └── report/           # Step-by-step reporting wizard with real-time AI states
+├── backend/                      # Production API Environment
+│   ├── main.py                   # FastAPI routing core & CORS middleware configurations
+│   ├── pipeline/                 # 4-Agent pipeline framework engine
+│   ├── Dockerfile                # Deployment container configuration targeting port 8080
+│   └── .dockerignore             # Excluded local environment build logs
+└── local_llm/                    # Local Inference Workspace
+    └── ollama_config/            # Gemma 4 prompt setups and service operational files
