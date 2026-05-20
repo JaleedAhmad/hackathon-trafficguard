@@ -10,11 +10,12 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.launch
 
 class LocationRepositoryImpl(private val context: Context) : LocationRepository {
 
@@ -28,6 +29,9 @@ class LocationRepositoryImpl(private val context: Context) : LocationRepository 
     override val speedFlow: Flow<Float> = _speedFlow
 
     private var locationCallback: LocationCallback? = null
+    
+    private var lastUploadTime = 0L
+    private val scope = CoroutineScope(Dispatchers.IO)
 
     @SuppressLint("MissingPermission")
     override fun startLocationUpdates() {
@@ -47,6 +51,7 @@ class LocationRepositoryImpl(private val context: Context) : LocationRepository 
                     android.util.Log.i("LocationRepository", "Real-time location updated: ${location.latitude}, ${location.longitude}")
                     _locationFlow.value = MapLatLng(location.latitude, location.longitude)
                     _speedFlow.value = location.speed // in meters per second
+                    uploadLocationIfNeeded(location.latitude, location.longitude)
                 }
             }
         }
@@ -68,6 +73,7 @@ class LocationRepositoryImpl(private val context: Context) : LocationRepository 
                         android.util.Log.i("LocationRepository", "Last known location found: ${it.latitude}, ${it.longitude}")
                         _locationFlow.value = MapLatLng(it.latitude, it.longitude)
                         _speedFlow.value = it.speed
+                        uploadLocationIfNeeded(it.latitude, it.longitude)
                     }
                 }
                 
@@ -115,5 +121,21 @@ class LocationRepositoryImpl(private val context: Context) : LocationRepository 
 
     private fun mockLocationStream() {
         // Mock stream removed. Relying strictly on real GPS location from FusedLocationProviderClient.
+    }
+
+    private fun uploadLocationIfNeeded(lat: Double, lng: Double) {
+        val now = System.currentTimeMillis()
+        if (now - lastUploadTime >= 30000L) { // 30 seconds throttle
+            lastUploadTime = now
+            scope.launch {
+                try {
+                    // Try to post to backend. If user is not logged in, authInterceptor will fail or backend will return 401/403, which we catch.
+                    val response = TrafficGuardApiClient.service.postUserLocation(UserLocationRequest(lat, lng))
+                    android.util.Log.d("LocationRepository", "Uploaded location telemetry: ${response.message}")
+                } catch (e: Exception) {
+                    android.util.Log.w("LocationRepository", "Failed to upload location telemetry: ${e.message}")
+                }
+            }
+        }
     }
 }

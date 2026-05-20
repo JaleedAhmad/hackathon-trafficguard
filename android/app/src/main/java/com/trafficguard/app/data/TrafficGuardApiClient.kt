@@ -312,6 +312,17 @@ interface TrafficGuardApiService {
     suspend fun getPlacesAutocomplete(
         @Query("query") query: String
     ): ApiPlacesResponse
+
+    // ── 12. FCM & Location Telemetry ──────────────────────────────────────────
+    @POST("user/fcm-token")
+    suspend fun postFcmToken(
+        @Body request: FcmTokenRequest
+    ): GenericStatusResponse
+
+    @POST("user/location")
+    suspend fun postUserLocation(
+        @Body request: UserLocationRequest
+    ): GenericStatusResponse
 }
 
 // ─────────────────────────────────────────────
@@ -499,4 +510,13 @@ data class UpdateProfileRequest(
 data class UploadPictureResponse(
     @SerializedName("status") val status: String,
     @SerializedName("photoUrl") val photoUrl: String
+)
+
+data class FcmTokenRequest(
+    @SerializedName("token") val token: String
+)
+
+data class UserLocationRequest(
+    @SerializedName("lat") val lat: Double,
+    @SerializedName("lng") val lng: Double
 )

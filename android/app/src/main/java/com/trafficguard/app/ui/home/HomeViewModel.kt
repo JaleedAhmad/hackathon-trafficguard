@@ -18,7 +18,9 @@ data class HomeUiState(
     val userLocation: MapLatLng? = null,
     val nearbyIncidents: List<Incident> = emptyList(),
     val activeAlertCount: Int = 0,
-    val isLoading: Boolean = true
+    val isLoading: Boolean = true,
+    val isLocationEnabled: Boolean = true,
+    val hasLocationPermission: Boolean = true
 )
 
 class HomeViewModel(
@@ -41,6 +43,33 @@ class HomeViewModel(
         // Fetch and load initial incidents
         refreshIncidents(showLoading = true)
     }
+
+    fun checkLocationRequirements(context: android.content.Context) {
+        val hasFine = androidx.core.content.ContextCompat.checkSelfPermission(
+            context,
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        val hasCoarse = androidx.core.content.ContextCompat.checkSelfPermission(
+            context,
+            android.Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        
+        val isEnabled = locationRepository.isLocationEnabled()
+        
+        _uiState.update { state ->
+            state.copy(
+                isLocationEnabled = isEnabled,
+                hasLocationPermission = hasFine || hasCoarse
+            )
+        }
+    }
+
+    fun startLocationTracking() {
+        viewModelScope.launch {
+            locationRepository.startLocationUpdates()
+        }
+    }
+
 
     fun refreshIncidents(showLoading: Boolean = false) {
         viewModelScope.launch {

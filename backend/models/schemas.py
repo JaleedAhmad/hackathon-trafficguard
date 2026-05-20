@@ -62,3 +62,12 @@ class UpdateProfileRequest(BaseModel):
     age: int
     gender: str
     photoUrl: str
+
+
+class FcmTokenRequest(BaseModel):
+    token: str
+
+
+class UserLocationRequest(BaseModel):
+    lat: float
+    lng: float

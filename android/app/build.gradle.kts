@@ -106,6 +106,7 @@ dependencies {
   implementation(platform(libs.firebase.bom))
   implementation(libs.firebase.auth)
   implementation(libs.firebase.firestore)
+  implementation(libs.firebase.messaging)
   implementation(libs.firebase.coroutines)
   implementation(libs.play.services.auth)
   implementation(libs.androidx.credentials)

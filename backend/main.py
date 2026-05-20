@@ -8,7 +8,7 @@ import logging
 import time
 import math
 from datetime import datetime, timezone, timedelta
-from models.schemas import RawSignal, SignalObject, UserProfileResponse, UpdateProfileRequest
+from models.schemas import RawSignal, SignalObject, UserProfileResponse, UpdateProfileRequest, FcmTokenRequest, UserLocationRequest
 from agents.ingestion_agent import IngestionAgent
 from agents.trust_detection_agent import TrustDetectionAgent
 from agents.situation_planning_agent import SituationPlanningAgent
@@ -749,6 +749,42 @@ async def upload_profile_picture_route(file: UploadFile = File(...), current_use
         return {"status": "error", "message": str(e)}
 
 
+@app.post("/user/fcm-token")
+def update_user_fcm_token_route(req: FcmTokenRequest, current_user: FirebaseUser = Depends(get_current_user)):
+    from services.firebase_service import get_db, FIREBASE_ENABLED
+    if not FIREBASE_ENABLED:
+        return {"status": "success", "message": "Mock FCM token updated successfully"}
+    try:
+        doc_ref = get_db().collection("users").document(current_user.uid)
+        doc_ref.set({
+            "fcmToken": req.token,
+            "updatedAt": datetime.now(timezone.utc).isoformat()
+        }, merge=True)
+        return {"status": "success", "message": "FCM token registered successfully"}
+    except Exception as e:
+        print(f"Error updating FCM token: {e}")
+        return {"status": "error", "message": str(e)}
+
+
+@app.post("/user/location")
+def update_user_location_route(req: UserLocationRequest, current_user: FirebaseUser = Depends(get_current_user)):
+    from services.firebase_service import get_db, FIREBASE_ENABLED
+    if not FIREBASE_ENABLED:
+        return {"status": "success", "message": "Mock location updated successfully"}
+    try:
+        doc_ref = get_db().collection("users").document(current_user.uid)
+        doc_ref.set({
+            "latitude": req.lat,
+            "longitude": req.lng,
+            "locationUpdatedAt": datetime.now(timezone.utc).isoformat(),
+            "updatedAt": datetime.now(timezone.utc).isoformat()
+        }, merge=True)
+        return {"status": "success", "message": "User location updated successfully"}
+    except Exception as e:
+        print(f"Error updating user location: {e}")
+        return {"status": "error", "message": str(e)}
+
+
 @app.get("/user/reports")
 def get_user_reports_route(current_user: FirebaseUser = Depends(get_current_user)):
     from services.firebase_service import get_all_reports
@@ -1004,7 +1040,64 @@ async def post_sos_broadcast(req: SosBroadcastRequest, current_user: FirebaseUse
     # Broadcast to active navigation clients within 2km via websocket
     await navigation_manager.broadcast_sos_alert(req.lat, req.lng, req.problem, displayName)
     
-    return {"status": "success", "sos_id": sos_id, "message": "SOS broadcasted successfully to all users within 100km!"}
+    # ─── Proximity FCM Push Notifications (10km Range) ───
+    from services.firebase_service import FIREBASE_ENABLED, get_db
+    if FIREBASE_ENABLED:
+        try:
+            from firebase_admin import messaging
+            # 1. Fetch all user documents
+            users_ref = get_db().collection("users")
+            users = users_ref.stream()
+            
+            target_tokens = []
+            for user_doc in users:
+                user_data = user_doc.to_dict()
+                uid = user_data.get("uid")
+                
+                # Exclude the sender
+                if uid == current_user.uid:
+                    continue
+                
+                # Check for FCM Token and Coordinates
+                fcm_token = user_data.get("fcmToken")
+                u_lat = user_data.get("latitude")
+                u_lng = user_data.get("longitude")
+                
+                if fcm_token and u_lat is not None and u_lng is not None:
+                    # Compute Haversine distance
+                    dist = calculate_distance_m(req.lat, req.lng, float(u_lat), float(u_lng))
+                    # Check if within 10km (10000 meters)
+                    if dist <= 10000.0:
+                        target_tokens.append(fcm_token)
+            
+            # 2. Multicast to target devices
+            if target_tokens:
+                print(f"Sending SOS multicast notification to {len(target_tokens)} nearby devices.")
+                message = messaging.MulticastMessage(
+                    tokens=target_tokens,
+                    notification=messaging.Notification(
+                        title="EMERGENCY SOS NEARBY",
+                        body=f"{displayName} needs assistance: '{req.problem}'"
+                    ),
+                    data={
+                        "title": "EMERGENCY SOS NEARBY",
+                        "problem": req.problem,
+                        "reporter": displayName,
+                        "latitude": str(req.lat),
+                        "longitude": str(req.lng),
+                    }
+                )
+                response = messaging.send_each_for_multicast(message)
+                print(f"Successfully sent {response.success_count} SOS notifications, failed: {response.failure_count}")
+            else:
+                print("No active users found within 10km range.")
+                
+        except Exception as e:
+            print(f"Error dispatching proximity FCM notifications: {e}")
+    else:
+        print(f"[MOCK MODE] SOS proximity FCM broadcast: {displayName} triggered SOS for '{req.problem}' at ({req.lat}, {req.lng})")
+    
+    return {"status": "success", "sos_id": sos_id, "message": "SOS broadcasted successfully to all users within 10km!"}
 
 
 class PlaceSuggestion(BaseModel):

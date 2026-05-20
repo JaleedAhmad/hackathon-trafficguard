@@ -40,6 +40,14 @@ import com.traffic_guard.ai.theme.AccentBlue
 import com.traffic_guard.ai.theme.AccentRed
 import com.traffic_guard.ai.theme.DarkBgDeep
 import com.traffic_guard.ai.theme.LightBgDeep
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.LocalContext
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import android.content.Intent
+import android.util.Log
+import com.traffic_guard.ai.ui.home.HomeViewModel
+import com.traffic_guard.ai.ui.home.HomeUiState
 import com.traffic_guard.ai.ui.components.AlertBannerCard
 import com.traffic_guard.ai.ui.components.AppButton
 import com.traffic_guard.ai.ui.components.ButtonVariant
@@ -56,8 +64,21 @@ fun HomeScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val isDark = MaterialTheme.colorScheme.background == androidx.compose.ui.graphics.Color(0xFF0F172A)
+    val context = LocalContext.current
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        viewModel.checkLocationRequirements(context)
+        if (permissions[android.Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+            permissions[android.Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        ) {
+            viewModel.startLocationTracking()
+        }
+    }
 
     LaunchedEffect(Unit) {
+        viewModel.checkLocationRequirements(context)
         viewModel.refreshIncidents(showLoading = false)
     }
 
@@ -80,6 +101,78 @@ fun HomeScreen(
                 showFloodPolygons = true,
                 modifier = Modifier.fillMaxSize()
             )
+        }
+
+        // Custom Overlay for Missing Location Permission or Disabled Location Services
+        if (!state.hasLocationPermission || !state.isLocationEnabled) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(if (isDark) DarkBgDeep.copy(alpha = 0.95f) else LightBgDeep.copy(alpha = 0.95f))
+                    .padding(24.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Card(
+                    shape = RoundedCornerShape(24.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = if (isDark) androidx.compose.ui.graphics.Color(0xFF1E293B) else androidx.compose.ui.graphics.Color.White
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                    modifier = Modifier.fillMaxWidth().padding(16.dp)
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(24.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Navigation,
+                            contentDescription = null,
+                            tint = AccentBlue,
+                            modifier = Modifier.size(64.dp)
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = if (!state.hasLocationPermission) "Location Permission Required" else "Location Service Disabled",
+                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                            color = if (isDark) Color.White else Color.Black,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = if (!state.hasLocationPermission) 
+                                "TrafficGuard needs access to your location to monitor nearby hazards and sync your active SOS coordinates with nearby drivers."
+                            else 
+                                "Your device's location services (GPS) are turned off. Please enable them to resume AI navigation and SOS notifications.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = if (isDark) Color.LightGray else Color.DarkGray,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(24.dp))
+                        AppButton(
+                            text = if (!state.hasLocationPermission) "Grant Permission" else "Enable GPS Settings",
+                            onClick = {
+                                if (!state.hasLocationPermission) {
+                                    permissionLauncher.launch(
+                                        arrayOf(
+                                            android.Manifest.permission.ACCESS_FINE_LOCATION,
+                                            android.Manifest.permission.ACCESS_COARSE_LOCATION
+                                        )
+                                    )
+                                } else {
+                                    try {
+                                        val intent = Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                                        context.startActivity(intent)
+                                    } catch (e: Exception) {
+                                        Log.w("HomeScreen", "Failed to launch location settings: ${e.message}")
+                                    }
+                                }
+                            },
+                            variant = ButtonVariant.SOLID,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+            }
         }
 
 
