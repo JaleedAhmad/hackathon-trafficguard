@@ -120,8 +120,11 @@ trafficguard-root/
 │           └── report/           # Step-by-step reporting wizard with real-time AI states
 ├── backend/                      # Production API Environment
 │   ├── main.py                   # FastAPI routing core & CORS middleware configurations
-│   ├── pipeline/                 # 4-Agent pipeline framework engine
-│   ├── Dockerfile                # Deployment container configuration targeting port 8080
-│   └── .dockerignore             # Excluded local environment build logs
-└── local_llm/                    # Fallback API Configuration Workspace
-    └── ollama_config/            # Ollama prompt setups and service operational files
+│   ├── agents/                   # 4-Stage AI Agent definitions
+│   ├── services/                 # Firebase and external API integration services
+│   ├── models/                   # Pydantic schemas for data validation
+│   └── Dockerfile                # Deployment container configuration
+└── frontend/                     # Web Dashboard Application
+    ├── src/                      # React application source code
+    ├── index.html                # Main HTML entrypoint
+    └── vite.config.ts            # Vite bundler configuration
