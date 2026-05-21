@@ -26,6 +26,16 @@ This project was built for **AI Seekho**, a national AI hackathon organized by *
 
 ---
 
+## 🌍 Live Demo
+
+The web dashboard for viewing logs and monitoring system activity is available at:
+
+**[https://trafficguard-frontend-289218709697.asia-south1.run.app](https://trafficguard-frontend-289218709697.asia-south1.run.app)**
+
+> This web app is for **log viewing and system monitoring only** — the full mobile experience runs on Android.
+
+---
+
 ## 🌐 Distributed System Architecture & Connectivity
 
 TrafficGuard AI is intentionally divided into three isolated, specialized environments to ensure modular scalability, rapid local prototyping, and highly responsive native rendering.
@@ -172,12 +182,48 @@ trafficguard-root/
 ```
 
 ---
-markdown<details>
-<summary>📄 MIT License</summary>
-MIT License
-Copyright (c) 2025 TrafficGuard AI
-...
 
-</details>
+## 👥 Team
+
+| Name | Role | GitHub |
+|------|------|--------|
+| Jaleed Ahmad | Team Lead & Backend | [@JaleedAhmad](https://github.com/JaleedAhmad) |
+| iammahmads | Frontend | [@iammahmads](https://github.com/iammahmads) |
+| Sadeem Fatima | UI/UX Design | [@sadeemfatima](https://github.com/sadeemfatima) |
+
+---
 
 <p align="center">Made with ❤️ in Pakistan &nbsp;|&nbsp; Built for <strong>AI Seekho Hackathon</strong> by <strong>GDG Pakistan</strong></p>
+
+---
+
+## 📄 License
+
+<details>
+<summary>MIT License — click to expand</summary>
+
+```
+MIT License
+
+Copyright (c) 2025 TrafficGuard AI
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+</details>
