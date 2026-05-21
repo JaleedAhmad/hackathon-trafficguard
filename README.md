@@ -3,7 +3,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Hackathon-AI%20Seekho%20by%20GDG%20Pakistan-blue?style=for-the-badge&logo=google&logoColor=white" />
-  <img src="https://img.shields.io/badge/License-Apache%202.0-green?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Platform-Android-brightgreen?style=for-the-badge&logo=android&logoColor=white" />
   <img src="https://img.shields.io/badge/Backend-FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" />
   <img src="https://img.shields.io/badge/AI-Gemini%203%20Flash-FF6F00?style=for-the-badge&logo=google&logoColor=white" />
@@ -16,7 +16,7 @@
 
 ---
 
-> **TrafficGuard AI** is an advanced, AI-driven urban crisis intelligence platform designed for Pakistani cities to detect, analyze, simulate, and mitigate severe urban mobility disruptions — including flash flooding, infrastructure failures, and major traffic blockages. Built using **Google Antigravity** and automated design-to-code pipelines.
+TrafficGuard AI is an advanced, AI-driven urban crisis intelligence platform designed for Pakistani cities to detect, analyze, simulate, and mitigate severe urban mobility disruptions like flash flooding, infrastructure failures, and major traffic blockages. Built using Google Antigravity and automated design-to-code pipelines for the Google Hackathon.
 
 ---
 
@@ -121,13 +121,15 @@ The application utilizes a multi-model approach, balancing cloud-based reasoning
 
 ## 🛠️ Google Cloud & Third-Party Integration Stack
 
+The architecture integrates deeply with Google's Cloud Console ecosystem to deliver location-aware features and fail-safe persistence.
+
 ### 🔌 Real APIs Implemented
 
 | Service | Purpose |
 |---------|---------|
 | **Google Cloud Project Console** | Centralized hub managing environment authorization, API usage quotas, and service roles |
 | **Firebase Authentication** | Passwordless mobile access using Anonymous Auth sessions |
-| **Firebase Realtime Database** | Hot real-time updates syncing active traffic alerts to drivers |
+| **Firebase Realtime Database** | Hot real-time updates syncing active traffic alerts directly to drivers |
 | **Google Cloud Firestore** | Transactional persistence for system settings, historical logs, and `AgentTrace` timelines |
 | **Firebase Storage** | Multimedia incident uploads, binary assets, and telemetry trace exports |
 | **Google Maps SDK (Android)** | Native dark-mode map canvas with radius bounds and polyline routes |
@@ -174,19 +176,27 @@ trafficguard-root/
 ## 📄 License
 
 ```
-Copyright 2025 TrafficGuard AI
+MIT License
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+Copyright (c) 2025 TrafficGuard AI
 
-    http://www.apache.org/licenses/LICENSE-2.0
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 ```
 
 ---
