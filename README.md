@@ -9,6 +9,56 @@ TrafficGuard AI is an advanced, AI-driven urban crisis intelligence platform des
 
 TrafficGuard AI is intentionally divided into three isolated, specialized environments to ensure modular scalability, rapid local prototyping, and highly responsive native rendering.
 
+### System Diagram
+
+```mermaid
+graph TD
+    %% Client Layer
+    subgraph Client [Client Layer]
+        A["Android App \n (Jetpack Compose)"]
+        M["Google Maps SDK"]
+        A <--> M
+    end
+
+    %% Cloud/API Layer
+    subgraph Cloud [Cloud Layer - FastAPI]
+        B["API Gateway / Router"]
+        
+        subgraph Agents [4-Stage AI Pipeline]
+            C1["1. Ingestion Agent"]
+            C2["2. Trust & Detection"]
+            C3["3. Situation Planning"]
+            C4["4. Execution"]
+            C1 --> C2 --> C3 --> C4
+        end
+        
+        B <--> Agents
+    end
+
+    %% Inference Layer
+    subgraph Inference [Inference Layer]
+        D["Gemini 3 Flash \n (Cloud AI)"]
+        E["Local LLM \n (Ollama + Gemma 4)"]
+    end
+
+    %% Data/Persistence Layer
+    subgraph Data [Data & Persistence]
+        F[("Firebase Realtime DB")]
+        G[("Cloud Firestore")]
+        H[("Firebase Storage")]
+    end
+
+    %% Connections
+    A <-->|REST / WebSockets| B
+    A <-->|StateFlow Sync| F
+    
+    Agents <--> D
+    Agents <--> E
+    
+    C4 -->|Update States| F
+    C4 -->|Save Telemetry| G
+    B -->|Multimedia| H
+```
 ### 1. Why the Ecosystem Modules Exist Separately
 * **`android/` (Native Android Client):** Built as a native mobile client rather than a web application to leverage localized device capabilities, including fine-grained background location gathering (`Google Maps SDK`), multi-tap gesture detection, and hardware alerts.
 * **`backend/` (FastAPI Cloud Engine):** Hosts the heavy 4-Stage AI Agent orchestration layer. Running this asynchronously in Python avoids blocking the mobile thread during heavy token evaluation and geospatial matrix filtering.
@@ -38,6 +88,7 @@ The application utilizes a multi-model approach, balancing cloud-based reasoning
 
 The architecture integrates deeply with Google's Cloud Console ecosystem to deliver location-aware features and fail-safe persistence:
 
+### 🔌 Real APIs Implemented
 * **Google Cloud Project Console:** Centralized hub managing environment authorization permissions, API usage quotas, and service roles.
 * **Firebase Authentication:** Handles zero-friction, passwordless mobile access loops using Anonymous Auth sessions, keeping personal user information safe.
 * **Firebase Realtime Database:** Handles hot real-time updates, syncing active traffic alerts directly to active drivers.
@@ -45,6 +96,11 @@ The architecture integrates deeply with Google's Cloud Console ecosystem to deli
 * **Firebase Storage:** Houses multimedia incident uploads, binary assets, and raw telemetry trace exports.
 * **Google Maps SDK (Android):** Renders the native dark-mode canvas on devices, including radius bounds and polyline routes.
 * **Google Maps & Places API:** Resolves live coordinates, geo-hashes, and points-of-interest arrays to identify localized road blockages.
+* **Gemini 3 Flash API:** Integrated into the FastAPI backend for advanced cloud-based reasoning and planning.
+
+### 🧪 Mock APIs (Simulated for Hackathon)
+* **Weather Telemetry API:** Mocked within the `Trust & Detection Agent` to simulate environmental factors (e.g., heavy rain or flooding) validating user reports.
+* **City Traffic Congestion API:** Simulated data feeds showing congestion spikes (e.g., "340% increase") to demonstrate the `Situation Planning Agent's` dynamic rerouting and ETA calculation logic.
 
 ---
 
