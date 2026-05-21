@@ -172,5 +172,12 @@ trafficguard-root/
 ```
 
 ---
+markdown<details>
+<summary>📄 MIT License</summary>
+MIT License
+Copyright (c) 2025 TrafficGuard AI
+...
+
+</details>
 
 <p align="center">Made with ❤️ in Pakistan &nbsp;|&nbsp; Built for <strong>AI Seekho Hackathon</strong> by <strong>GDG Pakistan</strong></p>
