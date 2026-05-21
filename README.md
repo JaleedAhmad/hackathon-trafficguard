@@ -1,7 +1,28 @@
 # TrafficGuard AI 🛡️
 ### Community-Powered Urban Crisis Intelligence & Smart Mobility Response
 
-TrafficGuard AI is an advanced, AI-driven urban crisis intelligence platform designed for Pakistani cities to detect, analyze, simulate, and mitigate severe urban mobility disruptions like flash flooding, infrastructure failures, and major traffic blockages. Built using Google Antigravity and automated design-to-code pipelines for the Google Hackathon.
+<p align="center">
+  <img src="https://img.shields.io/badge/Hackathon-AI%20Seekho%20by%20GDG%20Pakistan-blue?style=for-the-badge&logo=google&logoColor=white" />
+  <img src="https://img.shields.io/badge/License-Apache%202.0-green?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Platform-Android-brightgreen?style=for-the-badge&logo=android&logoColor=white" />
+  <img src="https://img.shields.io/badge/Backend-FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" />
+  <img src="https://img.shields.io/badge/AI-Gemini%203%20Flash-FF6F00?style=for-the-badge&logo=google&logoColor=white" />
+  <img src="https://img.shields.io/badge/Database-Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" />
+  <img src="https://img.shields.io/badge/Maps-Google%20Maps%20SDK-4285F4?style=for-the-badge&logo=googlemaps&logoColor=white" />
+  <img src="https://img.shields.io/badge/Language-Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white" />
+  <img src="https://img.shields.io/badge/Language-Python-3776AB?style=for-the-badge&logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/Built%20with-Google%20Antigravity-34A853?style=for-the-badge&logo=google&logoColor=white" />
+</p>
+
+---
+
+> **TrafficGuard AI** is an advanced, AI-driven urban crisis intelligence platform designed for Pakistani cities to detect, analyze, simulate, and mitigate severe urban mobility disruptions — including flash flooding, infrastructure failures, and major traffic blockages. Built using **Google Antigravity** and automated design-to-code pipelines.
+
+---
+
+## 🏆 Hackathon
+
+This project was built for **AI Seekho**, a national AI hackathon organized by **Google Developer Groups (GDG) Pakistan**, aimed at empowering Pakistani developers to solve real-world problems using cutting-edge AI and Google technologies.
 
 ---
 
@@ -59,48 +80,66 @@ graph TD
     C4 -->|Save Telemetry| G
     B -->|Multimedia| H
 ```
-### 1. Why the Ecosystem Modules Exist Separately
-* **`android/` (Native Android Client):** Built as a native mobile client rather than a web application to leverage localized device capabilities, including fine-grained background location gathering (`Google Maps SDK`), multi-tap gesture detection, and hardware alerts.
-* **`backend/` (FastAPI Cloud Engine):** Hosts the heavy 4-Stage AI Agent orchestration layer. Running this asynchronously in Python avoids blocking the mobile thread during heavy token evaluation and geospatial matrix filtering.
-* **`Ollama API` (Fallback):** Integrated to execute offline language analysis, fallback processing heuristics, and cost-optimized parsing boundaries when primary server resources are unavailable.
 
-### 2. How the Components Are Connected
-* **Data Flow & REST Actions:** The Android client queries the FastAPI backend via structured JSON REST protocols across an established `pyngrok` tunnel or direct Google Cloud Run HTTP bindings.
-* **Real-Time Data Streaming:** The backend streams immediate crisis states to the **Firebase Realtime Database**. The Android app subscribes to these streams via reactive Kotlin `StateFlow` connections, rendering active incident overlays instantly onto the user map.
-* **AI Tooling Bridge (MCP):** Visual components created inside **Google Stitch** are pulled down into **Google Antigravity** using the **Stitch Model Context Protocol (MCP)**. This lets workspace agents scan design tokens and generate clean, native Material 3 Compose widgets directly.
+### Why the Ecosystem Modules Exist Separately
+
+**`android/` — Native Android Client**
+Built as a native mobile client rather than a web application to leverage localized device capabilities, including fine-grained background location gathering (Google Maps SDK), multi-tap gesture detection, and hardware alerts.
+
+**`backend/` — FastAPI Cloud Engine**
+Hosts the heavy 4-Stage AI Agent orchestration layer. Running this asynchronously in Python avoids blocking the mobile thread during heavy token evaluation and geospatial matrix filtering.
+
+**`Ollama API` — Fallback Inference**
+Integrated to execute offline language analysis, fallback processing heuristics, and cost-optimized parsing boundaries when primary server resources are unavailable.
+
+### How the Components Are Connected
+
+**Data Flow & REST Actions:** The Android client queries the FastAPI backend via structured JSON REST protocols across an established `pyngrok` tunnel or direct Google Cloud Run HTTP bindings.
+
+**Real-Time Data Streaming:** The backend streams immediate crisis states to the Firebase Realtime Database. The Android app subscribes to these streams via reactive Kotlin `StateFlow` connections, rendering active incident overlays instantly onto the user map.
+
+**AI Tooling Bridge (MCP):** Visual components created inside **Google Stitch** are pulled down into **Google Antigravity** using the **Stitch Model Context Protocol (MCP)**. This lets workspace agents scan design tokens and generate clean, native Material 3 Compose widgets directly.
 
 ---
 
 ## 🤖 4-Stage AI Pipeline & Model Orchestration
 
-The application utilizes a multi-model approach, balancing cloud-based reasoning models with an external API fallback mechanism for deep inspection:
-* **Cloud Infrastructure:** Powered by **Gemini 3 Flash** inside the Antigravity developer core for workspace logic execution.
-* **Fallback Inference:** Utilizes **Ollama API** to handle text analysis patterns and structural validation metrics in case of primary model unavailability.
+The application utilizes a multi-model approach, balancing cloud-based reasoning with a fallback inference mechanism:
 
-* 1. **Agent 1: Ingestion Agent:** Processes text inputs, executes multi-lingual parsing, and normalizes Urdu/Roman Urdu strings into target English categories.
-2. **Agent 2: Trust & Detection Agent:** Cross-checks signals against external maps/weather telemetry and updates spatial cluster metrics to assign confidence metrics.
-3. **Agent 3: Situation Planning Agent:** Gauges active incident impact boundaries and constructs three prioritized, human-readable crisis response tasks.
-4. **Agent 4: Execution Agent:** Drives the predictive simulation engine, structures localized push alert formats, records operational telemetry, and fires Firestore tracking updates.
+**Cloud Infrastructure:** Powered by **Gemini 3 Flash** inside the Antigravity developer core for workspace logic execution.
+
+**Fallback Inference:** Utilizes **Ollama API** to handle text analysis patterns and structural validation metrics in case of primary model unavailability.
+
+| Stage | Agent | Responsibility |
+|-------|-------|----------------|
+| 1 | **Ingestion Agent** | Processes text inputs, executes multi-lingual parsing, and normalizes Urdu/Roman Urdu strings into target English categories |
+| 2 | **Trust & Detection Agent** | Cross-checks signals against external maps/weather telemetry and updates spatial cluster metrics to assign confidence scores |
+| 3 | **Situation Planning Agent** | Gauges active incident impact boundaries and constructs three prioritized, human-readable crisis response tasks |
+| 4 | **Execution Agent** | Drives the predictive simulation engine, structures localized push alert formats, records operational telemetry, and fires Firestore tracking updates |
 
 ---
 
 ## 🛠️ Google Cloud & Third-Party Integration Stack
 
-The architecture integrates deeply with Google's Cloud Console ecosystem to deliver location-aware features and fail-safe persistence:
-
 ### 🔌 Real APIs Implemented
-* **Google Cloud Project Console:** Centralized hub managing environment authorization permissions, API usage quotas, and service roles.
-* **Firebase Authentication:** Handles zero-friction, passwordless mobile access loops using Anonymous Auth sessions, keeping personal user information safe.
-* **Firebase Realtime Database:** Handles hot real-time updates, syncing active traffic alerts directly to active drivers.
-* **Google Cloud Firestore API:** Serves as the transactional persistence engine, tracking system settings, historical logs, and raw `AgentTrace` timelines.
-* **Firebase Storage:** Houses multimedia incident uploads, binary assets, and raw telemetry trace exports.
-* **Google Maps SDK (Android):** Renders the native dark-mode canvas on devices, including radius bounds and polyline routes.
-* **Google Maps & Places API:** Resolves live coordinates, geo-hashes, and points-of-interest arrays to identify localized road blockages.
-* **Gemini 3 Flash API:** Integrated into the FastAPI backend for advanced cloud-based reasoning and planning.
+
+| Service | Purpose |
+|---------|---------|
+| **Google Cloud Project Console** | Centralized hub managing environment authorization, API usage quotas, and service roles |
+| **Firebase Authentication** | Passwordless mobile access using Anonymous Auth sessions |
+| **Firebase Realtime Database** | Hot real-time updates syncing active traffic alerts to drivers |
+| **Google Cloud Firestore** | Transactional persistence for system settings, historical logs, and `AgentTrace` timelines |
+| **Firebase Storage** | Multimedia incident uploads, binary assets, and telemetry trace exports |
+| **Google Maps SDK (Android)** | Native dark-mode map canvas with radius bounds and polyline routes |
+| **Google Maps & Places API** | Live coordinate resolution, geo-hashes, and POI arrays for road blockage identification |
+| **Gemini 3 Flash API** | Advanced cloud-based reasoning and planning inside the FastAPI backend |
 
 ### 🧪 Mock APIs (Simulated for Hackathon)
-* **Weather Telemetry API:** Mocked within the `Trust & Detection Agent` to simulate environmental factors (e.g., heavy rain or flooding) validating user reports.
-* **City Traffic Congestion API:** Simulated data feeds showing congestion spikes (e.g., "340% increase") to demonstrate the `Situation Planning Agent's` dynamic rerouting and ETA calculation logic.
+
+| Service | Simulated Behavior |
+|---------|-------------------|
+| **Weather Telemetry API** | Mocked within the Trust & Detection Agent to simulate environmental factors (e.g., heavy rain, flooding) validating user reports |
+| **City Traffic Congestion API** | Simulated data feeds showing congestion spikes (e.g., "340% increase") to demonstrate the Situation Planning Agent's dynamic rerouting and ETA calculation logic |
 
 ---
 
@@ -128,3 +167,28 @@ trafficguard-root/
     ├── src/                      # React application source code
     ├── index.html                # Main HTML entrypoint
     └── vite.config.ts            # Vite bundler configuration
+```
+
+---
+
+## 📄 License
+
+```
+Copyright 2025 TrafficGuard AI
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
+
+---
+
+<p align="center">Made with ❤️ in Pakistan &nbsp;|&nbsp; Built for <strong>AI Seekho Hackathon</strong> by <strong>GDG Pakistan</strong></p>
