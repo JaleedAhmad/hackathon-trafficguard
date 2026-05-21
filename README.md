@@ -38,7 +38,7 @@ graph TD
     %% Inference Layer
     subgraph Inference [Inference Layer]
         D["Gemini 3 Flash \n (Cloud AI)"]
-        E["Local LLM \n (Ollama + Gemma 4)"]
+        E["Ollama API \n (Fallback)"]
     end
 
     %% Data/Persistence Layer
@@ -62,7 +62,7 @@ graph TD
 ### 1. Why the Ecosystem Modules Exist Separately
 * **`android/` (Native Android Client):** Built as a native mobile client rather than a web application to leverage localized device capabilities, including fine-grained background location gathering (`Google Maps SDK`), multi-tap gesture detection, and hardware alerts.
 * **`backend/` (FastAPI Cloud Engine):** Hosts the heavy 4-Stage AI Agent orchestration layer. Running this asynchronously in Python avoids blocking the mobile thread during heavy token evaluation and geospatial matrix filtering.
-* **`Local Inference Layer` (Ollama + Gemma 4):** Separated into a local container loop to execute offline language analysis, fallback processing heuristics, and cost-optimized parsing boundaries away from primary server resources.
+* **`Ollama API` (Fallback):** Integrated to execute offline language analysis, fallback processing heuristics, and cost-optimized parsing boundaries when primary server resources are unavailable.
 
 ### 2. How the Components Are Connected
 * **Data Flow & REST Actions:** The Android client queries the FastAPI backend via structured JSON REST protocols across an established `pyngrok` tunnel or direct Google Cloud Run HTTP bindings.
@@ -73,9 +73,9 @@ graph TD
 
 ## 🤖 4-Stage AI Pipeline & Model Orchestration
 
-The application utilizes a multi-model approach, balancing cloud-based reasoning models with a local LLM runner for deep inspection:
+The application utilizes a multi-model approach, balancing cloud-based reasoning models with an external API fallback mechanism for deep inspection:
 * **Cloud Infrastructure:** Powered by **Gemini 3 Flash** inside the Antigravity developer core for workspace logic execution.
-* **Edge Core Inference:** Utilizes **Ollama running Gemma 4** internally to handle text analysis patterns and structural validation metrics.
+* **Fallback Inference:** Utilizes **Ollama API** to handle text analysis patterns and structural validation metrics in case of primary model unavailability.
 
 * 1. **Agent 1: Ingestion Agent:** Processes text inputs, executes multi-lingual parsing, and normalizes Urdu/Roman Urdu strings into target English categories.
 2. **Agent 2: Trust & Detection Agent:** Cross-checks signals against external maps/weather telemetry and updates spatial cluster metrics to assign confidence metrics.
@@ -123,5 +123,5 @@ trafficguard-root/
 │   ├── pipeline/                 # 4-Agent pipeline framework engine
 │   ├── Dockerfile                # Deployment container configuration targeting port 8080
 │   └── .dockerignore             # Excluded local environment build logs
-└── local_llm/                    # Local Inference Workspace
-    └── ollama_config/            # Gemma 4 prompt setups and service operational files
+└── local_llm/                    # Fallback API Configuration Workspace
+    └── ollama_config/            # Ollama prompt setups and service operational files
