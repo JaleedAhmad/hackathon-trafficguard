@@ -36,6 +36,31 @@ The web dashboard for viewing logs and monitoring system activity is available a
 
 ---
 
+## 💻 Tech Stack
+
+**Mobile Application (Android)**
+* **Language:** Kotlin
+* **UI Framework:** Jetpack Compose (Material 3)
+* **Maps & Location:** Google Maps SDK for Android, Google Places API
+* **State Management:** StateFlow
+* **Data Synchronization:** Firebase Realtime Database
+
+**Backend (Cloud API)**
+* **Framework:** FastAPI (Python)
+* **Server:** Uvicorn
+* **AI Engine (Primary):** Google Gemini 3 Flash (`google-genai`)
+* **AI Engine (Fallback):** Ollama API
+* **Database & Storage:** Google Cloud Firestore, Firebase Storage, Firebase Admin SDK
+
+**Web Dashboard (Frontend)**
+* **Framework:** React 19
+* **Language:** TypeScript
+* **Styling:** Tailwind CSS 4
+* **Build Tool:** Vite
+* **Icons:** Lucide React
+
+---
+
 ## 🌐 Distributed System Architecture & Connectivity
 
 TrafficGuard AI is intentionally divided into three isolated, specialized environments to ensure modular scalability, rapid local prototyping, and highly responsive native rendering.
